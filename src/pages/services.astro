@@ -1,0 +1,197 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { siteConfig } from "../config/site";
+---
+
+<Layout title="Services" description="Comprehensive technology solutions to power your business forward">
+  <!-- Hero -->
+  <section class="relative py-20 lg:py-32 overflow-hidden">
+    <!-- Background elements -->
+    <div class="absolute inset-0">
+      <div class="absolute inset-0 bg-gradient-to-b from-mint/5 to-transparent"></div>
+      <div class="absolute top-0 right-0 w-96 h-96 bg-mint/5 rounded-full blur-[100px]"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl">
+        <span class="subheadline text-mint mb-4 block animate-fade-in-up opacity-0" style="animation-delay: 0.1s; animation-fill-mode: forwards;">Our Services</span>
+        <h1 class="headline text-5xl lg:text-6xl xl:text-7xl text-off-white mb-6 animate-fade-in-up opacity-0" style="animation-delay: 0.2s; animation-fill-mode: forwards;">
+          Technology That <span class="gradient-text">Drives Growth</span>
+        </h1>
+        <p class="text-xl text-off-white/60 leading-relaxed animate-fade-in-up opacity-0" style="animation-delay: 0.3s; animation-fill-mode: forwards;">
+          From concept to deployment, we deliver end-to-end solutions that transform your business capabilities and accelerate your success.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Detail -->
+  <section class="py-12 lg:py-20">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="space-y-20 lg:space-y-32">
+        {siteConfig.services.map((service, index) => (
+          <div class={`reveal grid lg:grid-cols-2 gap-12 lg:gap-20 items-center ${index % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}>
+            <!-- Visual -->
+            <div class={`relative ${index % 2 === 1 ? 'lg:order-2' : ''}`}>
+              <div class="relative aspect-square max-w-md mx-auto lg:max-w-none">
+                <!-- Background shape -->
+                <div class="absolute inset-0 bg-gradient-to-br from-mint/20 to-light-blue/10 rounded-3xl transform rotate-3"></div>
+                <div class="absolute inset-0 bg-dark-grey rounded-3xl flex items-center justify-center">
+                  <!-- Large icon -->
+                  <div class="w-32 h-32 lg:w-40 lg:h-40">
+                    {service.icon === "code" && (
+                      <svg class="w-full h-full text-mint/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="0.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                      </svg>
+                    )}
+                    {service.icon === "cloud" && (
+                      <svg class="w-full h-full text-mint/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="0.5" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+                      </svg>
+                    )}
+                    {service.icon === "lightbulb" && (
+                      <svg class="w-full h-full text-mint/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="0.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                      </svg>
+                    )}
+                    {service.icon === "shield" && (
+                      <svg class="w-full h-full text-mint/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="0.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                      </svg>
+                    )}
+                  </div>
+                </div>
+
+                <!-- Floating number -->
+                <div class="absolute -top-4 -left-4 lg:-top-6 lg:-left-6 w-16 h-16 lg:w-20 lg:h-20 rounded-2xl bg-mint flex items-center justify-center">
+                  <span class="headline text-2xl lg:text-3xl text-midnight">{String(index + 1).padStart(2, '0')}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Content -->
+            <div class={index % 2 === 1 ? 'lg:order-1' : ''}>
+              <div class="w-14 h-14 rounded-xl bg-mint/10 flex items-center justify-center mb-6">
+                {service.icon === "code" && (
+                  <svg class="w-7 h-7 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                  </svg>
+                )}
+                {service.icon === "cloud" && (
+                  <svg class="w-7 h-7 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+                  </svg>
+                )}
+                {service.icon === "lightbulb" && (
+                  <svg class="w-7 h-7 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
+                )}
+                {service.icon === "shield" && (
+                  <svg class="w-7 h-7 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                )}
+              </div>
+
+              <h2 class="headline text-3xl lg:text-4xl text-off-white mb-4">
+                {service.title}
+              </h2>
+
+              <p class="text-off-white/60 text-lg leading-relaxed mb-8">
+                {service.description}
+              </p>
+
+              <!-- Features -->
+              <div class="space-y-4 mb-8">
+                {service.features.map((feature) => (
+                  <div class="flex items-center gap-3">
+                    <div class="w-6 h-6 rounded-full bg-mint/20 flex items-center justify-center flex-shrink-0">
+                      <svg class="w-3 h-3 text-mint" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                      </svg>
+                    </div>
+                    <span class="text-off-white/80">{feature}</span>
+                  </div>
+                ))}
+              </div>
+
+              <a href="/contact" class="btn-secondary">
+                Discuss Your Project
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Process Section -->
+  <section class="py-24 lg:py-32 bg-dark-grey relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-mint/5 via-transparent to-transparent"></div>
+
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="text-center mb-16 reveal">
+        <span class="subheadline text-mint mb-4 block">Our Process</span>
+        <h2 class="headline text-4xl lg:text-5xl text-off-white mb-6">
+          How We Work
+        </h2>
+        <p class="text-off-white/60 text-lg max-w-2xl mx-auto">
+          A proven methodology that delivers results, every time.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 reveal">
+        {[
+          { step: "01", title: "Discover", description: "We dive deep into your challenges, goals, and vision to understand the full picture." },
+          { step: "02", title: "Design", description: "We architect solutions that align with your objectives and scale with your growth." },
+          { step: "03", title: "Develop", description: "We build with precision, keeping you informed and involved every step of the way." },
+          { step: "04", title: "Deliver", description: "We deploy, optimize, and support—ensuring lasting success beyond launch." },
+        ].map((item, index) => (
+          <div class="relative group" style={`transition-delay: ${index * 100}ms`}>
+            <!-- Connector line -->
+            {index < 3 && (
+              <div class="hidden lg:block absolute top-8 left-full w-full h-px bg-gradient-to-r from-mint/30 to-transparent z-0"></div>
+            )}
+
+            <div class="relative bg-midnight rounded-2xl p-8 border border-white/5 hover:border-mint/20 transition-all duration-300 h-full">
+              <div class="headline text-5xl text-mint/20 mb-4 group-hover:text-mint/40 transition-colors duration-300">
+                {item.step}
+              </div>
+              <h3 class="headline text-xl text-off-white mb-3">
+                {item.title}
+              </h3>
+              <p class="text-off-white/60 text-sm leading-relaxed">
+                {item.description}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-24 lg:py-32">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="relative rounded-3xl overflow-hidden reveal">
+        <div class="absolute inset-0 bg-gradient-to-br from-mint via-mint to-mint-bright"></div>
+
+        <div class="relative px-8 py-16 lg:px-16 lg:py-24 text-center">
+          <h2 class="headline text-4xl lg:text-5xl text-midnight mb-6">
+            Let's Build Something Great
+          </h2>
+          <p class="text-midnight/70 text-lg max-w-2xl mx-auto mb-10">
+            Ready to transform your ideas into reality? We're here to help you every step of the way.
+          </p>
+          <a
+            href="/contact"
+            class="inline-flex items-center justify-center px-8 py-4 bg-midnight text-off-white font-semibold text-sm uppercase tracking-wider rounded-full hover:bg-midnight-light transition-colors duration-300"
+          >
+            <span>Start Your Project</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

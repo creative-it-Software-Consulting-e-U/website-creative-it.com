@@ -1,0 +1,88 @@
+---
+import "../styles/global.css";
+import { siteConfig } from "../config/site";
+import Navigation from "../components/Navigation.astro";
+import Footer from "../components/Footer.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+const pageTitle = title ? `${title} | ${siteConfig.name}` : `${siteConfig.name} — ${siteConfig.tagline}`;
+const pageDescription = description || siteConfig.description;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={pageDescription} />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:type" content="website" />
+
+    <title>{pageTitle}</title>
+  </head>
+  <body class="min-h-screen flex flex-col bg-midnight text-off-white overflow-x-hidden">
+    <!-- Ambient background gradient -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden">
+      <div class="absolute -top-1/2 -right-1/4 w-[800px] h-[800px] bg-mint/5 rounded-full blur-[150px]"></div>
+      <div class="absolute -bottom-1/2 -left-1/4 w-[600px] h-[600px] bg-light-blue/5 rounded-full blur-[150px]"></div>
+    </div>
+
+    <Navigation />
+    <main class="flex-1 relative z-10">
+      <slot />
+    </main>
+    <Footer />
+
+    <!-- Page transition script -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // Add loaded class for animations
+        document.body.classList.add('loaded');
+
+        // Intersection observer for scroll animations
+        const observerOptions = {
+          root: null,
+          rootMargin: '0px',
+          threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('in-view');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => {
+          observer.observe(el);
+        });
+      });
+    </script>
+
+    <style>
+      .reveal {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .reveal.in-view {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    </style>
+  </body>
+</html>

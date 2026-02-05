@@ -1,0 +1,237 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { siteConfig } from "../config/site";
+---
+
+<Layout>
+  <!-- Hero Section -->
+  <section class="relative min-h-[90vh] flex items-center overflow-hidden">
+    <!-- Background decorative elements -->
+    <div class="absolute inset-0 overflow-hidden">
+      <!-- Grid pattern -->
+      <div class="absolute inset-0 opacity-[0.02]" style="background-image: linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px); background-size: 60px 60px;"></div>
+
+      <!-- Floating geometric shapes -->
+      <div class="absolute top-1/4 right-1/4 w-64 h-64 border border-mint/10 rounded-full animate-pulse" style="animation-duration: 4s;"></div>
+      <div class="absolute bottom-1/4 left-1/3 w-48 h-48 border border-light-blue/10 rotate-45" style="animation: float 6s ease-in-out infinite;"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8 py-20 lg:py-32">
+      <div class="max-w-4xl">
+        <!-- Tagline badge -->
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-mint/10 border border-mint/20 mb-8 animate-fade-in-up opacity-0" style="animation-delay: 0.1s; animation-fill-mode: forwards;">
+          <span class="w-2 h-2 rounded-full bg-mint animate-pulse"></span>
+          <span class="subheadline text-mint text-xs">Software · Teams · Trust</span>
+        </div>
+
+        <!-- Main headline -->
+        <h1 class="headline text-5xl sm:text-6xl lg:text-7xl xl:text-8xl text-off-white mb-6 animate-fade-in-up opacity-0" style="animation-delay: 0.2s; animation-fill-mode: forwards;">
+          <span class="block">Build.</span>
+          <span class="block gradient-text">Grow.</span>
+          <span class="block">Matter.</span>
+        </h1>
+
+        <!-- Subheadline -->
+        <p class="text-xl lg:text-2xl text-off-white/70 max-w-2xl mb-10 leading-relaxed animate-fade-in-up opacity-0" style="animation-delay: 0.4s; animation-fill-mode: forwards;">
+          {siteConfig.description}
+        </p>
+
+        <!-- CTAs -->
+        <div class="flex flex-col sm:flex-row gap-4 animate-fade-in-up opacity-0" style="animation-delay: 0.6s; animation-fill-mode: forwards;">
+          <a href="/contact" class="btn-primary">
+            <span>Start a Project</span>
+          </a>
+          <a href="/services" class="btn-secondary">
+            Explore Services
+          </a>
+        </div>
+      </div>
+
+      <!-- Stats row -->
+      <div class="mt-20 lg:mt-32 grid grid-cols-2 lg:grid-cols-4 gap-8 animate-fade-in-up opacity-0" style="animation-delay: 0.8s; animation-fill-mode: forwards;">
+        {siteConfig.about.stats.map((stat) => (
+          <div class="text-center lg:text-left">
+            <div class="headline text-3xl lg:text-4xl text-mint mb-1">{stat.value}</div>
+            <div class="text-sm text-off-white/50 uppercase tracking-wider">{stat.label}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-fade-in opacity-0" style="animation-delay: 1.2s; animation-fill-mode: forwards;">
+      <span class="text-xs uppercase tracking-widest text-off-white/40">Scroll</span>
+      <div class="w-px h-12 bg-gradient-to-b from-mint to-transparent"></div>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section class="py-24 lg:py-32 relative">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <!-- Section header -->
+      <div class="max-w-2xl mb-16 reveal">
+        <span class="subheadline text-mint mb-4 block">What We Do</span>
+        <h2 class="headline text-4xl lg:text-5xl text-off-white mb-6">
+          Technology Solutions That Drive Growth
+        </h2>
+        <p class="text-off-white/60 text-lg">
+          From custom software to cloud architecture, we deliver solutions that scale with your ambitions.
+        </p>
+      </div>
+
+      <!-- Services grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+        {siteConfig.services.map((service, index) => (
+          <a
+            href="/services"
+            class="group relative bg-midnight-light rounded-2xl p-8 lg:p-10 border border-white/5 hover:border-mint/30 transition-all duration-500 reveal overflow-hidden"
+            style={`transition-delay: ${index * 100}ms`}
+          >
+            <!-- Hover gradient -->
+            <div class="absolute inset-0 bg-gradient-to-br from-mint/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+            <div class="relative">
+              <!-- Icon -->
+              <div class="w-14 h-14 rounded-xl bg-mint/10 flex items-center justify-center mb-6 group-hover:bg-mint/20 transition-colors duration-300">
+                {service.icon === "code" && (
+                  <svg class="w-7 h-7 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                  </svg>
+                )}
+                {service.icon === "cloud" && (
+                  <svg class="w-7 h-7 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+                  </svg>
+                )}
+                {service.icon === "lightbulb" && (
+                  <svg class="w-7 h-7 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
+                )}
+                {service.icon === "shield" && (
+                  <svg class="w-7 h-7 text-mint" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                )}
+              </div>
+
+              <!-- Content -->
+              <h3 class="headline text-xl text-off-white mb-3 group-hover:text-mint transition-colors duration-300">
+                {service.title}
+              </h3>
+              <p class="text-off-white/60 mb-6 leading-relaxed">
+                {service.description}
+              </p>
+
+              <!-- Features list -->
+              <ul class="space-y-2 mb-6">
+                {service.features.map((feature) => (
+                  <li class="flex items-center gap-2 text-sm text-off-white/50">
+                    <svg class="w-4 h-4 text-mint-bright" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+
+              <!-- Arrow -->
+              <div class="flex items-center gap-2 text-mint text-sm font-medium uppercase tracking-wider">
+                <span>Learn more</span>
+                <svg class="w-4 h-4 transform group-hover:translate-x-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Philosophy Section -->
+  <section class="py-24 lg:py-32 relative overflow-hidden">
+    <!-- Background -->
+    <div class="absolute inset-0 bg-dark-grey"></div>
+    <div class="absolute inset-0 bg-gradient-to-br from-mint/5 via-transparent to-light-blue/5"></div>
+
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <!-- Left content -->
+        <div class="reveal">
+          <span class="subheadline text-mint mb-4 block">Our Philosophy</span>
+          <h2 class="headline text-4xl lg:text-5xl text-off-white mb-8">
+            Three Words.<br/>
+            <span class="gradient-text">Infinite Possibility.</span>
+          </h2>
+          <p class="text-off-white/60 text-lg leading-relaxed mb-8">
+            {siteConfig.about.story}
+          </p>
+          <a href="/about" class="btn-tertiary">
+            About Our Journey
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+        </div>
+
+        <!-- Right - Values cards -->
+        <div class="space-y-6 reveal" style="transition-delay: 200ms">
+          {siteConfig.about.values.map((value, index) => (
+            <div
+              class="group relative bg-midnight rounded-xl p-6 border border-white/5 hover:border-mint/20 transition-all duration-300"
+            >
+              <div class="flex items-start gap-4">
+                <div class="flex-shrink-0 w-12 h-12 rounded-lg bg-mint/10 flex items-center justify-center">
+                  <span class="headline text-mint text-lg">{String(index + 1).padStart(2, '0')}</span>
+                </div>
+                <div>
+                  <h3 class="headline text-xl text-off-white mb-2 group-hover:text-mint transition-colors duration-300">
+                    {value.title}
+                  </h3>
+                  <p class="text-off-white/60 text-sm leading-relaxed">
+                    {value.description}
+                  </p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-24 lg:py-32 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="relative rounded-3xl overflow-hidden reveal">
+        <!-- Background -->
+        <div class="absolute inset-0 bg-gradient-to-br from-mint via-mint to-mint-bright"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(5,33,59,0.1),transparent_50%)]"></div>
+
+        <!-- Content -->
+        <div class="relative px-8 py-16 lg:px-16 lg:py-24 text-center">
+          <h2 class="headline text-4xl lg:text-5xl xl:text-6xl text-midnight mb-6">
+            Ready to Build<br/>Something That Matters?
+          </h2>
+          <p class="text-midnight/70 text-lg max-w-2xl mx-auto mb-10">
+            Let's discuss how we can help you achieve your technology goals and create lasting impact.
+          </p>
+          <a
+            href="/contact"
+            class="inline-flex items-center justify-center px-8 py-4 bg-midnight text-off-white font-semibold text-sm uppercase tracking-wider rounded-full hover:bg-midnight-light transition-colors duration-300"
+          >
+            <span>Start the Conversation</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(45deg); }
+    50% { transform: translateY(-20px) rotate(45deg); }
+  }
+</style>

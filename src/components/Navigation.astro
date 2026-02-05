@@ -1,0 +1,179 @@
+---
+import { siteConfig } from "../config/site";
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300" id="nav-header">
+  <nav class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="flex justify-between items-center h-20 lg:h-24">
+      <!-- Logo -->
+      <a href="/" class="relative z-10 flex items-center gap-3 group">
+        <img
+          src="/logo-dark.png"
+          alt={siteConfig.name}
+          class="h-10 lg:h-12 w-auto transition-transform duration-300 group-hover:scale-105"
+        />
+      </a>
+
+      <!-- Desktop Navigation -->
+      <ul class="hidden lg:flex items-center gap-10">
+        {siteConfig.navigation.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class:list={[
+                "relative text-sm font-medium uppercase tracking-wider transition-colors duration-300",
+                currentPath === item.href
+                  ? "text-mint"
+                  : "text-off-white/80 hover:text-mint",
+              ]}
+            >
+              {item.name}
+              {currentPath === item.href && (
+                <span class="absolute -bottom-1 left-0 w-full h-0.5 bg-mint"></span>
+              )}
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <!-- CTA Button (Desktop) -->
+      <a href="/contact" class="hidden lg:block btn-primary">
+        <span>Get in Touch</span>
+      </a>
+
+      <!-- Mobile Menu Button -->
+      <button
+        id="mobile-menu-button"
+        class="lg:hidden relative z-10 w-10 h-10 flex flex-col justify-center items-center gap-1.5 group"
+        aria-label="Toggle menu"
+        aria-expanded="false"
+      >
+        <span class="hamburger-line w-6 h-0.5 bg-off-white transition-all duration-300 origin-center"></span>
+        <span class="hamburger-line w-6 h-0.5 bg-off-white transition-all duration-300"></span>
+        <span class="hamburger-line w-6 h-0.5 bg-off-white transition-all duration-300 origin-center"></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div
+    id="mobile-menu"
+    class="lg:hidden fixed inset-0 bg-midnight/98 backdrop-blur-xl opacity-0 invisible transition-all duration-500 flex items-center justify-center"
+  >
+    <nav class="text-center">
+      <ul class="space-y-8">
+        {siteConfig.navigation.map((item, index) => (
+          <li
+            class="mobile-nav-item opacity-0 translate-y-4"
+            style={`transition-delay: ${index * 100}ms`}
+          >
+            <a
+              href={item.href}
+              class:list={[
+                "headline text-4xl sm:text-5xl transition-colors duration-300",
+                currentPath === item.href
+                  ? "text-mint"
+                  : "text-off-white hover:text-mint",
+              ]}
+            >
+              {item.name}
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <div class="mt-12 mobile-nav-item opacity-0 translate-y-4" style="transition-delay: 400ms">
+        <a href="/contact" class="btn-primary">
+          <span>Get in Touch</span>
+        </a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- Spacer to account for fixed header -->
+<div class="h-20 lg:h-24"></div>
+
+<script>
+  const header = document.getElementById('nav-header');
+  const button = document.getElementById('mobile-menu-button');
+  const menu = document.getElementById('mobile-menu');
+  const hamburgerLines = button?.querySelectorAll('.hamburger-line');
+  const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
+  let isOpen = false;
+
+  // Scroll behavior for header
+  let lastScroll = 0;
+  window.addEventListener('scroll', () => {
+    const currentScroll = window.scrollY;
+
+    if (currentScroll > 50) {
+      header?.classList.add('bg-midnight/90', 'backdrop-blur-lg', 'shadow-lg', 'shadow-midnight/50');
+    } else {
+      header?.classList.remove('bg-midnight/90', 'backdrop-blur-lg', 'shadow-lg', 'shadow-midnight/50');
+    }
+
+    lastScroll = currentScroll;
+  });
+
+  // Mobile menu toggle
+  button?.addEventListener('click', () => {
+    isOpen = !isOpen;
+    button.setAttribute('aria-expanded', isOpen.toString());
+
+    if (isOpen) {
+      menu?.classList.remove('opacity-0', 'invisible');
+      menu?.classList.add('opacity-100', 'visible');
+      document.body.style.overflow = 'hidden';
+
+      // Animate hamburger to X
+      if (hamburgerLines) {
+        hamburgerLines[0].classList.add('rotate-45', 'translate-y-2');
+        hamburgerLines[1].classList.add('opacity-0');
+        hamburgerLines[2].classList.add('-rotate-45', '-translate-y-2');
+      }
+
+      // Animate nav items
+      mobileNavItems.forEach((item, index) => {
+        setTimeout(() => {
+          item.classList.remove('opacity-0', 'translate-y-4');
+          item.classList.add('opacity-100', 'translate-y-0');
+        }, index * 100);
+      });
+    } else {
+      menu?.classList.add('opacity-0', 'invisible');
+      menu?.classList.remove('opacity-100', 'visible');
+      document.body.style.overflow = '';
+
+      // Reset hamburger
+      if (hamburgerLines) {
+        hamburgerLines[0].classList.remove('rotate-45', 'translate-y-2');
+        hamburgerLines[1].classList.remove('opacity-0');
+        hamburgerLines[2].classList.remove('-rotate-45', '-translate-y-2');
+      }
+
+      // Reset nav items
+      mobileNavItems.forEach((item) => {
+        item.classList.add('opacity-0', 'translate-y-4');
+        item.classList.remove('opacity-100', 'translate-y-0');
+      });
+    }
+  });
+
+  // Close menu on link click
+  menu?.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      if (isOpen) {
+        button?.click();
+      }
+    });
+  });
+</script>
+
+<style>
+  .mobile-nav-item {
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+</style>

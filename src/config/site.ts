@@ -76,12 +76,13 @@ export const siteConfig = {
   },
 
   colors: {
-    midnight: "#05213B",
-    midnightLight: "#0a3158",
-    lightBlue: "#3398E0",
-    mint: "#19D3B5",
-    mintBright: "#2AF598",
-    darkGrey: "#2E2E2E",
-    offWhite: "#F8FAFB",
+    navy: "#030520",
+    navyLight: "#181B39",
+    purple: "#A163F1",
+    indigo: "#6363F1",
+    cyan: "#23F0C3",
+    cyanBright: "#40DFA3",
+    surface: "#0F1132",
+    offWhite: "#F5F5F7",
   },
 };

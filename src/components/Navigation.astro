@@ -6,32 +6,32 @@ const currentPath = Astro.url.pathname;
 
 <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300" id="nav-header">
   <nav class="max-w-7xl mx-auto px-6 lg:px-8">
-    <div class="flex justify-between items-center h-20 lg:h-24">
+    <div class="flex justify-between items-center h-16 lg:h-20">
       <!-- Logo -->
       <a href="/" class="relative z-10 flex items-center gap-3 group">
         <img
           src="/logo-dark.png"
           alt={siteConfig.name}
-          class="h-10 lg:h-12 w-auto transition-transform duration-300 group-hover:scale-105"
+          class="h-8 lg:h-10 w-auto transition-transform duration-300 group-hover:scale-105"
         />
       </a>
 
       <!-- Desktop Navigation -->
-      <ul class="hidden lg:flex items-center gap-10">
+      <ul class="hidden lg:flex items-center gap-8">
         {siteConfig.navigation.map((item) => (
           <li>
             <a
               href={item.href}
               class:list={[
-                "relative text-sm font-medium uppercase tracking-wider transition-colors duration-300",
+                "relative text-sm font-medium transition-colors duration-200",
                 currentPath === item.href
-                  ? "text-mint"
-                  : "text-off-white/80 hover:text-mint",
+                  ? "text-off-white"
+                  : "text-text-muted hover:text-off-white",
               ]}
             >
               {item.name}
               {currentPath === item.href && (
-                <span class="absolute -bottom-1 left-0 w-full h-0.5 bg-mint"></span>
+                <span class="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-purple to-cyan rounded-full"></span>
               )}
             </a>
           </li>
@@ -39,8 +39,8 @@ const currentPath = Astro.url.pathname;
       </ul>
 
       <!-- CTA Button (Desktop) -->
-      <a href="/contact" class="hidden lg:block btn-primary">
-        <span>Get in Touch</span>
+      <a href="/contact" class="hidden lg:block btn-glow text-sm">
+        Get in Touch
       </a>
 
       <!-- Mobile Menu Button -->
@@ -60,7 +60,7 @@ const currentPath = Astro.url.pathname;
   <!-- Mobile Menu -->
   <div
     id="mobile-menu"
-    class="lg:hidden fixed inset-0 bg-midnight/98 backdrop-blur-xl opacity-0 invisible transition-all duration-500 flex items-center justify-center"
+    class="lg:hidden fixed inset-0 bg-navy/98 backdrop-blur-xl opacity-0 invisible transition-all duration-500 flex items-center justify-center"
   >
     <nav class="text-center">
       <ul class="space-y-8">
@@ -72,10 +72,10 @@ const currentPath = Astro.url.pathname;
             <a
               href={item.href}
               class:list={[
-                "headline text-4xl sm:text-5xl transition-colors duration-300",
+                "heading-lg text-4xl sm:text-5xl transition-colors duration-300",
                 currentPath === item.href
-                  ? "text-mint"
-                  : "text-off-white hover:text-mint",
+                  ? "gradient-text"
+                  : "text-off-white hover:text-purple",
               ]}
             >
               {item.name}
@@ -85,8 +85,8 @@ const currentPath = Astro.url.pathname;
       </ul>
 
       <div class="mt-12 mobile-nav-item opacity-0 translate-y-4" style="transition-delay: 400ms">
-        <a href="/contact" class="btn-primary">
-          <span>Get in Touch</span>
+        <a href="/contact" class="btn-glow">
+          Get in Touch
         </a>
       </div>
     </nav>
@@ -94,7 +94,7 @@ const currentPath = Astro.url.pathname;
 </header>
 
 <!-- Spacer to account for fixed header -->
-<div class="h-20 lg:h-24"></div>
+<div class="h-16 lg:h-20"></div>
 
 <script>
   const header = document.getElementById('nav-header');
@@ -104,21 +104,16 @@ const currentPath = Astro.url.pathname;
   const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
   let isOpen = false;
 
-  // Scroll behavior for header
-  let lastScroll = 0;
   window.addEventListener('scroll', () => {
     const currentScroll = window.scrollY;
 
     if (currentScroll > 50) {
-      header?.classList.add('bg-midnight/90', 'backdrop-blur-lg', 'shadow-lg', 'shadow-midnight/50');
+      header?.classList.add('bg-navy/80', 'backdrop-blur-xl', 'border-b', 'border-white/5');
     } else {
-      header?.classList.remove('bg-midnight/90', 'backdrop-blur-lg', 'shadow-lg', 'shadow-midnight/50');
+      header?.classList.remove('bg-navy/80', 'backdrop-blur-xl', 'border-b', 'border-white/5');
     }
-
-    lastScroll = currentScroll;
   });
 
-  // Mobile menu toggle
   button?.addEventListener('click', () => {
     isOpen = !isOpen;
     button.setAttribute('aria-expanded', isOpen.toString());
@@ -128,14 +123,12 @@ const currentPath = Astro.url.pathname;
       menu?.classList.add('opacity-100', 'visible');
       document.body.style.overflow = 'hidden';
 
-      // Animate hamburger to X
       if (hamburgerLines) {
         hamburgerLines[0].classList.add('rotate-45', 'translate-y-2');
         hamburgerLines[1].classList.add('opacity-0');
         hamburgerLines[2].classList.add('-rotate-45', '-translate-y-2');
       }
 
-      // Animate nav items
       mobileNavItems.forEach((item, index) => {
         setTimeout(() => {
           item.classList.remove('opacity-0', 'translate-y-4');
@@ -147,14 +140,12 @@ const currentPath = Astro.url.pathname;
       menu?.classList.remove('opacity-100', 'visible');
       document.body.style.overflow = '';
 
-      // Reset hamburger
       if (hamburgerLines) {
         hamburgerLines[0].classList.remove('rotate-45', 'translate-y-2');
         hamburgerLines[1].classList.remove('opacity-0');
         hamburgerLines[2].classList.remove('-rotate-45', '-translate-y-2');
       }
 
-      // Reset nav items
       mobileNavItems.forEach((item) => {
         item.classList.add('opacity-0', 'translate-y-4');
         item.classList.remove('opacity-100', 'translate-y-0');
@@ -162,7 +153,6 @@ const currentPath = Astro.url.pathname;
     }
   });
 
-  // Close menu on link click
   menu?.querySelectorAll('a').forEach(link => {
     link.addEventListener('click', () => {
       if (isOpen) {

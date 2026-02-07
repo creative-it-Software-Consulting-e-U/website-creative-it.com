@@ -134,6 +134,76 @@ const p = siteConfig.pages.home;
     </div>
   </section>
 
+  <!-- Apps Section -->
+  <section class="py-24 lg:py-32 bg-surface relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-indigo/3 to-transparent"></div>
+
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="max-w-2xl mb-16 reveal">
+        <div class="chip mb-4">
+          <span>{p.appsSection.chip}</span>
+        </div>
+        <h2 class="heading-lg text-4xl lg:text-5xl text-off-white mb-6">
+          {p.appsSection.headline.before}<span class="gradient-text">{p.appsSection.headline.gradient}</span>{p.appsSection.headline.after}
+        </h2>
+        <p class="text-text-secondary text-lg">{p.appsSection.description}</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {siteConfig.apps.map((app, index) => {
+          const isLive = app.status === "live" && app.link;
+          const Tag = isLive ? "a" : "div";
+          return (
+            <Tag
+              {...(isLive ? { href: app.link!, target: "_blank", rel: "noopener noreferrer" } : {})}
+              class:list={[
+                "group card-elevated p-8 reveal",
+                isLive && "cursor-pointer",
+              ]}
+              style={`transition-delay: ${index * 100}ms`}
+            >
+              <img
+                src={app.icon}
+                alt={app.title}
+                width="52"
+                height="52"
+                loading="lazy"
+                decoding="async"
+                class="w-13 h-13 rounded-xl mb-6"
+              />
+
+              <div class="flex items-center gap-3 mb-3">
+                <h3 class:list={[
+                  "heading-md text-xl text-off-white",
+                  isLive && "group-hover:text-purple transition-colors duration-300",
+                ]}>{app.title}</h3>
+                {app.status === "coming-soon" && (
+                  <span class="text-[0.7rem] font-medium uppercase tracking-wider text-indigo bg-indigo/10 border border-indigo/20 px-2 py-0.5 rounded-full">Coming Soon</span>
+                )}
+              </div>
+
+              <p class="text-text-secondary text-sm leading-relaxed mb-6">{app.description}</p>
+
+              {isLive && (
+                <div class="flex items-center gap-2 text-indigo text-sm font-medium group-hover:text-purple transition-colors duration-300">
+                  <span>Open App</span>
+                  <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                </div>
+              )}
+            </Tag>
+          );
+        })}
+      </div>
+
+      <div class="mt-10 text-center reveal" style="transition-delay: 400ms">
+        <a href={p.appsSection.linkUrl} target="_blank" rel="noopener noreferrer" class="btn-secondary inline-flex items-center gap-2">
+          {p.appsSection.linkText}
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
   <!-- Philosophy Section -->
   <section class="py-24 lg:py-32 relative overflow-hidden">
     <div class="absolute inset-0 bg-surface"></div>

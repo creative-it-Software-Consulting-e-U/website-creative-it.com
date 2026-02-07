@@ -166,6 +166,34 @@ export const siteConfig = {
     },
   },
 
+  // ── Apps ─────────────────────────────────────────────────────────────────
+  apps: [
+    {
+      title: "GeoHook",
+      description:
+        "Trigger webhooks automatically when you enter or exit locations. Connect your geofences to Home Assistant, IFTTT, n8n, or any custom API.",
+      icon: "/apps/geohook-icon.svg",
+      link: "https://geohook.creative-it.com",
+      status: "live" as const,
+    },
+    {
+      title: "AInvoiceMate",
+      description:
+        "AI-powered invoice processing for your accounting workflow. Scan invoices, extract data automatically, and export to sevDesk, DATEV, Google Sheets, and more.",
+      icon: "/apps/ainvoicemate-icon.png",
+      link: null,
+      status: "coming-soon" as const,
+    },
+    {
+      title: "FlowAgent",
+      description:
+        "Automated bookkeeping and financial management built for Austrian tax law. AI-powered invoice processing, transaction tracking, and cash flow forecasting.",
+      icon: "/apps/flowagent-icon.png",
+      link: null,
+      status: "coming-soon" as const,
+    },
+  ],
+
   // ── Process Steps ─────────────────────────────────────────────────────────
   process: [
     {
@@ -250,6 +278,15 @@ export const siteConfig = {
         description:
           "From custom software to cloud architecture, we deliver solutions that scale with your ambitions.",
         linkText: "Learn more",
+      },
+
+      appsSection: {
+        chip: "Our Apps",
+        headline: { before: "Products We ", gradient: "Built", after: "" },
+        description:
+          "Focused tools and applications that solve real problems with clean design and thoughtful engineering.",
+        linkText: "View all apps",
+        linkUrl: "https://apps.creative.it.com",
       },
 
       philosophySection: {

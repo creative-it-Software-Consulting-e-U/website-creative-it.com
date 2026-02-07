@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4A90E2"/>
+      <stop offset="100%" style="stop-color:#1E5AA8"/>
+    </linearGradient>
+    <linearGradient id="pinGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF6B6B"/>
+      <stop offset="100%" style="stop-color:#E63946"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Background with rounded corners (iOS style) -->
+  <rect width="1024" height="1024" rx="224" ry="224" fill="url(#bgGradient)"/>
+  
+  <!-- Single geofence circle - centered on pin tip location -->
+  <circle cx="512" cy="580" r="280" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.6)" stroke-width="8" stroke-dasharray="24 12"/>
+  
+  <!-- Location pin shadow -->
+  <ellipse cx="512" cy="580" rx="80" ry="24" fill="rgba(0,0,0,0.2)"/>
+  
+  <!-- Location pin body -->
+  <path d="M512 140
+           C420 140 346 214 346 306
+           C346 398 512 580 512 580
+           C512 580 678 398 678 306
+           C678 214 604 140 512 140Z" 
+        fill="url(#pinGradient)"/>
+  
+  <!-- Location pin inner circle (white) -->
+  <circle cx="512" cy="300" r="72" fill="white"/>
+  
+  <!-- Location pin center dot -->
+  <circle cx="512" cy="300" r="36" fill="url(#pinGradient)"/>
+  
+  <!-- Subtle highlight on pin -->
+  <ellipse cx="480" cy="240" rx="40" ry="28" fill="rgba(255,255,255,0.3)"/>
+</svg>

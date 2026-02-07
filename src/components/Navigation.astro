@@ -4,7 +4,7 @@ import { siteConfig } from "../config/site";
 const currentPath = Astro.url.pathname;
 ---
 
-<header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300" id="nav-header">
+<header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-transparent" id="nav-header">
   <nav class="max-w-7xl mx-auto px-6 lg:px-8">
     <div class="flex justify-between items-center h-16 lg:h-20">
       <!-- Logo -->
@@ -108,9 +108,11 @@ const currentPath = Astro.url.pathname;
     const currentScroll = window.scrollY;
 
     if (currentScroll > 50) {
-      header?.classList.add('bg-navy/80', 'backdrop-blur-xl', 'border-b', 'border-white/5');
+      header?.classList.add('bg-navy/80', 'backdrop-blur-xl', 'border-white/5');
+      header?.classList.remove('border-transparent');
     } else {
-      header?.classList.remove('bg-navy/80', 'backdrop-blur-xl', 'border-b', 'border-white/5');
+      header?.classList.remove('bg-navy/80', 'backdrop-blur-xl', 'border-white/5');
+      header?.classList.add('border-transparent');
     }
   });
 

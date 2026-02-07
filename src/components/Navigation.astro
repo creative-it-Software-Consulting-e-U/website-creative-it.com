@@ -9,11 +9,17 @@ const currentPath = Astro.url.pathname;
     <div class="flex justify-between items-center h-16 lg:h-20">
       <!-- Logo -->
       <a href="/" class="relative z-10 flex items-center gap-3 group">
-        <img
-          src="/logo-dark.png"
-          alt={siteConfig.name}
-          class="h-14 lg:h-[4.5rem] w-auto transition-transform duration-300 group-hover:scale-105"
-        />
+        <picture>
+          <source srcset="/logo-dark.webp" type="image/webp" />
+          <img
+            src="/logo-dark.png"
+            alt={siteConfig.name}
+            width="1457"
+            height="988"
+            fetchpriority="high"
+            class="h-14 lg:h-[4.5rem] w-auto transition-transform duration-300 group-hover:scale-105"
+          />
+        </picture>
       </a>
 
       <!-- Desktop Navigation -->

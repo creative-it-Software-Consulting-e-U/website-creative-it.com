@@ -11,11 +11,18 @@ const phoneEncoded = btoa(siteConfig.contact.phone);
       <div class="lg:col-span-5">
         <div class="max-w-sm">
           <a href="/" class="flex justify-center mb-6">
-            <img
-              src="/logo-dark.png"
-              alt={siteConfig.name}
-              class="h-40 w-auto"
-            />
+            <picture>
+              <source srcset="/logo-dark.webp" type="image/webp" />
+              <img
+                src="/logo-dark.png"
+                alt={siteConfig.name}
+                width="1457"
+                height="988"
+                loading="lazy"
+                decoding="async"
+                class="h-40 w-auto"
+              />
+            </picture>
           </a>
         </div>
         <p class="text-text-muted text-sm leading-relaxed max-w-sm mb-8">

@@ -10,6 +10,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 No linting or test scripts are configured.
 
+## AWS Deployment
+
+- **SSO Login (Prod):** `aws sso login --profile AdministratorAccess-348854311973`
+- **CDK Deploy:** `cd infra && AWS_PROFILE=AdministratorAccess-348854311973 npx cdk deploy`
+
 ## Architecture
 
 Astro 5 static site with Tailwind CSS 4 (`@tailwindcss/vite` plugin, no tailwind.config — uses `@theme` in global.css) deployed to Vercel.

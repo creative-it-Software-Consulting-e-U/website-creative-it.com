@@ -71,12 +71,39 @@ export class ContactApiStack extends cdk.Stack {
       })
     );
 
+    // ── GitHub Stats Lambda ──────────────────────────────────────────
+    const githubStatsHandler = new lambdaNode.NodejsFunction(
+      this,
+      "GitHubStatsHandler",
+      {
+        runtime: lambda.Runtime.NODEJS_22_X,
+        architecture: lambda.Architecture.ARM_64,
+        memorySize: 256,
+        timeout: cdk.Duration.seconds(15),
+        entry: path.join(__dirname, "..", "lambda", "github-stats", "index.ts"),
+        handler: "handler",
+        bundling: {
+          format: lambdaNode.OutputFormat.ESM,
+          mainFields: ["module", "main"],
+          externalModules: ["@aws-sdk/*"],
+        },
+        environment: {
+          GITHUB_TOKEN: process.env.GITHUB_TOKEN ?? "",
+          GITHUB_ORG: "creative-it-Software-Consulting-e-U",
+          ALLOWED_ORIGINS: allowedOrigins.join(","),
+        },
+      }
+    );
+
     // ── API Gateway HTTP API v2 ────────────────────────────────────────
     const httpApi = new apigwv2.HttpApi(this, "ContactApi", {
       apiName: "creative-it-contact-api",
       corsPreflight: {
         allowOrigins: allowedOrigins,
-        allowMethods: [apigwv2.CorsHttpMethod.POST],
+        allowMethods: [
+          apigwv2.CorsHttpMethod.POST,
+          apigwv2.CorsHttpMethod.GET,
+        ],
         allowHeaders: ["Content-Type"],
         maxAge: cdk.Duration.hours(1),
       },
@@ -88,6 +115,15 @@ export class ContactApiStack extends cdk.Stack {
       integration: new apigwv2Integrations.HttpLambdaIntegration(
         "ContactIntegration",
         contactHandler
+      ),
+    });
+
+    httpApi.addRoutes({
+      path: "/github-stats",
+      methods: [apigwv2.HttpMethod.GET],
+      integration: new apigwv2Integrations.HttpLambdaIntegration(
+        "GitHubStatsIntegration",
+        githubStatsHandler
       ),
     });
 
@@ -127,6 +163,11 @@ export class ContactApiStack extends cdk.Stack {
     new cdk.CfnOutput(this, "ApiUrl", {
       value: `https://${apiDomainName}/contact`,
       description: "Contact API endpoint",
+    });
+
+    new cdk.CfnOutput(this, "GitHubStatsUrl", {
+      value: `https://${apiDomainName}/github-stats`,
+      description: "GitHub Stats API endpoint",
     });
 
     new cdk.CfnOutput(this, "HttpApiUrl", {

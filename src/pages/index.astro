@@ -1,52 +1,56 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { siteConfig } from "../config/site";
+const p = siteConfig.pages.home;
 ---
 
 <Layout>
   <!-- Hero Section -->
-  <section class="relative min-h-[90vh] flex items-center overflow-hidden">
-    <!-- Background decorative elements -->
+  <section id="hero" class="relative min-h-[90vh] flex items-center overflow-hidden">
     <div class="absolute inset-0 overflow-hidden">
-      <!-- Gradient orbs -->
       <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-gradient-to-b from-purple/8 via-indigo/5 to-transparent rounded-full blur-[120px]"></div>
       <div class="absolute bottom-0 left-1/4 w-[300px] h-[300px] bg-cyan/5 rounded-full blur-[100px]"></div>
-
-      <!-- Subtle grid -->
       <div class="absolute inset-0 opacity-[0.015]" style="background-image: linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px); background-size: 80px 80px;"></div>
     </div>
 
-    <div class="relative max-w-7xl mx-auto px-6 lg:px-8 py-20 lg:py-32">
-      <div class="max-w-4xl mx-auto text-center">
-        <!-- Chip badge -->
-        <div class="inline-flex chip mb-8 animate-fade-in-up opacity-0" style="animation-delay: 0.1s; animation-fill-mode: forwards;">
-          <span class="w-1.5 h-1.5 rounded-full bg-purple animate-pulse"></span>
-          <span class="text-text-secondary">Software &middot; Teams &middot; Trust</span>
-        </div>
+    <!-- Floating word clouds -->
+    <div id="word-cloud" class="absolute inset-x-0 top-[5%] bottom-[30%] overflow-hidden pointer-events-none z-[1]" aria-hidden="true">
+      {p.animation.build.map(word => (
+        <span class="floating-word" data-phase="build">{word}</span>
+      ))}
+      {p.animation.grow.map(word => (
+        <span class="floating-word" data-phase="grow">{word}</span>
+      ))}
+    </div>
 
-        <!-- Main headline -->
-        <h1 class="heading-xl text-5xl sm:text-6xl lg:text-7xl xl:text-8xl text-off-white mb-6 animate-fade-in-up opacity-0" style="animation-delay: 0.2s; animation-fill-mode: forwards;">
-          Build. <span class="gradient-text">Grow.</span> Matter.
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8 py-20 lg:py-32 z-[2]">
+      <div class="max-w-4xl mx-auto text-center">
+        <h1 class="heading-xl text-5xl sm:text-6xl lg:text-7xl xl:text-8xl text-off-white mb-6">
+          <span id="anim-build" class="word-reveal inline-block mr-[0.3em]">{p.headline.before.trim()}</span><span id="anim-grow" class="word-reveal inline-block"><span class="gradient-text">{p.headline.gradient}</span></span>
+          <br/>
+          <span id="anim-matter" class="word-reveal inline-block mt-2 relative">{p.headline.after.trim()}<button id="replay-btn" class="replay-btn" aria-label="Replay animation" title="Replay animation">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h5M20 20v-5h-5M4 9a9 9 0 0115.36-5.36M20 15a9 9 0 01-15.36 5.36" /></svg>
+          </button></span>
         </h1>
 
-        <!-- Subheadline -->
-        <p class="text-lg lg:text-xl text-text-secondary max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in-up opacity-0" style="animation-delay: 0.4s; animation-fill-mode: forwards;">
-          {siteConfig.description}
-        </p>
+        <div id="hero-below">
+          <div class="inline-flex chip mb-6">
+            <span class="w-1.5 h-1.5 rounded-full bg-purple animate-pulse"></span>
+            <span class="text-text-secondary">{p.chip}</span>
+          </div>
 
-        <!-- CTAs -->
-        <div class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up opacity-0" style="animation-delay: 0.6s; animation-fill-mode: forwards;">
-          <a href="/contact" class="btn-glow">
-            Start a Project
-          </a>
-          <a href="/services" class="btn-secondary">
-            Explore Services
-          </a>
+          <p class="text-lg lg:text-xl text-text-secondary max-w-2xl mx-auto mb-10 leading-relaxed">
+            {siteConfig.description}
+          </p>
+
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="/contact" class="btn-glow">{p.ctaPrimary}</a>
+            <a href="/services" class="btn-secondary">{p.ctaSecondary}</a>
+          </div>
         </div>
       </div>
 
-      <!-- Stats row -->
-      <div class="mt-24 lg:mt-32 grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 animate-fade-in-up opacity-0" style="animation-delay: 0.8s; animation-fill-mode: forwards;">
+      <div id="hero-stats" class="mt-24 lg:mt-32 grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
         {siteConfig.about.stats.map((stat) => (
           <div class="text-center p-6 rounded-2xl bg-surface/50 border border-white/5">
             <div class="heading-lg text-3xl lg:text-4xl gradient-text mb-1">{stat.value}</div>
@@ -56,88 +60,72 @@ import { siteConfig } from "../config/site";
       </div>
     </div>
 
-    <!-- Scroll indicator -->
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-fade-in opacity-0" style="animation-delay: 1.2s; animation-fill-mode: forwards;">
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
       <span class="text-xs text-text-muted">Scroll</span>
       <div class="w-px h-12 bg-gradient-to-b from-indigo/50 to-transparent"></div>
     </div>
+
+    <noscript>
+      <style>
+        .word-reveal { opacity: 1 !important; transform: none !important; }
+        .floating-word { display: none !important; }
+      </style>
+    </noscript>
   </section>
 
   <!-- Services Section -->
   <section class="py-24 lg:py-32 relative">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
-      <!-- Section header -->
       <div class="max-w-2xl mb-16 reveal">
         <div class="chip mb-4">
-          <span>What We Do</span>
+          <span>{p.servicesSection.chip}</span>
         </div>
         <h2 class="heading-lg text-4xl lg:text-5xl text-off-white mb-6">
-          Technology Solutions That <span class="gradient-text">Drive Growth</span>
+          {p.servicesSection.headline.before}<span class="gradient-text">{p.servicesSection.headline.gradient}</span>{p.servicesSection.headline.after}
         </h2>
-        <p class="text-text-secondary text-lg">
-          From custom software to cloud architecture, we deliver solutions that scale with your ambitions.
-        </p>
+        <p class="text-text-secondary text-lg">{p.servicesSection.description}</p>
       </div>
 
-      <!-- Services grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         {siteConfig.services.map((service, index) => (
-          <a
-            href="/services"
-            class="group card-elevated p-8 lg:p-10 reveal"
-            style={`transition-delay: ${index * 100}ms`}
-          >
+          <a href="/services" class="group card-elevated p-8 lg:p-10 reveal" style={`transition-delay: ${index * 100}ms`}>
             <div class="relative">
-              <!-- Icon -->
               <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple/20 to-indigo/10 border border-purple/20 flex items-center justify-center mb-6 group-hover:border-purple/40 transition-colors duration-300">
+                {service.icon === "brain" && (
+                  <svg class="w-6 h-6 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                )}
+                {service.icon === "robot" && (
+                  <svg class="w-6 h-6 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 3v1m6-1v1m-6 8h.01M15 12h.01M12 2a1 1 0 011 1v1h-2V3a1 1 0 011-1zM5 8h14a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2v-8a2 2 0 012-2zm3 12v2m8-2v2" /></svg>
+                )}
+                {service.icon === "mobile" && (
+                  <svg class="w-6 h-6 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+                )}
                 {service.icon === "code" && (
-                  <svg class="w-6 h-6 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                  </svg>
+                  <svg class="w-6 h-6 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
                 )}
                 {service.icon === "cloud" && (
-                  <svg class="w-6 h-6 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
-                  </svg>
+                  <svg class="w-6 h-6 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" /></svg>
                 )}
-                {service.icon === "lightbulb" && (
-                  <svg class="w-6 h-6 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                  </svg>
-                )}
-                {service.icon === "shield" && (
-                  <svg class="w-6 h-6 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
+                {service.icon === "ruler" && (
+                  <svg class="w-6 h-6 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 20V4l16 16H4zM4 8h2M4 12h2M4 16h2M8 20v-2M12 20v-2M16 20v-2" /></svg>
                 )}
               </div>
 
-              <!-- Content -->
-              <h3 class="heading-md text-xl text-off-white mb-3 group-hover:text-purple transition-colors duration-300">
-                {service.title}
-              </h3>
-              <p class="text-text-secondary mb-6 leading-relaxed">
-                {service.description}
-              </p>
+              <h3 class="heading-md text-xl text-off-white mb-3 group-hover:text-purple transition-colors duration-300">{service.title}</h3>
+              <p class="text-text-secondary mb-6 leading-relaxed">{service.description}</p>
 
-              <!-- Features list -->
               <ul class="space-y-2 mb-6">
                 {service.features.map((feature) => (
                   <li class="flex items-center gap-2 text-sm text-text-muted">
-                    <svg class="w-4 h-4 text-cyan" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                    </svg>
+                    <svg class="w-4 h-4 text-cyan" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
                     {feature}
                   </li>
                 ))}
               </ul>
 
-              <!-- Arrow -->
               <div class="flex items-center gap-2 text-indigo text-sm font-medium group-hover:text-purple transition-colors duration-300">
-                <span>Learn more</span>
-                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
+                <span>{p.servicesSection.linkText}</span>
+                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
               </div>
             </div>
           </a>
@@ -148,33 +136,26 @@ import { siteConfig } from "../config/site";
 
   <!-- Philosophy Section -->
   <section class="py-24 lg:py-32 relative overflow-hidden">
-    <!-- Background -->
     <div class="absolute inset-0 bg-surface"></div>
     <div class="absolute inset-0 bg-gradient-to-br from-purple/3 via-transparent to-cyan/3"></div>
 
     <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
       <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-        <!-- Left content -->
         <div class="reveal">
           <div class="chip mb-4">
-            <span>Our Philosophy</span>
+            <span>{p.philosophySection.chip}</span>
           </div>
           <h2 class="heading-lg text-4xl lg:text-5xl text-off-white mb-8">
-            Three Words.<br/>
-            <span class="gradient-text">Infinite Possibility.</span>
+            {p.philosophySection.headline.before}<br/>
+            <span class="gradient-text">{p.philosophySection.headline.gradient}</span>{p.philosophySection.headline.after}
           </h2>
-          <p class="text-text-secondary text-lg leading-relaxed mb-8">
-            {siteConfig.about.story}
-          </p>
+          <p class="text-text-secondary text-lg leading-relaxed mb-8">{siteConfig.about.story}</p>
           <a href="/about" class="btn-secondary inline-flex items-center gap-2">
-            About Our Journey
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
+            {p.philosophySection.linkText}
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
           </a>
         </div>
 
-        <!-- Right - Values cards -->
         <div class="space-y-4 reveal" style="transition-delay: 200ms">
           {siteConfig.about.values.map((value, index) => (
             <div class="group card p-6">
@@ -183,12 +164,8 @@ import { siteConfig } from "../config/site";
                   <span class="heading-md text-purple text-sm">{String(index + 1).padStart(2, '0')}</span>
                 </div>
                 <div>
-                  <h3 class="heading-md text-lg text-off-white mb-1.5 group-hover:text-purple transition-colors duration-300">
-                    {value.title}
-                  </h3>
-                  <p class="text-text-muted text-sm leading-relaxed">
-                    {value.description}
-                  </p>
+                  <h3 class="heading-md text-lg text-off-white mb-1.5 group-hover:text-purple transition-colors duration-300">{value.title}</h3>
+                  <p class="text-text-muted text-sm leading-relaxed">{value.description}</p>
                 </div>
               </div>
             </div>
@@ -202,26 +179,225 @@ import { siteConfig } from "../config/site";
   <section class="py-24 lg:py-32 relative overflow-hidden">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
       <div class="relative rounded-3xl overflow-hidden reveal">
-        <!-- Background gradient -->
         <div class="absolute inset-0 bg-gradient-to-br from-purple via-indigo to-indigo"></div>
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(35,240,195,0.15),transparent_60%)]"></div>
 
-        <!-- Content -->
         <div class="relative px-8 py-16 lg:px-16 lg:py-24 text-center">
-          <h2 class="heading-xl text-4xl lg:text-5xl xl:text-6xl text-white mb-6">
-            Ready to Build<br/>Something That Matters?
-          </h2>
-          <p class="text-white/70 text-lg max-w-2xl mx-auto mb-10">
-            Let's discuss how we can help you achieve your technology goals and create lasting impact.
-          </p>
-          <a
-            href="/contact"
-            class="btn-primary"
-          >
-            Start the Conversation
-          </a>
+          <h2 class="heading-xl text-4xl lg:text-5xl xl:text-6xl text-white mb-6 whitespace-pre-line">{p.cta.headline}</h2>
+          <p class="text-white/70 text-lg max-w-2xl mx-auto mb-10">{p.cta.description}</p>
+          <a href="/contact" class="btn-primary">{p.cta.button}</a>
         </div>
       </div>
     </div>
   </section>
 </Layout>
+
+<style>
+  .floating-word {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    font-weight: 500;
+    white-space: nowrap;
+    pointer-events: none;
+    color: var(--color-purple);
+  }
+  .word-reveal { opacity: 0; }
+  .replay-btn {
+    position: absolute;
+    left: calc(100% + 0.4em);
+    top: 50%;
+    transform: translateY(-50%);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    opacity: 0;
+  }
+  .replay-btn:hover {
+    border-color: var(--color-purple);
+    color: var(--color-purple);
+    background: rgba(161,99,241,0.08);
+  }
+  .replay-btn.visible {
+    display: inline-flex;
+    opacity: 1;
+  }
+</style>
+
+<script>
+  import gsap from 'gsap';
+
+  const STORAGE_KEY = 'hero-animation-played';
+  const hero = document.getElementById('hero');
+  const cloud = document.getElementById('word-cloud');
+  const replayBtn = document.getElementById('replay-btn');
+
+  if (hero && cloud) {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const alreadyPlayed = !reducedMotion && localStorage.getItem(STORAGE_KEY) === '1';
+
+    if (reducedMotion) {
+      gsap.set('.word-reveal', { opacity: 1, y: 0, scale: 1 });
+      gsap.set('#hero-below', { y: 0, opacity: 1 });
+      gsap.set('#hero-stats', { y: 0, opacity: 1 });
+      cloud.style.display = 'none';
+    } else if (alreadyPlayed) {
+      // Skip animation — show final state immediately
+      gsap.set('.word-reveal', { opacity: 1, y: 0, scale: 1, textShadow: 'none' });
+      gsap.set('#hero-below', { y: 0, opacity: 1 });
+      gsap.set('#hero-stats', { y: 0, opacity: 1 });
+      gsap.set('.floating-word', { opacity: 0 });
+      cloud.style.display = 'none';
+      replayBtn?.classList.add('visible');
+    } else {
+      runAnimation();
+    }
+
+    replayBtn?.addEventListener('click', () => {
+      replayBtn.classList.remove('visible');
+      // Restore word cloud
+      cloud.style.display = '';
+      gsap.set('.floating-word', { opacity: 0 });
+      runAnimation();
+    });
+
+    function runAnimation() {
+      const buildEls = gsap.utils.toArray<HTMLElement>('[data-phase="build"]');
+      const growEls = gsap.utils.toArray<HTMLElement>('[data-phase="grow"]');
+      const rect = hero!.getBoundingClientRect();
+      const maxR = Math.min(rect.width * 0.42, 420);
+
+      const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
+
+      function scatter(els: HTMLElement[], seed: number, squish: number) {
+        els.forEach((el, i) => {
+          const n = els.length;
+          const angle = seed + i * GOLDEN_ANGLE + gsap.utils.random(-0.25, 0.25);
+          const normR = 0.3 + (i / n) * 0.5 + gsap.utils.random(0, 0.2);
+          const r = maxR * normR;
+          gsap.set(el, {
+            x: Math.cos(angle) * r,
+            y: Math.sin(angle) * r * squish,
+            xPercent: -50,
+            yPercent: -50,
+            opacity: 0,
+            scale: gsap.utils.random(0.85, 1.15),
+            rotation: gsap.utils.random(-6, 6),
+            fontSize: `${gsap.utils.random(0.8, 1.35)}rem`,
+          });
+        });
+      }
+
+      scatter(buildEls, 0, 0.45);
+      scatter(growEls, Math.PI * 0.618, 0.35);
+
+      // Initial states
+      gsap.set('#anim-build, #anim-grow', { opacity: 0, scale: 0.85, y: 12 });
+      gsap.set('#anim-matter', { opacity: 0, scale: 3.5, textShadow: 'none' });
+      gsap.set('#hero-below', { y: 200, opacity: 0.5 });
+      gsap.set('#hero-stats', { y: 160, opacity: 0.5 });
+
+      function phaseTimeline(els: HTMLElement[], wordId: string) {
+        const tl = gsap.timeline();
+        let floats: gsap.core.Tween[] = [];
+
+        tl.to(els, {
+          opacity: () => gsap.utils.random(0.4, 0.75),
+          stagger: { each: 0.06, from: 'random' },
+          duration: 0.5,
+          ease: 'power2.out',
+        });
+
+        tl.call(() => {
+          els.forEach(el => {
+            floats.push(
+              gsap.to(el, {
+                x: `+=${gsap.utils.random(-30, 30)}`,
+                y: `+=${gsap.utils.random(-20, 20)}`,
+                rotation: `+=${gsap.utils.random(-5, 5)}`,
+                scale: `*=${gsap.utils.random(0.9, 1.1)}`,
+                duration: gsap.utils.random(1.5, 2.5),
+                ease: 'sine.inOut',
+                yoyo: true,
+                repeat: -1,
+              })
+            );
+          });
+        });
+
+        tl.to({}, { duration: 1.4 });
+
+        tl.call(() => {
+          floats.forEach(t => t.kill());
+          floats = [];
+        });
+
+        tl.to(els, {
+          x: (i: number, el: HTMLElement) => (gsap.getProperty(el, 'x') as number) * 3,
+          y: (i: number, el: HTMLElement) => (gsap.getProperty(el, 'y') as number) * 3,
+          scale: 2.5,
+          opacity: 0,
+          rotation: (i: number, el: HTMLElement) => (gsap.getProperty(el, 'rotation') as number) * 2,
+          duration: 0.8,
+          stagger: { each: 0.015, from: 'random' },
+          ease: 'power2.in',
+        });
+
+        tl.to(wordId, {
+          opacity: 1,
+          scale: 1,
+          y: 0,
+          duration: 0.6,
+          ease: 'back.out(1.7)',
+        }, '-=0.35');
+
+        return tl;
+      }
+
+      const master = gsap.timeline();
+
+      master.add(phaseTimeline(buildEls, '#anim-build'));
+      master.add(phaseTimeline(growEls, '#anim-grow'), '+=0.4');
+
+      master.to('#anim-matter', {
+        opacity: 1,
+        scale: 1,
+        duration: 1.0,
+        ease: 'power3.out',
+      }, '+=1.3');
+      master.fromTo('#anim-matter',
+        { textShadow: '0 0 80px rgba(161,99,241,0.5), 0 0 30px rgba(99,99,241,0.3)' },
+        { textShadow: '0 0 0px transparent, 0 0 0px transparent', duration: 2, ease: 'power2.out' },
+        '<',
+      );
+
+      master.to('#hero-below', {
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        ease: 'power2.out',
+      }, '-=0.4');
+      master.to('#hero-stats', {
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        ease: 'power2.out',
+      }, '<0.15');
+
+      // Mark as played, hide cloud, show replay button
+      master.call(() => {
+        localStorage.setItem(STORAGE_KEY, '1');
+        cloud!.style.display = 'none';
+        replayBtn?.classList.add('visible');
+      });
+    }
+  }
+</script>

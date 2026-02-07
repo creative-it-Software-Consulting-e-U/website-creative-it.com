@@ -1,9 +1,11 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { siteConfig } from "../config/site";
+const p = siteConfig.pages.about;
+const why = siteConfig.about.whyChooseUs;
 ---
 
-<Layout title="About" description="Learn more about creative-it and our Build. Grow. Matter. philosophy">
+<Layout title={p.meta.title} description={p.meta.description}>
   <!-- Hero -->
   <section class="relative py-20 lg:py-32 overflow-hidden">
     <div class="absolute inset-0">
@@ -14,17 +16,16 @@ import { siteConfig } from "../config/site";
       <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
         <div>
           <div class="chip mb-4 animate-fade-in-up opacity-0" style="animation-delay: 0.1s; animation-fill-mode: forwards;">
-            <span>About Us</span>
+            <span>{p.hero.chip}</span>
           </div>
           <h1 class="heading-xl text-5xl lg:text-6xl xl:text-7xl text-off-white mb-6 animate-fade-in-up opacity-0" style="animation-delay: 0.2s; animation-fill-mode: forwards;">
-            We Build With <span class="gradient-text">Purpose</span>
+            {p.hero.headline.before}<span class="gradient-text">{p.hero.headline.gradient}</span>{p.hero.headline.after}
           </h1>
           <p class="text-lg text-text-secondary leading-relaxed animate-fade-in-up opacity-0" style="animation-delay: 0.3s; animation-fill-mode: forwards;">
             {siteConfig.about.mission}
           </p>
         </div>
 
-        <!-- Logo display -->
         <div class="relative animate-fade-in-up opacity-0" style="animation-delay: 0.4s; animation-fill-mode: forwards;">
           <div class="relative aspect-square max-w-md mx-auto">
             <div class="absolute inset-0 bg-gradient-to-br from-purple/15 to-indigo/10 rounded-3xl"></div>
@@ -45,17 +46,13 @@ import { siteConfig } from "../config/site";
       <div class="max-w-4xl mx-auto">
         <div class="text-center mb-16 reveal">
           <div class="chip mb-4 inline-flex">
-            <span>Our Story</span>
+            <span>{p.storySection.chip}</span>
           </div>
-          <h2 class="heading-lg text-4xl lg:text-5xl text-off-white mb-8">
-            The Philosophy Behind Everything We Do
-          </h2>
+          <h2 class="heading-lg text-4xl lg:text-5xl text-off-white mb-8">{p.storySection.headline}</h2>
         </div>
 
         <div class="reveal">
-          <p class="text-text-secondary text-lg leading-relaxed text-center">
-            {siteConfig.about.story}
-          </p>
+          <p class="text-text-secondary text-lg leading-relaxed text-center">{siteConfig.about.story}</p>
         </div>
       </div>
     </div>
@@ -66,37 +63,25 @@ import { siteConfig } from "../config/site";
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
       <div class="text-center mb-16 reveal">
         <div class="chip mb-4 inline-flex">
-          <span>Our Values</span>
+          <span>{p.valuesSection.chip}</span>
         </div>
         <h2 class="heading-lg text-4xl lg:text-5xl text-off-white">
-          Build. <span class="gradient-text">Grow.</span> Matter.
+          {p.valuesSection.headline.before}<span class="gradient-text">{p.valuesSection.headline.gradient}</span>{p.valuesSection.headline.after}
         </h2>
       </div>
 
       <div class="grid md:grid-cols-3 gap-6 reveal">
         {siteConfig.about.values.map((value, index) => (
-          <div
-            class="group relative"
-            style={`transition-delay: ${index * 150}ms`}
-          >
+          <div class="group relative" style={`transition-delay: ${index * 150}ms`}>
             <div class="card-elevated h-full p-10 overflow-hidden">
-              <!-- Hover gradient -->
               <div class="absolute inset-0 bg-gradient-to-br from-purple/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
               <div class="relative">
-                <!-- Number -->
                 <div class="heading-xl text-7xl text-purple/10 absolute -top-2 -left-1 group-hover:text-purple/20 transition-colors duration-500">
                   {String(index + 1).padStart(2, '0')}
                 </div>
-
-                <!-- Content -->
                 <div class="relative pt-12">
-                  <h3 class="heading-lg text-3xl text-off-white mb-4 group-hover:text-purple transition-colors duration-300">
-                    {value.title}
-                  </h3>
-                  <p class="text-text-secondary leading-relaxed">
-                    {value.description}
-                  </p>
+                  <h3 class="heading-lg text-3xl text-off-white mb-4 group-hover:text-purple transition-colors duration-300">{value.title}</h3>
+                  <p class="text-text-secondary leading-relaxed">{value.description}</p>
                 </div>
               </div>
             </div>
@@ -111,16 +96,9 @@ import { siteConfig } from "../config/site";
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 reveal">
         {siteConfig.about.stats.map((stat, index) => (
-          <div
-            class="text-center p-8 card"
-            style={`transition-delay: ${index * 100}ms`}
-          >
-            <div class="heading-lg text-4xl lg:text-5xl xl:text-6xl gradient-text mb-2">
-              {stat.value}
-            </div>
-            <div class="text-sm text-text-muted">
-              {stat.label}
-            </div>
+          <div class="text-center p-8 card" style={`transition-delay: ${index * 100}ms`}>
+            <div class="heading-lg text-4xl lg:text-5xl xl:text-6xl gradient-text mb-2">{stat.value}</div>
+            <div class="text-sm text-text-muted">{stat.label}</div>
           </div>
         ))}
       </div>
@@ -133,26 +111,16 @@ import { siteConfig } from "../config/site";
       <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
         <div class="reveal">
           <div class="chip mb-4">
-            <span>Why Choose Us</span>
+            <span>{p.whySection.chip}</span>
           </div>
-          <h2 class="heading-lg text-4xl lg:text-5xl text-off-white mb-8">
-            Partnership, Not Just Service
-          </h2>
-          <p class="text-text-secondary text-lg leading-relaxed mb-8">
-            We don't just deliver projects—we build relationships. When you work with creative-it, you gain a technology partner invested in your long-term success.
-          </p>
+          <h2 class="heading-lg text-4xl lg:text-5xl text-off-white mb-8">{why.headline}</h2>
+          <p class="text-text-secondary text-lg leading-relaxed mb-8">{why.description}</p>
 
           <div class="space-y-5">
-            {[
-              { title: "Deep Expertise", description: "Years of experience across diverse industries and technologies." },
-              { title: "Transparent Communication", description: "Clear, honest dialogue throughout every engagement." },
-              { title: "Long-term Vision", description: "Solutions designed to grow with your business." },
-            ].map((item) => (
+            {why.benefits.map((item) => (
               <div class="flex items-start gap-4">
                 <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan/20 to-cyan/5 border border-cyan/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <svg class="w-5 h-5 text-cyan" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                  </svg>
+                  <svg class="w-5 h-5 text-cyan" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
                 </div>
                 <div>
                   <h3 class="heading-md text-lg text-off-white mb-1">{item.title}</h3>
@@ -163,51 +131,38 @@ import { siteConfig } from "../config/site";
           </div>
         </div>
 
-        <!-- Visual element -->
         <div class="relative reveal" style="transition-delay: 200ms">
           <div class="relative">
             <div class="absolute -inset-4 bg-gradient-to-br from-purple/15 to-indigo/10 rounded-3xl transform rotate-2"></div>
             <div class="relative card-elevated p-10">
               <div class="space-y-6">
-                <div class="flex items-center gap-4">
-                  <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple to-indigo flex items-center justify-center">
-                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <div class="heading-md text-xl text-off-white">Fast & Efficient</div>
-                    <div class="text-text-muted text-sm">Agile delivery without compromise</div>
-                  </div>
-                </div>
-
-                <div class="divider"></div>
-
-                <div class="flex items-center gap-4">
-                  <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo to-cyan flex items-center justify-center">
-                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <div class="heading-md text-xl text-off-white">Expert Team</div>
-                    <div class="text-text-muted text-sm">Seasoned professionals at every level</div>
-                  </div>
-                </div>
-
-                <div class="divider"></div>
-
-                <div class="flex items-center gap-4">
-                  <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan to-cyan-bright flex items-center justify-center">
-                    <svg class="w-7 h-7 text-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <div class="heading-md text-xl text-off-white">Reliable Support</div>
-                    <div class="text-text-muted text-sm">We're with you for the long haul</div>
-                  </div>
-                </div>
+                {why.highlights.map((item, index) => (
+                  <Fragment>
+                    {index > 0 && <div class="divider"></div>}
+                    <div class="flex items-center gap-4">
+                      <div class:list={[
+                        "w-14 h-14 rounded-2xl flex items-center justify-center",
+                        index === 0 ? "bg-gradient-to-br from-purple to-indigo" :
+                        index === 1 ? "bg-gradient-to-br from-indigo to-cyan" :
+                        "bg-gradient-to-br from-cyan to-cyan-bright"
+                      ]}>
+                        {index === 0 && (
+                          <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                        )}
+                        {index === 1 && (
+                          <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                        )}
+                        {index === 2 && (
+                          <svg class="w-7 h-7 text-navy" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                        )}
+                      </div>
+                      <div>
+                        <div class="heading-md text-xl text-off-white">{item.title}</div>
+                        <div class="text-text-muted text-sm">{item.description}</div>
+                      </div>
+                    </div>
+                  </Fragment>
+                ))}
               </div>
             </div>
           </div>
@@ -224,18 +179,9 @@ import { siteConfig } from "../config/site";
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(35,240,195,0.15),transparent_60%)]"></div>
 
         <div class="relative px-8 py-16 lg:px-16 lg:py-24 text-center">
-          <h2 class="heading-xl text-4xl lg:text-5xl text-white mb-6">
-            Let's Build Together
-          </h2>
-          <p class="text-white/70 text-lg max-w-2xl mx-auto mb-10">
-            Ready to partner with a team that's invested in your success? Let's start a conversation.
-          </p>
-          <a
-            href="/contact"
-            class="btn-primary"
-          >
-            Get in Touch
-          </a>
+          <h2 class="heading-xl text-4xl lg:text-5xl text-white mb-6">{p.cta.headline}</h2>
+          <p class="text-white/70 text-lg max-w-2xl mx-auto mb-10">{p.cta.description}</p>
+          <a href="/contact" class="btn-primary">{p.cta.button}</a>
         </div>
       </div>
     </div>

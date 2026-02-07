@@ -94,7 +94,7 @@ const phoneEncoded = btoa(siteConfig.contact.phone);
             <h2 class="heading-lg text-2xl text-off-white mb-2">{f.headline}</h2>
             <p class="text-text-muted mb-8">{f.description}</p>
 
-            <form class="space-y-6" id="contact-form">
+            <form class="space-y-6" id="contact-form" data-success-message={f.successMessage}>
               <div class="grid sm:grid-cols-2 gap-6">
                 <div>
                   <label for="name" class="block text-sm font-medium text-text-secondary mb-2">{f.nameLabel}</label>
@@ -126,7 +126,9 @@ const phoneEncoded = btoa(siteConfig.contact.phone);
                 <textarea id="message" name="message" rows="5" required class="w-full px-4 py-3 bg-navy border border-white/10 rounded-xl text-off-white placeholder-text-muted focus:border-indigo focus:ring-1 focus:ring-indigo transition-all duration-300 resize-none" placeholder={f.messagePlaceholder}></textarea>
               </div>
 
-              <button type="submit" class="btn-glow w-full sm:w-auto">{f.submitButton}</button>
+              <button type="submit" class="btn-glow w-full sm:w-auto" id="submit-btn">{f.submitButton}</button>
+
+              <div id="form-status" class="hidden mt-4 px-4 py-3 rounded-xl text-sm"></div>
             </form>
           </div>
         </div>
@@ -184,8 +186,52 @@ const phoneEncoded = btoa(siteConfig.contact.phone);
     });
   });
 
-  document.getElementById('contact-form')?.addEventListener('submit', (e) => {
+  document.getElementById('contact-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    alert('Thank you for your message! We\'ll be in touch soon.');
+
+    const form = e.target as HTMLFormElement;
+    const btn = document.getElementById('submit-btn') as HTMLButtonElement;
+    const status = document.getElementById('form-status') as HTMLElement;
+    const originalText = btn.textContent;
+
+    // Loading state
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    btn.style.opacity = '0.6';
+    status.classList.add('hidden');
+
+    const data = {
+      name: (form.querySelector('#name') as HTMLInputElement).value,
+      email: (form.querySelector('#email') as HTMLInputElement).value,
+      company: (form.querySelector('#company') as HTMLInputElement).value,
+      subject: (form.querySelector('#subject') as HTMLSelectElement).value,
+      message: (form.querySelector('#message') as HTMLTextAreaElement).value,
+    };
+
+    try {
+      const res = await fetch('https://api.creative-it.com/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      const result = await res.json();
+
+      if (res.ok) {
+        status.textContent = form.dataset.successMessage || 'Message sent successfully!';
+        status.className = 'mt-4 px-4 py-3 rounded-xl text-sm bg-cyan/10 border border-cyan/20 text-cyan';
+        form.reset();
+      } else {
+        status.textContent = result.error || 'Something went wrong. Please try again.';
+        status.className = 'mt-4 px-4 py-3 rounded-xl text-sm bg-red-500/10 border border-red-500/20 text-red-400';
+      }
+    } catch {
+      status.textContent = 'Network error. Please check your connection and try again.';
+      status.className = 'mt-4 px-4 py-3 rounded-xl text-sm bg-red-500/10 border border-red-500/20 text-red-400';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = originalText;
+      btn.style.opacity = '1';
+    }
   });
 </script>

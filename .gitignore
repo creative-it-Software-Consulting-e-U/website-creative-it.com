@@ -26,3 +26,8 @@ pnpm-debug.log*
 
 # Source design files
 input/
+
+# CDK
+infra/dist/
+infra/cdk.out/
+infra/node_modules/

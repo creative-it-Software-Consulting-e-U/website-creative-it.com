@@ -9,13 +9,15 @@ const phoneEncoded = btoa(siteConfig.contact.phone);
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8">
       <!-- Brand Column -->
       <div class="lg:col-span-5">
-        <a href="/" class="inline-block mb-6">
-          <img
-            src="/logo-dark.png"
-            alt={siteConfig.name}
-            class="h-8 w-auto"
-          />
-        </a>
+        <div class="max-w-sm">
+          <a href="/" class="flex justify-center mb-6">
+            <img
+              src="/logo-dark.png"
+              alt={siteConfig.name}
+              class="h-40 w-auto"
+            />
+          </a>
+        </div>
         <p class="text-text-muted text-sm leading-relaxed max-w-sm mb-8">
           {siteConfig.description}
         </p>

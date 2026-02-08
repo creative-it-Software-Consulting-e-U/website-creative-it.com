@@ -13,20 +13,30 @@ import * as scheduler from "aws-cdk-lib/aws-scheduler";
 import { Construct } from "constructs";
 import * as path from "path";
 
+export interface EnvConfig {
+  envName: string;
+  account: string;
+  region: string;
+  domainName: string;
+  senderEmail: string;
+  recipientEmail: string;
+  allowedOrigins: string[];
+}
+
+interface ContactApiStackProps extends cdk.StackProps {
+  config: EnvConfig;
+}
+
 export class ContactApiStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props: ContactApiStackProps) {
     super(scope, id, props);
 
-    const domainName = "creative-it.com";
-    const apiDomainName = `api.${domainName}`;
-    const allowedOrigins = [
-      `https://${domainName}`,
-      `https://www.${domainName}`,
-    ];
+    const { config } = props;
+    const apiDomainName = `api.${config.domainName}`;
 
     // ── Route53 Hosted Zone (existing) ─────────────────────────────────
     const hostedZone = route53.HostedZone.fromLookup(this, "HostedZone", {
-      domainName,
+      domainName: config.domainName,
     });
 
     // ── SES Domain Identity with DKIM ──────────────────────────────────
@@ -34,7 +44,7 @@ export class ContactApiStack extends cdk.Stack {
       identity: ses.Identity.publicHostedZone(hostedZone),
     });
 
-    // ── ACM Certificate for api.creative-it.com ────────────────────────
+    // ── ACM Certificate for api.<domain> ─────────────────────────────
     const certificate = new acm.Certificate(this, "ApiCertificate", {
       domainName: apiDomainName,
       validation: acm.CertificateValidation.fromDns(hostedZone),
@@ -66,8 +76,9 @@ export class ContactApiStack extends cdk.Stack {
           externalModules: ["@aws-sdk/*"],
         },
         environment: {
-          RECIPIENT_EMAIL: `info@${domainName}`,
-          ALLOWED_ORIGINS: allowedOrigins.join(","),
+          RECIPIENT_EMAIL: config.recipientEmail,
+          SENDER_EMAIL: config.senderEmail,
+          ALLOWED_ORIGINS: config.allowedOrigins.join(","),
         },
       }
     );
@@ -76,8 +87,8 @@ export class ContactApiStack extends cdk.Stack {
       new iam.PolicyStatement({
         actions: ["ses:SendEmail", "ses:SendRawEmail"],
         resources: [
-          `arn:aws:ses:${this.region}:${this.account}:identity/${domainName}`,
-          `arn:aws:ses:${this.region}:${this.account}:identity/info@${domainName}`,
+          `arn:aws:ses:${this.region}:${this.account}:identity/${config.domainName}`,
+          `arn:aws:ses:${this.region}:${this.account}:identity/${config.recipientEmail}`,
         ],
       })
     );
@@ -100,7 +111,7 @@ export class ContactApiStack extends cdk.Stack {
         },
         environment: {
           TABLE_NAME: githubStatsTable.tableName,
-          ALLOWED_ORIGINS: allowedOrigins.join(","),
+          ALLOWED_ORIGINS: config.allowedOrigins.join(","),
         },
       }
     );
@@ -147,7 +158,7 @@ export class ContactApiStack extends cdk.Stack {
     githubStatsScheduler.grantInvoke(schedulerRole);
 
     new scheduler.CfnSchedule(this, "GitHubStatsSchedule", {
-      name: "github-stats-hourly",
+      name: `github-stats-hourly-${config.envName}`,
       scheduleExpression: "cron(0 * * * ? *)",
       scheduleExpressionTimezone: "UTC",
       flexibleTimeWindow: { mode: "OFF" },

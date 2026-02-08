@@ -12,8 +12,14 @@ No linting or test scripts are configured.
 
 ## AWS Deployment
 
+Two environments: **prod** (`creative-it.com`, account `348854311973`) and **gw** (`gw.dev.creative-it.com`, account `734830471883`).
+
 - **SSO Login (Prod):** `aws sso login --profile AdministratorAccess-348854311973`
-- **CDK Deploy:** `cd infra && AWS_PROFILE=AdministratorAccess-348854311973 npx cdk deploy`
+- **SSO Login (GW):** `aws sso login --profile AdministratorAccess-734830471883`
+- **CDK Deploy (Prod):** `cd infra && AWS_PROFILE=AdministratorAccess-348854311973 GITHUB_TOKEN=xxx npx cdk deploy -c env=prod`
+- **CDK Deploy (GW):** `cd infra && AWS_PROFILE=AdministratorAccess-734830471883 GITHUB_TOKEN=xxx npx cdk deploy -c env=gw`
+
+CI/CD: GitHub Actions (`.github/workflows/deploy.yml`) — `main` → prod, `dev` → gw. CDK deploys first, then Vercel.
 
 ## Architecture
 

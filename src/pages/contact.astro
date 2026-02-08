@@ -209,7 +209,7 @@ const phoneEncoded = btoa(siteConfig.contact.phone);
     };
 
     try {
-      const res = await fetch('https://api.creative-it.com/contact', {
+      const res = await fetch(`${import.meta.env.PUBLIC_API_URL}/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),

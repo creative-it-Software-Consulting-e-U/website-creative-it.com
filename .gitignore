@@ -31,3 +31,4 @@ input/
 infra/dist/
 infra/cdk.out/
 infra/node_modules/
+cdk.context.json

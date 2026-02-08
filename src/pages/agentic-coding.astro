@@ -169,7 +169,7 @@ const p = siteConfig.pages.agenticCoding;
 
   (async () => {
     try {
-      const res = await fetch('https://api.creative-it.com/github-stats', { cache: 'no-store' });
+      const res = await fetch(`${import.meta.env.PUBLIC_API_URL}/github-stats`, { cache: 'no-store' });
       if (!res.ok) return;
 
       const data = await res.json();

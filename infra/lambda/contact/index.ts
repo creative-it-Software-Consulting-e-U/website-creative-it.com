@@ -3,6 +3,7 @@ import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from "aws-lambda
 
 const ses = new SESv2Client({});
 const RECIPIENT_EMAIL = process.env.RECIPIENT_EMAIL!;
+const SENDER_EMAIL = process.env.SENDER_EMAIL!;
 const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS?.split(",") ?? [];
 
 const SUBJECT_LABELS: Record<string, string> = {
@@ -192,7 +193,7 @@ Sent via creative-it.com contact form`;
   try {
     await ses.send(
       new SendEmailCommand({
-        FromEmailAddress: `"creative-it.com Contact Form" <noreply@creative-it.com>`,
+        FromEmailAddress: `"Contact Form" <${SENDER_EMAIL}>`,
         Destination: {
           ToAddresses: [RECIPIENT_EMAIL],
         },

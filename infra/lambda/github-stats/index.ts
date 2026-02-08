@@ -68,6 +68,7 @@ function getCorsHeaders(origin?: string): Record<string, string> {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     "Cache-Control": "public, max-age=300, s-maxage=900",
+    "Vary": "Origin",
   };
 
   if (origin && ALLOWED_ORIGINS.includes(origin)) {

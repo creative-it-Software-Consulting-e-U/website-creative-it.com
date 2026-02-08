@@ -498,7 +498,7 @@ const p = siteConfig.pages.home;
 
   (async () => {
     try {
-      const res = await fetch('https://api.creative-it.com/github-stats');
+      const res = await fetch('https://api.creative-it.com/github-stats', { cache: 'no-store' });
       if (!res.ok) return;
 
       const data = await res.json();

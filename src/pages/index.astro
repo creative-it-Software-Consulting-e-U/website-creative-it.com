@@ -14,7 +14,7 @@ const p = siteConfig.pages.home;
     </div>
 
     <!-- Floating word clouds -->
-    <div id="word-cloud" class="absolute inset-x-0 top-[0%] bottom-[55%] md:top-[5%] md:bottom-[30%] overflow-hidden pointer-events-none z-[1]" aria-hidden="true">
+    <div id="word-cloud" class="absolute inset-x-0 top-[5%] bottom-[50%] md:top-[5%] md:bottom-[30%] overflow-hidden pointer-events-none z-[1]" aria-hidden="true">
       {p.animation.build.map(word => (
         <span class="floating-word" data-phase="build">{word}</span>
       ))}

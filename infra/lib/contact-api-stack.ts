@@ -169,6 +169,77 @@ export class ContactApiStack extends cdk.Stack {
       state: "ENABLED",
     });
 
+    // ── AI Playground Lambda (Bedrock streaming) ──────────────────────
+    const aiPlaygroundHandler = new lambdaNode.NodejsFunction(
+      this,
+      "AiPlaygroundHandler",
+      {
+        runtime: lambda.Runtime.NODEJS_22_X,
+        architecture: lambda.Architecture.ARM_64,
+        memorySize: 512,
+        timeout: cdk.Duration.seconds(60),
+        entry: path.join(
+          __dirname,
+          "..",
+          "lambda",
+          "ai-playground",
+          "index.ts"
+        ),
+        handler: "handler",
+        bundling: {
+          format: lambdaNode.OutputFormat.ESM,
+          mainFields: ["module", "main"],
+          externalModules: [
+            "@aws-sdk/client-dynamodb",
+            "@aws-sdk/lib-dynamodb",
+          ],
+        },
+        environment: {
+          TABLE_NAME: githubStatsTable.tableName,
+        },
+      }
+    );
+
+    // Function URL with response streaming
+    // CORS on Function URL handles preflight (OPTIONS) automatically.
+    // Lambda must NOT set Access-Control-Allow-Origin to avoid duplicates.
+    const aiPlaygroundUrl = aiPlaygroundHandler.addFunctionUrl({
+      authType: lambda.FunctionUrlAuthType.NONE,
+      invokeMode: lambda.InvokeMode.RESPONSE_STREAM,
+      cors: {
+        allowedOrigins: ["*"],
+        allowedMethods: [lambda.HttpMethod.POST],
+        allowedHeaders: ["Content-Type"],
+        exposedHeaders: ["X-Remaining-Requests"],
+        maxAge: cdk.Duration.hours(1),
+      },
+    });
+
+    // Bedrock InvokeModelWithResponseStream permission
+    aiPlaygroundHandler.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ["bedrock:InvokeModelWithResponseStream"],
+        resources: [
+          `arn:aws:bedrock:*:${this.account}:inference-profile/eu.anthropic.claude-sonnet-4-20250514-v1:0`,
+          "arn:aws:bedrock:eu-*::foundation-model/anthropic.claude-sonnet-4-20250514-v1:0",
+        ],
+      })
+    );
+
+    // AWS Marketplace permissions required for Bedrock model access
+    aiPlaygroundHandler.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: [
+          "aws-marketplace:ViewSubscriptions",
+          "aws-marketplace:Subscribe",
+        ],
+        resources: ["*"],
+      })
+    );
+
+    // DynamoDB access for rate limiting
+    githubStatsTable.grantReadWriteData(aiPlaygroundHandler);
+
     // ── API Gateway HTTP API v2 ────────────────────────────────────────
     const httpApi = new apigwv2.HttpApi(this, "ContactApi", {
       apiName: "creative-it-contact-api",
@@ -247,6 +318,11 @@ export class ContactApiStack extends cdk.Stack {
     new cdk.CfnOutput(this, "HttpApiUrl", {
       value: httpApi.apiEndpoint,
       description: "API Gateway default endpoint",
+    });
+
+    new cdk.CfnOutput(this, "AiPlaygroundUrl", {
+      value: aiPlaygroundUrl.url,
+      description: "AI Playground Function URL (streaming)",
     });
   }
 }

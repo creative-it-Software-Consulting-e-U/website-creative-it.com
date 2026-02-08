@@ -2,5 +2,9 @@
   "hosted-zone:account=348854311973:domainName=creative-it.com:region=eu-central-1": {
     "Id": "/hostedzone/Z0557922EOEXM9PX1HTV",
     "Name": "creative-it.com."
+  },
+  "hosted-zone:account=734830471883:domainName=gw.dev.creative-it.com:region=eu-central-1": {
+    "Id": "/hostedzone/Z05642252WD6AJ6Q0CCZI",
+    "Name": "gw.dev.creative-it.com."
   }
 }

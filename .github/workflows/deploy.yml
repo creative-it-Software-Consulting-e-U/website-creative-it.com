@@ -11,6 +11,8 @@ concurrency:
 jobs:
   deploy-cdk:
     runs-on: ubuntu-latest
+    outputs:
+      ai_playground_url: ${{ steps.cdk-deploy.outputs.ai_playground_url }}
     steps:
       - uses: actions/checkout@v4
 
@@ -32,7 +34,10 @@ jobs:
           aws-region: eu-central-1
 
       - name: CDK deploy
-        run: GITHUB_TOKEN=${{ secrets.GH_PAT_SCHEDULER }} npx cdk deploy -c env=${{ github.ref == 'refs/heads/main' && 'prod' || 'gw' }} --require-approval never
+        id: cdk-deploy
+        run: |
+          GITHUB_TOKEN=${{ secrets.GH_PAT_SCHEDULER }} npx cdk deploy -c env=${{ github.ref == 'refs/heads/main' && 'prod' || 'gw' }} --require-approval never --outputs-file cdk-outputs.json
+          echo "ai_playground_url=$(jq -r '.ContactApiStack.AiPlaygroundUrl // empty' cdk-outputs.json)" >> "$GITHUB_OUTPUT"
         working-directory: infra
 
   deploy-vercel:
@@ -64,12 +69,14 @@ jobs:
         run: vercel build --prod --token=$VERCEL_TOKEN
         env:
           PUBLIC_API_URL: https://api.creative-it.com
+          PUBLIC_AI_PLAYGROUND_URL: ${{ needs.deploy-cdk.outputs.ai_playground_url }}
 
       - name: Build (preview)
         if: github.ref == 'refs/heads/dev'
         run: vercel build --token=$VERCEL_TOKEN
         env:
           PUBLIC_API_URL: https://api.gw.dev.creative-it.com
+          PUBLIC_AI_PLAYGROUND_URL: ${{ needs.deploy-cdk.outputs.ai_playground_url }}
 
       - name: Deploy (production)
         if: github.ref == 'refs/heads/main'

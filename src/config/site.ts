@@ -28,6 +28,7 @@ export const siteConfig = {
     { name: "Home", href: "/" },
     { name: "Services", href: "/services" },
     { name: "About", href: "/about" },
+    { name: "AI Playground", href: "/ai-playground" },
     { name: "Contact", href: "/contact" },
   ],
 
@@ -406,6 +407,48 @@ export const siteConfig = {
         headline: "Ready to Ship Faster?",
         description:
           "Bring the power of agentic coding to your next project. Let's talk about how AI-assisted development can accelerate your roadmap.",
+        button: "Start a Conversation",
+      },
+    },
+
+    aiPlayground: {
+      meta: {
+        title: "AI Playground",
+        description: "Describe a UI component in plain English and watch AI build it live — powered by creative-it",
+      },
+      hero: {
+        chip: "AI Playground",
+        headline: { before: "Describe It. ", gradient: "Watch It Build.", after: "" },
+        description:
+          "Type a description of any UI component and watch AI generate it in real time. Powered by Claude and AWS Bedrock.",
+      },
+      inputSection: {
+        promptLabel: "Describe your component",
+        promptPlaceholder: "A pricing card with three tiers: Starter, Pro, and Enterprise...",
+        generateButton: "Generate",
+        generatingButton: "Generating...",
+        charLimit: 2000,
+      },
+      examples: [
+        "A hero section with a gradient headline, subtitle, and two CTA buttons",
+        "A pricing table with three tiers: Free, Pro, and Enterprise",
+        "A testimonial carousel card with avatar, quote, name, and role",
+        "A dashboard stats grid with 4 metric cards showing icons and trends",
+        "A login form with email, password, social sign-in buttons, and a remember-me checkbox",
+        "A feature comparison table with checkmarks and crosses for three plans",
+      ],
+      previewSection: {
+        previewTab: "Preview",
+        codeTab: "Code",
+        copyButton: "Copy Code",
+        copiedButton: "Copied!",
+        clearButton: "Clear",
+        emptyState: "Your generated component will appear here",
+      },
+      cta: {
+        headline: "Want Custom AI Solutions?",
+        description:
+          "This is just a taste of what AI can do. Let's build intelligent features tailored to your product.",
         button: "Start a Conversation",
       },
     },

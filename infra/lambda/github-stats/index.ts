@@ -64,6 +64,16 @@ interface RepoHistoryResponse {
 
 let cache: CacheEntry | null = null;
 
+function isAllowedOrigin(origin: string): boolean {
+  if (ALLOWED_ORIGINS.includes(origin)) return true;
+  try {
+    const { hostname } = new URL(origin);
+    if (hostname.endsWith(".vercel.app")) return true;
+    if (hostname === "localhost") return true;
+  } catch {}
+  return false;
+}
+
 function getCorsHeaders(origin?: string): Record<string, string> {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -71,7 +81,7 @@ function getCorsHeaders(origin?: string): Record<string, string> {
     "Vary": "Origin",
   };
 
-  if (origin && ALLOWED_ORIGINS.includes(origin)) {
+  if (origin && isAllowedOrigin(origin)) {
     headers["Access-Control-Allow-Origin"] = origin;
   }
 

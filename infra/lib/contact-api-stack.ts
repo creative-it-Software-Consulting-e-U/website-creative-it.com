@@ -99,7 +99,7 @@ export class ContactApiStack extends cdk.Stack {
     const httpApi = new apigwv2.HttpApi(this, "ContactApi", {
       apiName: "creative-it-contact-api",
       corsPreflight: {
-        allowOrigins: allowedOrigins,
+        allowOrigins: ["*"],
         allowMethods: [
           apigwv2.CorsHttpMethod.POST,
           apigwv2.CorsHttpMethod.GET,

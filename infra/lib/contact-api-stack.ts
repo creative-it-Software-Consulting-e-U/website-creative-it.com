@@ -8,6 +8,8 @@ import * as lambdaNode from "aws-cdk-lib/aws-lambda-nodejs";
 import * as apigwv2 from "aws-cdk-lib/aws-apigatewayv2";
 import * as apigwv2Integrations from "aws-cdk-lib/aws-apigatewayv2-integrations";
 import * as iam from "aws-cdk-lib/aws-iam";
+import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
+import * as scheduler from "aws-cdk-lib/aws-scheduler";
 import { Construct } from "constructs";
 import * as path from "path";
 
@@ -38,7 +40,16 @@ export class ContactApiStack extends cdk.Stack {
       validation: acm.CertificateValidation.fromDns(hostedZone),
     });
 
-    // ── Lambda Function ────────────────────────────────────────────────
+    // ── DynamoDB Table for GitHub Stats ─────────────────────────────────
+    const githubStatsTable = new dynamodb.Table(this, "GitHubStatsTable", {
+      partitionKey: { name: "pk", type: dynamodb.AttributeType.STRING },
+      sortKey: { name: "hour_ts", type: dynamodb.AttributeType.STRING },
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      timeToLiveAttribute: "ttl",
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
+    });
+
+    // ── Contact Lambda ─────────────────────────────────────────────────
     const contactHandler = new lambdaNode.NodejsFunction(
       this,
       "ContactHandler",
@@ -71,7 +82,7 @@ export class ContactApiStack extends cdk.Stack {
       })
     );
 
-    // ── GitHub Stats Lambda ──────────────────────────────────────────
+    // ── GitHub Stats API Lambda (reads from DynamoDB) ──────────────────
     const githubStatsHandler = new lambdaNode.NodejsFunction(
       this,
       "GitHubStatsHandler",
@@ -79,8 +90,39 @@ export class ContactApiStack extends cdk.Stack {
         runtime: lambda.Runtime.NODEJS_22_X,
         architecture: lambda.Architecture.ARM_64,
         memorySize: 256,
-        timeout: cdk.Duration.seconds(15),
+        timeout: cdk.Duration.seconds(10),
         entry: path.join(__dirname, "..", "lambda", "github-stats", "index.ts"),
+        handler: "handler",
+        bundling: {
+          format: lambdaNode.OutputFormat.ESM,
+          mainFields: ["module", "main"],
+          externalModules: ["@aws-sdk/*"],
+        },
+        environment: {
+          TABLE_NAME: githubStatsTable.tableName,
+          ALLOWED_ORIGINS: allowedOrigins.join(","),
+        },
+      }
+    );
+
+    githubStatsTable.grantReadData(githubStatsHandler);
+
+    // ── GitHub Stats Scheduler Lambda (fetches from GitHub → DynamoDB) ──
+    const githubStatsScheduler = new lambdaNode.NodejsFunction(
+      this,
+      "GitHubStatsScheduler",
+      {
+        runtime: lambda.Runtime.NODEJS_22_X,
+        architecture: lambda.Architecture.ARM_64,
+        memorySize: 256,
+        timeout: cdk.Duration.seconds(120),
+        entry: path.join(
+          __dirname,
+          "..",
+          "lambda",
+          "github-stats-scheduler",
+          "index.ts"
+        ),
         handler: "handler",
         bundling: {
           format: lambdaNode.OutputFormat.ESM,
@@ -90,10 +132,31 @@ export class ContactApiStack extends cdk.Stack {
         environment: {
           GITHUB_TOKEN: process.env.GITHUB_TOKEN ?? "",
           GITHUB_ORG: "creative-it-Software-Consulting-e-U",
-          ALLOWED_ORIGINS: allowedOrigins.join(","),
+          TABLE_NAME: githubStatsTable.tableName,
         },
       }
     );
+
+    githubStatsTable.grantReadWriteData(githubStatsScheduler);
+
+    // ── EventBridge Scheduler (every hour at x:00) ─────────────────────
+    const schedulerRole = new iam.Role(this, "GitHubStatsSchedulerRole", {
+      assumedBy: new iam.ServicePrincipal("scheduler.amazonaws.com"),
+    });
+
+    githubStatsScheduler.grantInvoke(schedulerRole);
+
+    new scheduler.CfnSchedule(this, "GitHubStatsSchedule", {
+      name: "github-stats-hourly",
+      scheduleExpression: "cron(0 * * * ? *)",
+      scheduleExpressionTimezone: "UTC",
+      flexibleTimeWindow: { mode: "OFF" },
+      target: {
+        arn: githubStatsScheduler.functionArn,
+        roleArn: schedulerRole.roleArn,
+      },
+      state: "ENABLED",
+    });
 
     // ── API Gateway HTTP API v2 ────────────────────────────────────────
     const httpApi = new apigwv2.HttpApi(this, "ContactApi", {

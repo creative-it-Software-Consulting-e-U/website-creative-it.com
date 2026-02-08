@@ -105,30 +105,73 @@ const pageDescription = description || siteConfig.description;
     </style>
 
     {!hideStatsBanner && (
-      <div id="github-stats-banner" class="hidden fixed bottom-6 right-6 z-50">
-        <a href="/agentic-coding" class="group block bg-surface border border-white/[0.06] rounded-2xl px-5 py-4 shadow-[0_8px_32px_rgba(0,0,0,0.4)] backdrop-blur-sm max-w-xs hover:border-purple/30 transition-colors duration-300">
-          <div class="flex items-center gap-2.5 mb-3">
-            <svg class="w-5 h-5 text-purple flex-shrink-0" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-            </svg>
-            <span class="text-xs text-text-muted leading-tight">Code changes made by our team of agentic coding agents</span>
+      <!-- Collapsible GitHub Stats Banner -->
+      <div id="github-stats-wrapper" class="hidden fixed bottom-6 right-0 z-50 flex items-end">
+        <!-- Collapsed toggle button (AI icon) -->
+        <button
+          id="github-stats-toggle"
+          class="hidden flex items-center justify-center w-12 h-12 bg-surface border border-white/[0.06] border-r-0 rounded-l-xl shadow-[0_8px_32px_rgba(0,0,0,0.4)] backdrop-blur-sm hover:border-purple/30 transition-all duration-300 cursor-pointer group"
+          aria-label="Show agentic coding stats"
+          title="Agentic Coding Stats"
+        >
+          <!-- Stylized AI / neural network icon -->
+          <svg class="w-6 h-6 text-purple group-hover:text-cyan transition-colors duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <!-- Central brain node -->
+            <circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none" />
+            <!-- Outer orbit nodes -->
+            <circle cx="12" cy="4" r="1.5" fill="currentColor" stroke="none" opacity="0.7" />
+            <circle cx="19" cy="8" r="1.5" fill="currentColor" stroke="none" opacity="0.7" />
+            <circle cx="19" cy="16" r="1.5" fill="currentColor" stroke="none" opacity="0.7" />
+            <circle cx="12" cy="20" r="1.5" fill="currentColor" stroke="none" opacity="0.7" />
+            <circle cx="5" cy="16" r="1.5" fill="currentColor" stroke="none" opacity="0.7" />
+            <circle cx="5" cy="8" r="1.5" fill="currentColor" stroke="none" opacity="0.7" />
+            <!-- Connection lines -->
+            <line x1="12" y1="9.5" x2="12" y2="5.5" stroke="currentColor" stroke-width="1" opacity="0.4" />
+            <line x1="14.2" y1="10.3" x2="17.7" y2="8.8" stroke="currentColor" stroke-width="1" opacity="0.4" />
+            <line x1="14.2" y1="13.7" x2="17.7" y2="15.2" stroke="currentColor" stroke-width="1" opacity="0.4" />
+            <line x1="12" y1="14.5" x2="12" y2="18.5" stroke="currentColor" stroke-width="1" opacity="0.4" />
+            <line x1="9.8" y1="13.7" x2="6.3" y2="15.2" stroke="currentColor" stroke-width="1" opacity="0.4" />
+            <line x1="9.8" y1="10.3" x2="6.3" y2="8.8" stroke="currentColor" stroke-width="1" opacity="0.4" />
+          </svg>
+        </button>
+
+        <!-- Expanded card -->
+        <div id="github-stats-banner" class="mr-6 transition-all duration-400 ease-in-out origin-right">
+          <div class="relative">
+            <!-- Close / collapse button -->
+            <button
+              id="github-stats-close"
+              class="absolute -top-2 -right-2 w-6 h-6 bg-surface border border-white/[0.08] rounded-full flex items-center justify-center text-text-muted hover:text-off-white hover:border-purple/30 transition-colors duration-200 cursor-pointer z-10"
+              aria-label="Collapse stats card"
+              title="Einklappen"
+            >
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+            <a href="/agentic-coding" class="group block bg-surface border border-white/[0.06] rounded-2xl px-5 py-4 shadow-[0_8px_32px_rgba(0,0,0,0.4)] backdrop-blur-sm max-w-xs hover:border-purple/30 transition-colors duration-300">
+              <div class="flex items-center gap-2.5 mb-3">
+                <svg class="w-5 h-5 text-purple flex-shrink-0" viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                </svg>
+                <span class="text-xs text-text-muted leading-tight">Code changes made by our team of agentic coding agents</span>
+              </div>
+              <div class="space-y-1.5 text-sm">
+                <div class="flex items-center justify-between">
+                  <span class="text-text-muted">Last 24h</span>
+                  <span id="stats-24h" class="text-text-secondary font-medium"></span>
+                </div>
+                <div class="w-full h-px bg-white/[0.04]"></div>
+                <div class="flex items-center justify-between">
+                  <span class="text-text-muted">Last 7d</span>
+                  <span id="stats-7d" class="text-text-secondary font-medium"></span>
+                </div>
+              </div>
+              <div class="mt-3 pt-3 border-t border-white/[0.04] flex items-center justify-center gap-1.5 text-xs text-indigo group-hover:text-purple transition-colors duration-300">
+                <span>Learn about agentic coding</span>
+                <svg class="w-3.5 h-3.5 transform group-hover:translate-x-0.5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+              </div>
+            </a>
           </div>
-          <div class="space-y-1.5 text-sm">
-            <div class="flex items-center justify-between">
-              <span class="text-text-muted">Last 24h</span>
-              <span id="stats-24h" class="text-text-secondary font-medium"></span>
-            </div>
-            <div class="w-full h-px bg-white/[0.04]"></div>
-            <div class="flex items-center justify-between">
-              <span class="text-text-muted">Last 7d</span>
-              <span id="stats-7d" class="text-text-secondary font-medium"></span>
-            </div>
-          </div>
-          <div class="mt-3 pt-3 border-t border-white/[0.04] flex items-center justify-center gap-1.5 text-xs text-indigo group-hover:text-purple transition-colors duration-300">
-            <span>Learn about agentic coding</span>
-            <svg class="w-3.5 h-3.5 transform group-hover:translate-x-0.5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-          </div>
-        </a>
+        </div>
       </div>
 
       <script>
@@ -136,6 +179,36 @@ const pageDescription = description || siteConfig.description;
           if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace(/\.0$/, '')}M`;
           if (n >= 1_000) return `${(n / 1_000).toFixed(1).replace(/\.0$/, '')}k`;
           return n.toString();
+        }
+
+        const STORAGE_KEY = 'github-stats-collapsed';
+
+        function isCollapsed(): boolean {
+          try { return localStorage.getItem(STORAGE_KEY) === '1'; } catch { return false; }
+        }
+
+        function setCollapsed(collapsed: boolean): void {
+          try { localStorage.setItem(STORAGE_KEY, collapsed ? '1' : '0'); } catch {}
+        }
+
+        function applyState(collapsed: boolean): void {
+          const banner = document.getElementById('github-stats-banner');
+          const toggle = document.getElementById('github-stats-toggle');
+          if (!banner || !toggle) return;
+
+          if (collapsed) {
+            banner.style.transform = 'translateX(calc(100% + 24px))';
+            banner.style.opacity = '0';
+            banner.style.pointerEvents = 'none';
+            toggle.classList.remove('hidden');
+            toggle.classList.add('flex');
+          } else {
+            banner.style.transform = 'translateX(0)';
+            banner.style.opacity = '1';
+            banner.style.pointerEvents = 'auto';
+            toggle.classList.add('hidden');
+            toggle.classList.remove('flex');
+          }
         }
 
         (async () => {
@@ -148,17 +221,48 @@ const pageDescription = description || siteConfig.description;
 
             const el24h = document.getElementById('stats-24h');
             const el7d = document.getElementById('stats-7d');
+            const wrapper = document.getElementById('github-stats-wrapper');
             const banner = document.getElementById('github-stats-banner');
-            if (!el24h || !el7d || !banner) return;
+            const toggle = document.getElementById('github-stats-toggle');
+            const closeBtn = document.getElementById('github-stats-close');
+            if (!el24h || !el7d || !wrapper || !banner || !toggle || !closeBtn) return;
 
             el24h.textContent = `${formatNumber(data.commits_24h)} commits · ${formatNumber(data.lines_24h)} lines`;
             el7d.textContent = `${formatNumber(data.commits_7d)} commits · ${formatNumber(data.lines_7d)} lines`;
 
-            banner.classList.remove('hidden');
-            banner.style.opacity = '0';
-            banner.style.transform = 'translateY(12px)';
-            banner.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-            requestAnimationFrame(() => { banner.style.opacity = '1'; banner.style.transform = 'translateY(0)'; });
+            // Set initial transition style
+            banner.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease';
+
+            // Apply saved state before showing
+            const collapsed = isCollapsed();
+            if (collapsed) {
+              banner.style.transform = 'translateX(calc(100% + 24px))';
+              banner.style.opacity = '0';
+              banner.style.pointerEvents = 'none';
+              toggle.classList.remove('hidden');
+              toggle.classList.add('flex');
+            }
+
+            // Show wrapper with fade-in
+            wrapper.classList.remove('hidden');
+            wrapper.classList.add('flex');
+            wrapper.style.opacity = '0';
+            wrapper.style.transition = 'opacity 0.5s ease';
+            requestAnimationFrame(() => { wrapper.style.opacity = '1'; });
+
+            // Close button: collapse the card
+            closeBtn.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setCollapsed(true);
+              applyState(true);
+            });
+
+            // Toggle button: expand the card
+            toggle.addEventListener('click', () => {
+              setCollapsed(false);
+              applyState(false);
+            });
           } catch {
             // Banner stays hidden on error
           }

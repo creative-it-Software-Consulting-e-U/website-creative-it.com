@@ -356,6 +356,60 @@ export const siteConfig = {
       },
     },
 
+    agenticCoding: {
+      meta: {
+        title: "Agentic Coding",
+        description: "How creative-it uses AI coding agents to ship faster, with higher quality and unprecedented productivity gains.",
+      },
+      hero: {
+        chip: "Agentic Coding",
+        headline: { before: "Code at the Speed of ", gradient: "Thought", after: "" },
+        description:
+          "We deploy teams of AI coding agents that work alongside our engineers — writing, reviewing, and shipping production code around the clock.",
+      },
+      whatSection: {
+        chip: "What Is It",
+        headline: "AI Agents That Write Real Code",
+        description:
+          "Agentic coding goes beyond autocomplete. Autonomous AI agents understand your codebase, plan implementations, write tests, and submit pull requests — just like a human developer. They handle the routine so our engineers focus on architecture, design, and the problems that matter.",
+        points: [
+          { title: "Autonomous Execution", description: "Agents independently plan, implement, and verify multi-file changes across entire repositories." },
+          { title: "Context-Aware", description: "They understand your project structure, coding conventions, and business logic — not just syntax." },
+          { title: "Human-in-the-Loop", description: "Every change is reviewed by senior engineers. Agents accelerate delivery; humans ensure quality." },
+        ],
+      },
+      howSection: {
+        chip: "Our Approach",
+        headline: "How creative-it Uses Agentic Coding",
+        description:
+          "We integrate AI agents directly into our development workflow. They're not a gimmick — they're full team members with assigned tasks, code review standards, and accountability.",
+        steps: [
+          { step: "01", title: "Task Assignment", description: "Agents receive well-scoped tasks from our project management system, just like any developer." },
+          { step: "02", title: "Implementation", description: "Agents write code, create tests, and open pull requests with full context and documentation." },
+          { step: "03", title: "Review & Merge", description: "Senior engineers review every PR for quality, security, and alignment with project goals." },
+          { step: "04", title: "Continuous Learning", description: "Agents improve over time as they absorb project conventions and feedback patterns." },
+        ],
+      },
+      benefitsSection: {
+        chip: "Productivity Gains",
+        headline: { before: "Results That ", gradient: "Speak", after: "" },
+        description:
+          "The numbers from our live GitHub activity tell the story. Agentic coding isn't theoretical — it's shipping production code every day.",
+        benefits: [
+          { value: "5–10x", label: "Faster Feature Delivery", description: "What used to take a week ships in a day. Agents handle boilerplate, tests, and repetitive refactors at machine speed." },
+          { value: "24/7", label: "Development Velocity", description: "Agents don't sleep. They process tasks overnight so engineers wake up to completed pull requests." },
+          { value: "Higher", label: "Code Quality", description: "Every change comes with tests and documentation. Agents are thorough by default — no shortcuts, no tech debt." },
+          { value: "More", label: "Focus for Engineers", description: "With routine work handled, engineers spend their time on architecture, user experience, and creative problem-solving." },
+        ],
+      },
+      cta: {
+        headline: "Ready to Ship Faster?",
+        description:
+          "Bring the power of agentic coding to your next project. Let's talk about how AI-assisted development can accelerate your roadmap.",
+        button: "Start a Conversation",
+      },
+    },
+
     contact: {
       meta: {
         title: "Contact",

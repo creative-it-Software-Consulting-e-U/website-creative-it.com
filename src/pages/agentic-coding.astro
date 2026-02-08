@@ -1,0 +1,192 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { siteConfig } from "../config/site";
+const p = siteConfig.pages.agenticCoding;
+---
+
+<Layout title={p.meta.title} description={p.meta.description} hideStatsBanner>
+  <!-- Hero -->
+  <section class="relative py-20 lg:py-32 overflow-hidden">
+    <div class="absolute inset-0">
+      <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[250px] md:w-[800px] md:h-[500px] bg-[radial-gradient(ellipse,rgba(161,99,241,0.08)_0%,rgba(99,99,241,0.05)_40%,transparent_70%)]"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl">
+        <div class="chip mb-4 animate-fade-in-up opacity-0" style="animation-delay: 0.1s; animation-fill-mode: forwards;">
+          <span class="w-1.5 h-1.5 rounded-full bg-purple animate-pulse"></span>
+          <span>{p.hero.chip}</span>
+        </div>
+        <h1 class="heading-xl text-5xl lg:text-6xl xl:text-7xl text-off-white mb-6 animate-fade-in-up opacity-0" style="animation-delay: 0.2s; animation-fill-mode: forwards;">
+          {p.hero.headline.before}<span class="gradient-text">{p.hero.headline.gradient}</span>{p.hero.headline.after}
+        </h1>
+        <p class="text-lg lg:text-xl text-text-secondary leading-relaxed animate-fade-in-up opacity-0" style="animation-delay: 0.3s; animation-fill-mode: forwards;">
+          {p.hero.description}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live GitHub Stats -->
+  <section class="pb-24 lg:pb-32 relative">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div id="agentic-stats" class="grid grid-cols-2 lg:grid-cols-4 gap-6 reveal">
+        <div class="text-center p-8 card">
+          <div class="heading-lg text-4xl lg:text-5xl gradient-text mb-2" id="ac-commits-24h">—</div>
+          <div class="text-sm text-text-muted">Commits (24h)</div>
+        </div>
+        <div class="text-center p-8 card">
+          <div class="heading-lg text-4xl lg:text-5xl gradient-text mb-2" id="ac-lines-24h">—</div>
+          <div class="text-sm text-text-muted">Lines Changed (24h)</div>
+        </div>
+        <div class="text-center p-8 card">
+          <div class="heading-lg text-4xl lg:text-5xl gradient-text mb-2" id="ac-commits-7d">—</div>
+          <div class="text-sm text-text-muted">Commits (7d)</div>
+        </div>
+        <div class="text-center p-8 card">
+          <div class="heading-lg text-4xl lg:text-5xl gradient-text mb-2" id="ac-lines-7d">—</div>
+          <div class="text-sm text-text-muted">Lines Changed (7d)</div>
+        </div>
+      </div>
+      <p class="text-center text-text-muted text-xs mt-4 reveal" style="transition-delay: 100ms">Live data from our GitHub organization — updated in real time</p>
+    </div>
+  </section>
+
+  <!-- What Is Agentic Coding -->
+  <section class="py-24 lg:py-32 bg-surface relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-purple/3 to-transparent"></div>
+
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="max-w-2xl mb-16 reveal">
+        <div class="chip mb-4">
+          <span>{p.whatSection.chip}</span>
+        </div>
+        <h2 class="heading-lg text-4xl lg:text-5xl text-off-white mb-6">{p.whatSection.headline}</h2>
+        <p class="text-text-secondary text-lg leading-relaxed">{p.whatSection.description}</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        {p.whatSection.points.map((point, index) => (
+          <div class="card-elevated p-8 reveal" style={`transition-delay: ${index * 100}ms`}>
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple/20 to-indigo/10 border border-purple/20 flex items-center justify-center mb-6">
+              {index === 0 && (
+                <svg class="w-6 h-6 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+              )}
+              {index === 1 && (
+                <svg class="w-6 h-6 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+              )}
+              {index === 2 && (
+                <svg class="w-6 h-6 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+              )}
+            </div>
+            <h3 class="heading-md text-xl text-off-white mb-3">{point.title}</h3>
+            <p class="text-text-secondary leading-relaxed">{point.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- How We Use It -->
+  <section class="py-24 lg:py-32 relative">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="max-w-2xl mb-16 reveal">
+        <div class="chip mb-4">
+          <span>{p.howSection.chip}</span>
+        </div>
+        <h2 class="heading-lg text-4xl lg:text-5xl text-off-white mb-6">{p.howSection.headline}</h2>
+        <p class="text-text-secondary text-lg leading-relaxed">{p.howSection.description}</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        {p.howSection.steps.map((step, index) => (
+          <div class="group card p-8 reveal" style={`transition-delay: ${index * 100}ms`}>
+            <div class="flex items-start gap-5">
+              <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-purple/20 to-indigo/10 border border-purple/20 flex items-center justify-center">
+                <span class="heading-md text-purple text-sm">{step.step}</span>
+              </div>
+              <div>
+                <h3 class="heading-md text-xl text-off-white mb-2 group-hover:text-purple transition-colors duration-300">{step.title}</h3>
+                <p class="text-text-secondary leading-relaxed">{step.description}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Productivity Gains -->
+  <section class="py-24 lg:py-32 bg-surface relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-purple/3 via-transparent to-cyan/3"></div>
+
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="max-w-2xl mb-16 reveal">
+        <div class="chip mb-4">
+          <span>{p.benefitsSection.chip}</span>
+        </div>
+        <h2 class="heading-lg text-4xl lg:text-5xl text-off-white mb-6">
+          {p.benefitsSection.headline.before}<span class="gradient-text">{p.benefitsSection.headline.gradient}</span>{p.benefitsSection.headline.after}
+        </h2>
+        <p class="text-text-secondary text-lg leading-relaxed">{p.benefitsSection.description}</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        {p.benefitsSection.benefits.map((benefit, index) => (
+          <div class="card-elevated p-8 lg:p-10 reveal" style={`transition-delay: ${index * 100}ms`}>
+            <div class="heading-lg text-3xl lg:text-4xl gradient-text mb-2">{benefit.value}</div>
+            <h3 class="heading-md text-xl text-off-white mb-3">{benefit.label}</h3>
+            <p class="text-text-secondary leading-relaxed">{benefit.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-24 lg:py-32 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="relative rounded-3xl overflow-hidden reveal">
+        <div class="absolute inset-0 bg-gradient-to-br from-purple via-indigo to-indigo"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(35,240,195,0.15),transparent_60%)]"></div>
+
+        <div class="relative px-8 py-16 lg:px-16 lg:py-24 text-center">
+          <h2 class="heading-xl text-4xl lg:text-5xl xl:text-6xl text-white mb-6">{p.cta.headline}</h2>
+          <p class="text-white/70 text-lg max-w-2xl mx-auto mb-10">{p.cta.description}</p>
+          <a href="/contact" class="btn-primary">{p.cta.button}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  function formatNumber(n: number): string {
+    if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace(/\.0$/, '')}M`;
+    if (n >= 1_000) return `${(n / 1_000).toFixed(1).replace(/\.0$/, '')}k`;
+    return n.toString();
+  }
+
+  (async () => {
+    try {
+      const res = await fetch('https://api.creative-it.com/github-stats', { cache: 'no-store' });
+      if (!res.ok) return;
+
+      const data = await res.json();
+
+      const ids = [
+        ['ac-commits-24h', formatNumber(data.commits_24h)],
+        ['ac-lines-24h', formatNumber(data.lines_24h)],
+        ['ac-commits-7d', formatNumber(data.commits_7d)],
+        ['ac-lines-7d', formatNumber(data.lines_7d)],
+      ] as const;
+
+      for (const [id, value] of ids) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+      }
+    } catch {
+      // Stats show dashes on error
+    }
+  })();
+</script>

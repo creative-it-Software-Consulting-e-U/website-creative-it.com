@@ -85,6 +85,7 @@ export async function handler(
     let commits7d = 0;
     let lines24h = 0;
     let lines7d = 0;
+    const history: { ts: string; commits: number; lines: number }[] = [];
 
     for (const item of result.Items ?? []) {
       const c = (item.commits as number) ?? 0;
@@ -95,6 +96,11 @@ export async function handler(
         commits24h += c;
         lines24h += l;
       }
+      history.push({
+        ts: item.hour_ts as string,
+        commits: c,
+        lines: l,
+      });
     }
 
     return respond(
@@ -104,6 +110,7 @@ export async function handler(
         commits_7d: commits7d,
         lines_24h: lines24h,
         lines_7d: lines7d,
+        history,
         cached_at: now.toISOString(),
       },
       origin

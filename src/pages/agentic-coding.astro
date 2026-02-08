@@ -51,7 +51,7 @@ const p = siteConfig.pages.agenticCoding;
       <p class="text-center text-text-muted text-xs mt-4 reveal" style="transition-delay: 100ms">Live data from our GitHub organization — updated in real time</p>
 
       <!-- 7-Day Activity Chart -->
-      <div id="ac-chart-wrapper" class="mt-12 card p-6 lg:p-8 reveal hidden" style="transition-delay: 200ms">
+      <div id="ac-chart-wrapper" class="mt-12 card p-6 lg:p-8 reveal" style="transition-delay: 200ms; display: none">
         <h3 class="heading-md text-lg text-off-white mb-6">7-Day Activity</h3>
         <div class="relative w-full" style="height: 280px">
           <canvas id="ac-chart" class="w-full h-full"></canvas>
@@ -369,10 +369,12 @@ const p = siteConfig.pages.agenticCoding;
         if (wrapper && canvas) {
           const buckets = aggregateTo12h(history);
           if (buckets.length >= 2) {
-            wrapper.classList.remove('hidden');
-            // Wait for reveal animation to settle so canvas gets its dimensions
+            wrapper.style.display = '';
+            // Wait for layout recalculation before drawing
             requestAnimationFrame(() => {
-              drawChart(canvas, buckets);
+              requestAnimationFrame(() => {
+                drawChart(canvas, buckets);
+              });
             });
             // Redraw on resize
             let resizeTimer: ReturnType<typeof setTimeout>;

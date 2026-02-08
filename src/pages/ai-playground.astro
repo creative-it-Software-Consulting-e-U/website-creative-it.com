@@ -48,14 +48,24 @@ const p = siteConfig.pages.aiPlayground;
           <!-- Example Chips -->
           <div class="mb-6">
             <span class="text-xs text-text-muted uppercase tracking-wider mb-2 block">Try an example</span>
+            <!-- Category filters -->
+            <div class="flex flex-wrap gap-1.5 mb-3">
+              <button class="category-btn text-[11px] font-medium px-2.5 py-1 rounded-md bg-purple/10 text-purple border border-purple/20 transition-colors duration-200 cursor-pointer" data-category="all">All</button>
+              {p.exampleCategories.map((cat) => (
+                <button class="category-btn text-[11px] font-medium px-2.5 py-1 rounded-md text-text-muted hover:text-off-white transition-colors duration-200 cursor-pointer" data-category={cat.label}>{cat.label}</button>
+              ))}
+            </div>
             <div class="flex flex-wrap gap-2">
-              {p.examples.map((example) => (
-                <button
-                  class="example-chip text-xs bg-purple/10 border border-purple/20 text-purple rounded-full px-3 py-1.5 hover:bg-purple/20 hover:border-purple/30 transition-colors duration-200 cursor-pointer text-left"
-                  data-prompt={example}
-                >
-                  {example.length > 50 ? example.slice(0, 50) + "..." : example}
-                </button>
+              {p.exampleCategories.map((cat) => (
+                cat.examples.map((example) => (
+                  <button
+                    class="example-chip text-xs bg-purple/10 border border-purple/20 text-purple rounded-full px-3 py-1.5 hover:bg-purple/20 hover:border-purple/30 transition-colors duration-200 cursor-pointer text-left"
+                    data-prompt={example}
+                    data-category={cat.label}
+                  >
+                    {example.length > 50 ? example.slice(0, 50) + "..." : example}
+                  </button>
+                ))
               ))}
             </div>
           </div>
@@ -202,6 +212,7 @@ const p = siteConfig.pages.aiPlayground;
   const iframe = document.getElementById('preview-iframe') as HTMLIFrameElement;
   const loadingIndicator = document.getElementById('loading-indicator')!;
   const exampleChips = document.querySelectorAll('.example-chip');
+  const categoryBtns = document.querySelectorAll('.category-btn');
   const viewportBar = document.getElementById('viewport-bar')!;
   const viewportBtns = document.querySelectorAll('.viewport-btn');
   const conversationBar = document.getElementById('conversation-bar')!;
@@ -224,6 +235,30 @@ const p = siteConfig.pages.aiPlayground;
       promptEl.value = (chip as HTMLElement).dataset.prompt ?? '';
       charCountEl.textContent = `${promptEl.value.length} / ${CHAR_LIMIT}`;
       promptEl.focus();
+    });
+  });
+
+  // Category filter
+  categoryBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const category = (btn as HTMLElement).dataset.category!;
+      categoryBtns.forEach(b => {
+        if (b === btn) {
+          b.classList.add('bg-purple/10', 'text-purple', 'border', 'border-purple/20');
+          b.classList.remove('text-text-muted');
+        } else {
+          b.classList.remove('bg-purple/10', 'text-purple', 'border', 'border-purple/20');
+          b.classList.add('text-text-muted');
+        }
+      });
+      exampleChips.forEach(chip => {
+        const chipCat = (chip as HTMLElement).dataset.category;
+        if (category === 'all' || chipCat === category) {
+          (chip as HTMLElement).classList.remove('hidden');
+        } else {
+          (chip as HTMLElement).classList.add('hidden');
+        }
+      });
     });
   });
 

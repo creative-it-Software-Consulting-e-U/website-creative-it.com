@@ -429,13 +429,55 @@ export const siteConfig = {
         generatingButton: "Generating...",
         charLimit: 2000,
       },
-      examples: [
-        "A hero section with a gradient headline, subtitle, and two CTA buttons",
-        "A pricing table with three tiers: Free, Pro, and Enterprise",
-        "A testimonial carousel card with avatar, quote, name, and role",
-        "A dashboard stats grid with 4 metric cards showing icons and trends",
-        "A login form with email, password, social sign-in buttons, and a remember-me checkbox",
-        "A feature comparison table with checkmarks and crosses for three plans",
+      exampleCategories: [
+        {
+          label: "Marketing",
+          examples: [
+            "A hero section with a gradient headline, subtitle, and two CTA buttons",
+            "A testimonial carousel card with avatar, quote, name, and role",
+            "A pricing table with three tiers: Free, Pro, and Enterprise",
+            "A feature comparison table with checkmarks and crosses for three plans",
+            "A newsletter signup banner with email input and a bold headline",
+            "A team member profile card with photo placeholder, name, role, and social links",
+          ],
+        },
+        {
+          label: "Dashboard",
+          examples: [
+            "A dashboard stats grid with 4 metric cards showing icons and trends",
+            "A notification feed panel with timestamps, icons, and read/unread states",
+            "A user profile sidebar with avatar, stats, and a list of recent activity",
+            "A progress tracker with 5 steps, current step highlighted, and completion percentage",
+            "A data table with sortable column headers, striped rows, and pagination",
+          ],
+        },
+        {
+          label: "E-Commerce",
+          examples: [
+            "A product card with image placeholder, title, price, rating stars, and add-to-cart button",
+            "A shopping cart summary with item list, quantities, subtotal, and checkout button",
+            "A product review section with star rating breakdown and individual review cards",
+            "A category filter sidebar with checkboxes, price range slider, and apply button",
+          ],
+        },
+        {
+          label: "Forms",
+          examples: [
+            "A login form with email, password, social sign-in buttons, and a remember-me checkbox",
+            "A multi-step registration wizard with progress indicator and form fields",
+            "A contact form with name, email, subject dropdown, message area, and file upload",
+            "A settings page with toggle switches, radio groups, and a save button",
+          ],
+        },
+        {
+          label: "Navigation",
+          examples: [
+            "A responsive navbar with logo, menu links, search bar, and a user avatar dropdown",
+            "A sidebar navigation with collapsible sections, icons, and an active state indicator",
+            "A breadcrumb bar with current page highlighted and a back button",
+            "A tab bar with icons and labels for a mobile app bottom navigation",
+          ],
+        },
       ],
       previewSection: {
         previewTab: "Preview",

@@ -60,6 +60,17 @@ const p = siteConfig.pages.aiPlayground;
             </div>
           </div>
 
+          <!-- Conversation indicator + New Component button -->
+          <div id="conversation-bar" class="hidden flex items-center justify-between mb-3">
+            <div class="chip text-xs">
+              <span class="w-1.5 h-1.5 rounded-full bg-cyan animate-pulse"></span>
+              <span id="refining-label">{p.conversation.refiningLabel} &middot; 2 messages</span>
+            </div>
+            <button id="new-component-btn" class="text-xs text-text-muted hover:text-off-white border border-white/[0.08] rounded-lg px-3 py-1.5 transition-colors duration-200 cursor-pointer">
+              {p.conversation.newComponentButton}
+            </button>
+          </div>
+
           <button
             id="generate-btn"
             class="btn-glow w-full mt-auto"
@@ -89,6 +100,22 @@ const p = siteConfig.pages.aiPlayground;
             </button>
           </div>
 
+          <!-- Viewport toggles -->
+          <div id="viewport-bar" class="hidden flex items-center justify-center gap-1 mb-3">
+            <button data-viewport="desktop" class="viewport-btn active text-xs font-medium px-3 py-1.5 rounded-lg bg-purple/10 text-purple border border-purple/20 transition-colors duration-200 cursor-pointer flex items-center gap-1.5" title={p.previewSection.desktopLabel}>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" stroke-width="1.5"/><path d="M8 21h8M12 17v4" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <span class="hidden sm:inline">{p.previewSection.desktopLabel}</span>
+            </button>
+            <button data-viewport="tablet" class="viewport-btn text-xs font-medium px-3 py-1.5 rounded-lg text-text-muted hover:text-off-white transition-colors duration-200 cursor-pointer flex items-center gap-1.5" title={p.previewSection.tabletLabel}>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" stroke-width="1.5"/><path d="M12 18h.01" stroke-width="2" stroke-linecap="round"/></svg>
+              <span class="hidden sm:inline">{p.previewSection.tabletLabel}</span>
+            </button>
+            <button data-viewport="mobile" class="viewport-btn text-xs font-medium px-3 py-1.5 rounded-lg text-text-muted hover:text-off-white transition-colors duration-200 cursor-pointer flex items-center gap-1.5" title={p.previewSection.mobileLabel}>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" stroke-width="1.5"/><path d="M12 18h.01" stroke-width="2" stroke-linecap="round"/></svg>
+              <span class="hidden sm:inline">{p.previewSection.mobileLabel}</span>
+            </button>
+          </div>
+
           <!-- Preview iframe -->
           <div id="preview-container" class="flex-1 relative rounded-xl overflow-hidden border border-white/[0.06] bg-white">
             <div id="empty-state" class="absolute inset-0 flex items-center justify-center bg-navy/95">
@@ -97,12 +124,15 @@ const p = siteConfig.pages.aiPlayground;
                 <p class="text-sm text-text-muted">{p.previewSection.emptyState}</p>
               </div>
             </div>
-            <iframe
-              id="preview-iframe"
-              class="w-full h-full border-0"
-              sandbox="allow-scripts"
-              title="Component preview"
-            ></iframe>
+            <div id="viewport-wrapper" class="w-full h-full flex justify-center transition-all duration-300">
+              <iframe
+                id="preview-iframe"
+                class="h-full border-0 transition-[width] duration-300"
+                style="width:100%"
+                sandbox="allow-scripts"
+                title="Component preview"
+              ></iframe>
+            </div>
           </div>
 
           <!-- Code view -->
@@ -117,6 +147,17 @@ const p = siteConfig.pages.aiPlayground;
               <span class="text-sm text-text-secondary">Generating...</span>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- Powered by AWS Bedrock badge -->
+      <div class="flex justify-center mt-6 reveal">
+        <div class="chip text-xs">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L3 7v10l9 5 9-5V7l-9-5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M12 22V12M3 7l9 5 9-5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+          Powered by AWS Bedrock
         </div>
       </div>
     </div>
@@ -142,6 +183,8 @@ const p = siteConfig.pages.aiPlayground;
 <script>
   const API_URL = import.meta.env.PUBLIC_AI_PLAYGROUND_URL;
   const CHAR_LIMIT = 2000;
+  const DEFAULT_PLACEHOLDER = 'A pricing card with three tiers: Starter, Pro, and Enterprise...';
+  const REFINING_PLACEHOLDER = 'Describe what to change or refine...';
 
   const promptEl = document.getElementById('ai-prompt') as HTMLTextAreaElement;
   const charCountEl = document.getElementById('char-count')!;
@@ -159,10 +202,16 @@ const p = siteConfig.pages.aiPlayground;
   const iframe = document.getElementById('preview-iframe') as HTMLIFrameElement;
   const loadingIndicator = document.getElementById('loading-indicator')!;
   const exampleChips = document.querySelectorAll('.example-chip');
+  const viewportBar = document.getElementById('viewport-bar')!;
+  const viewportBtns = document.querySelectorAll('.viewport-btn');
+  const conversationBar = document.getElementById('conversation-bar')!;
+  const refiningLabel = document.getElementById('refining-label')!;
+  const newComponentBtn = document.getElementById('new-component-btn')!;
 
   let generatedHtml = '';
   let isGenerating = false;
   let activeTab: 'preview' | 'code' = 'preview';
+  let conversationHistory: Array<{role: string, content: string}> = [];
 
   // Character counter
   promptEl.addEventListener('input', () => {
@@ -200,6 +249,53 @@ const p = siteConfig.pages.aiPlayground;
 
   tabPreview.addEventListener('click', () => setActiveTab('preview'));
   tabCode.addEventListener('click', () => setActiveTab('code'));
+
+  // Viewport toggle
+  const viewportWidths: Record<string, string> = { desktop: '100%', tablet: '768px', mobile: '375px' };
+
+  viewportBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const vp = (btn as HTMLElement).dataset.viewport!;
+      iframe.style.width = viewportWidths[vp];
+      viewportBtns.forEach(b => {
+        if (b === btn) {
+          b.classList.add('bg-purple/10', 'text-purple', 'border', 'border-purple/20');
+          b.classList.remove('text-text-muted');
+        } else {
+          b.classList.remove('bg-purple/10', 'text-purple', 'border', 'border-purple/20');
+          b.classList.add('text-text-muted');
+        }
+      });
+    });
+  });
+
+  // Syntax highlighting for HTML
+  function highlightHtml(code: string): string {
+    // Escape HTML entities first
+    let escaped = code
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+
+    // HTML comments
+    escaped = escaped.replace(/&lt;!--[\s\S]*?--&gt;/g, '<span class="hl-comment">$&</span>');
+
+    // Tags: match <tagname ... > and </tagname>
+    escaped = escaped.replace(
+      /(&lt;\/?)([\w-]+)((?:\s+[\s\S]*?)?)(\/?\s*&gt;)/g,
+      (_match, open, tag, attrs, close) => {
+        // Highlight attribute names and string values within attrs
+        const highlightedAttrs = attrs.replace(
+          /([\w-]+)(=)(&quot;[^&]*&quot;)/g,
+          '<span class="hl-attr">$1</span>$2<span class="hl-string">$3</span>'
+        );
+        return `<span class="hl-bracket">${open}</span><span class="hl-tag">${tag}</span>${highlightedAttrs}<span class="hl-bracket">${close}</span>`;
+      }
+    );
+
+    return escaped;
+  }
 
   // Sanitize HTML — strip <script>, on* handlers, javascript: URLs
   function sanitizeHtml(html: string): string {
@@ -253,6 +349,40 @@ const p = siteConfig.pages.aiPlayground;
     }
   }
 
+  // Update conversation UI
+  function updateConversationUI() {
+    if (conversationHistory.length > 0) {
+      conversationBar.classList.remove('hidden');
+      const msgCount = conversationHistory.length;
+      refiningLabel.innerHTML = `Refining &middot; ${msgCount} message${msgCount !== 1 ? 's' : ''}`;
+      promptEl.placeholder = REFINING_PLACEHOLDER;
+    } else {
+      conversationBar.classList.add('hidden');
+      promptEl.placeholder = DEFAULT_PLACEHOLDER;
+    }
+  }
+
+  // Reset conversation
+  function resetConversation() {
+    conversationHistory = [];
+    updateConversationUI();
+  }
+
+  // New Component button
+  newComponentBtn.addEventListener('click', () => {
+    resetConversation();
+    generatedHtml = '';
+    codeDisplay.innerHTML = '';
+    iframe.srcdoc = '';
+    iframe.style.height = '';
+    emptyState.classList.remove('hidden');
+    setActionButtonsVisible(false);
+    viewportBar.classList.add('hidden');
+    promptEl.value = '';
+    charCountEl.textContent = `0 / ${CHAR_LIMIT}`;
+    promptEl.focus();
+  });
+
   // Copy to clipboard
   copyBtn.addEventListener('click', async () => {
     if (!generatedHtml) return;
@@ -276,11 +406,13 @@ const p = siteConfig.pages.aiPlayground;
   // Clear
   clearBtn.addEventListener('click', () => {
     generatedHtml = '';
-    codeDisplay.textContent = '';
+    codeDisplay.innerHTML = '';
     iframe.srcdoc = '';
     iframe.style.height = '';
     emptyState.classList.remove('hidden');
     setActionButtonsVisible(false);
+    viewportBar.classList.add('hidden');
+    resetConversation();
   });
 
   // Ctrl/Cmd + Enter shortcut
@@ -296,6 +428,15 @@ const p = siteConfig.pages.aiPlayground;
     const prompt = promptEl.value.trim();
     if (!prompt || isGenerating || !API_URL) return;
 
+    // Build user message for conversation
+    const isFirstMessage = conversationHistory.length === 0;
+    const userContent = isFirstMessage
+      ? `Generate a UI component: ${prompt}`
+      : prompt;
+
+    // Add user message to history
+    conversationHistory.push({ role: 'user', content: userContent });
+
     isGenerating = true;
     generatedHtml = '';
     generateBtn.disabled = true;
@@ -304,13 +445,16 @@ const p = siteConfig.pages.aiPlayground;
     loadingIndicator.classList.remove('hidden');
     emptyState.classList.add('hidden');
     setActionButtonsVisible(false);
-    codeDisplay.textContent = '';
+    codeDisplay.innerHTML = '';
 
     try {
       const res = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt }),
+        body: JSON.stringify({
+          prompt,
+          messages: conversationHistory,
+        }),
       });
 
       // Update remaining requests
@@ -326,10 +470,13 @@ const p = siteConfig.pages.aiPlayground;
           const parsed = JSON.parse(err);
           message = parsed.error || message;
         } catch {}
+        // Remove the failed user message from history
+        conversationHistory.pop();
         throw new Error(message);
       }
 
       loadingIndicator.classList.add('hidden');
+      viewportBar.classList.remove('hidden');
 
       const reader = res.body?.getReader();
       if (!reader) throw new Error('Streaming not supported');
@@ -346,11 +493,17 @@ const p = siteConfig.pages.aiPlayground;
         // Update live preview
         renderToIframe(generatedHtml);
 
-        // Update code view
-        codeDisplay.textContent = generatedHtml;
+        // Update code view with syntax highlighting
+        codeDisplay.innerHTML = highlightHtml(generatedHtml);
       }
 
+      // Push assistant response to conversation history
+      conversationHistory.push({ role: 'assistant', content: generatedHtml });
+      updateConversationUI();
+
       setActionButtonsVisible(true);
+      promptEl.value = '';
+      charCountEl.textContent = `0 / ${CHAR_LIMIT}`;
     } catch (err) {
       loadingIndicator.classList.add('hidden');
       emptyState.classList.remove('hidden');
@@ -362,6 +515,7 @@ const p = siteConfig.pages.aiPlayground;
       setTimeout(() => {
         errorDiv.outerHTML = `<div id="empty-state" class="absolute inset-0 flex items-center justify-center bg-navy/95"><div class="text-center"><svg class="w-12 h-12 text-text-muted/30 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg><p class="text-sm text-text-muted">Your generated component will appear here</p></div></div>`;
       }, 5000);
+      updateConversationUI();
     } finally {
       isGenerating = false;
       generateBtn.disabled = false;

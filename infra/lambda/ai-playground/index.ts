@@ -68,7 +68,8 @@ Rules:
 - NO external resources (images, fonts, links) — use inline SVGs for icons
 - NO <html>, <head>, or <body> tags — just the component markup
 - Make components visually polished with rounded corners, subtle borders, shadows, and gradients
-- Use the Inter font family via Tailwind's font-sans`;
+- Use the Inter font family via Tailwind's font-sans
+- When the user sends follow-up messages, they are refining the previous component. Output the COMPLETE updated component — not a diff or partial update.`;
 
 // @ts-expect-error — awslambda global type for streaming handler
 export const handler = awslambda.streamifyResponse(
@@ -102,12 +103,14 @@ export const handler = awslambda.streamifyResponse(
 
     // Parse body
     let prompt: string;
+    let messages: Array<{ role: string; content: string }> | undefined;
     try {
       const bodyStr = event.isBase64Encoded
         ? Buffer.from(event.body ?? "", "base64").toString("utf-8")
         : event.body ?? "{}";
       const data = JSON.parse(bodyStr);
       prompt = data.prompt;
+      messages = data.messages;
     } catch {
       // @ts-expect-error — awslambda HttpResponseStream type
       responseStream = awslambda.HttpResponseStream.from(responseStream, {
@@ -143,6 +146,32 @@ export const handler = awslambda.streamifyResponse(
       return;
     }
 
+    // Validate messages array if provided (max 20 messages, max 10 conversation turns)
+    if (messages) {
+      if (!Array.isArray(messages) || messages.length > 20) {
+        // @ts-expect-error — awslambda HttpResponseStream type
+        responseStream = awslambda.HttpResponseStream.from(responseStream, {
+          statusCode: 400,
+          headers: { ...baseHeaders, "Content-Type": "application/json" },
+        });
+        responseStream.write(JSON.stringify({ error: "messages must be an array with at most 20 entries" }));
+        responseStream.end();
+        return;
+      }
+      for (const msg of messages) {
+        if (!msg.role || !msg.content || !["user", "assistant"].includes(msg.role)) {
+          // @ts-expect-error — awslambda HttpResponseStream type
+          responseStream = awslambda.HttpResponseStream.from(responseStream, {
+            statusCode: 400,
+            headers: { ...baseHeaders, "Content-Type": "application/json" },
+          });
+          responseStream.write(JSON.stringify({ error: "each message must have role (user|assistant) and content" }));
+          responseStream.end();
+          return;
+        }
+      }
+    }
+
     // Rate limit check
     const ip = event.requestContext.http.sourceIp;
     const { allowed, remaining } = await checkRateLimit(ip);
@@ -163,6 +192,11 @@ export const handler = awslambda.streamifyResponse(
 
     // Bedrock streaming call
     try {
+      // Build messages: use conversation history if provided, otherwise single prompt
+      const bedrockMessages = messages && messages.length > 0
+        ? messages
+        : [{ role: "user", content: `Generate a UI component: ${prompt.trim()}` }];
+
       const bedrockResponse = await bedrock.send(
         new InvokeModelWithResponseStreamCommand({
           modelId: MODEL_ID,
@@ -172,12 +206,7 @@ export const handler = awslambda.streamifyResponse(
             anthropic_version: "bedrock-2023-05-31",
             max_tokens: 4096,
             system: SYSTEM_PROMPT,
-            messages: [
-              {
-                role: "user",
-                content: `Generate a UI component: ${prompt.trim()}`,
-              },
-            ],
+            messages: bedrockMessages,
           }),
         })
       );

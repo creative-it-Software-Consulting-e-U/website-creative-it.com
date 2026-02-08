@@ -272,6 +272,13 @@ body {
   background: var(--color-text-muted);
 }
 
+/* Syntax Highlighting */
+.hl-bracket { color: #6B7394; }
+.hl-tag { color: #23F0C3; }
+.hl-attr { color: #A163F1; }
+.hl-string { color: #9CA3FF; }
+.hl-comment { color: #8F96BD; font-style: italic; }
+
 /* Focus States */
 *:focus-visible {
   outline: 2px solid var(--color-indigo);

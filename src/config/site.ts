@@ -444,6 +444,14 @@ export const siteConfig = {
         copiedButton: "Copied!",
         clearButton: "Clear",
         emptyState: "Your generated component will appear here",
+        desktopLabel: "Desktop",
+        tabletLabel: "Tablet",
+        mobileLabel: "Mobile",
+      },
+      conversation: {
+        newComponentButton: "New Component",
+        refiningLabel: "Refining",
+        refiningPlaceholder: "Describe what to change or refine...",
       },
       cta: {
         headline: "Want Custom AI Solutions?",

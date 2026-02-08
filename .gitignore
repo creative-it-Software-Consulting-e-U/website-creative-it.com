@@ -30,5 +30,6 @@ input/
 # CDK
 infra/dist/
 infra/cdk.out/
+infra/cdk-outputs.json
 infra/node_modules/
 cdk.context.json

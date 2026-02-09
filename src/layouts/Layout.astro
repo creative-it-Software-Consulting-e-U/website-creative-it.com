@@ -69,6 +69,14 @@ const pageDescription = description || siteConfig.description;
     <RemixToggle />
     <TranslationToggle />
 
+    <!-- Pulse ring — positioned as a sibling BEHIND the button (z-40 < z-50)
+         so animated transform:scale(2) cannot block iOS Safari touch events -->
+    <span
+      id="ai-tools-pulse"
+      class="fixed left-6 z-40 w-14 h-14 rounded-full bg-purple/30 animate-ping opacity-20 pointer-events-none"
+      style="bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px))"
+    ></span>
+
     <!-- AI Tools Parent Button -->
     <button
       id="ai-tools-toggle"
@@ -85,8 +93,6 @@ const pageDescription = description || siteConfig.description;
       <svg id="ai-tools-close-icon" class="hidden w-6 h-6 text-white transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
       </svg>
-      <!-- Pulse ring -->
-      <span id="ai-tools-pulse" class="absolute inset-0 rounded-full bg-purple/30 animate-ping opacity-20 pointer-events-none"></span>
     </button>
 
     <!-- Labels that appear next to sub-buttons -->
@@ -115,11 +121,9 @@ const pageDescription = description || siteConfig.description;
 
         let isMenuOpen = false;
 
-        // Stop pulse animation after 8s to reduce iOS rendering load
-        setTimeout(() => {
-          pulse.style.animationPlayState = 'paused';
-          pulse.style.opacity = '0';
-        }, 8000);
+        // Remove pulse entirely after 8s (display:none stops the animation
+        // AND removes the element from the compositing tree)
+        setTimeout(() => { pulse.style.display = 'none'; }, 8000);
 
         function showSub(el: HTMLElement, delay: number) {
           setTimeout(() => {
@@ -145,7 +149,7 @@ const pageDescription = description || siteConfig.description;
           isMenuOpen = true;
           icon.classList.add('hidden');
           closeIcon.classList.remove('hidden');
-          pulse.classList.add('hidden');
+          pulse.style.display = 'none';
           toggle.classList.add('rotate-90');
 
           showSub(chatBtn, 0);
@@ -160,7 +164,6 @@ const pageDescription = description || siteConfig.description;
           isMenuOpen = false;
           icon.classList.remove('hidden');
           closeIcon.classList.add('hidden');
-          pulse.classList.remove('hidden');
           toggle.classList.remove('rotate-90');
 
           hideSub(labelTranslate, 0);
@@ -176,9 +179,22 @@ const pageDescription = description || siteConfig.description;
           else openMenu();
         }
 
-        // touch-action: manipulation (set in global.css) removes the 300ms
-        // tap delay on iOS, so a simple click handler works everywhere.
+        // Primary: click handler (works on desktop + mobile with touch-action: manipulation)
         toggle.addEventListener('click', handleToggle);
+
+        // iOS Safari fallback: if the button itself doesn't receive touch events
+        // (due to compositor bugs), catch them at the document level and check bounds
+        document.addEventListener('touchend', (e) => {
+          if (e.target === toggle || toggle.contains(e.target as Node)) return; // already handled by click
+          const touch = e.changedTouches[0];
+          if (!touch) return;
+          const rect = toggle.getBoundingClientRect();
+          if (touch.clientX >= rect.left && touch.clientX <= rect.right &&
+              touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
+            e.preventDefault();
+            handleToggle();
+          }
+        }, { passive: false });
 
         // Hide labels when a sub-button opens its panel
         chatBtn.addEventListener('click', hideAllLabels);

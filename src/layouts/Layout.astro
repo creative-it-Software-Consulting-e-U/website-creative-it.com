@@ -176,19 +176,25 @@ const pageDescription = description || siteConfig.description;
           else openMenu();
         }
 
-        // iOS Safari: touchend fires more reliably than click on fixed-position elements.
-        // We track touchmove to avoid toggling on scroll/swipe gestures.
-        let touchMoved = false;
-        toggle.addEventListener('touchstart', () => { touchMoved = false; }, { passive: true });
-        toggle.addEventListener('touchmove', () => { touchMoved = true; }, { passive: true });
+        // Use a single handler that works on both touch and mouse.
+        // A flag prevents the click that follows touchend from double-firing.
+        let handledByTouch = false;
+
+        toggle.addEventListener('touchstart', () => { handledByTouch = false; }, { passive: true });
+        toggle.addEventListener('touchmove', () => { handledByTouch = false; }, { passive: true });
         toggle.addEventListener('touchend', (e) => {
-          if (!touchMoved) {
-            e.preventDefault(); // suppress the subsequent click
-            handleToggle();
+          e.preventDefault(); // suppress the subsequent click on iOS
+          handledByTouch = true;
+          handleToggle();
+        }, { passive: false });
+
+        toggle.addEventListener('click', () => {
+          if (handledByTouch) {
+            handledByTouch = false;
+            return; // already handled by touchend
           }
+          handleToggle();
         });
-        // Fallback for non-touch (desktop) — the preventDefault above stops this from double-firing on touch devices
-        toggle.addEventListener('click', handleToggle);
 
         // Hide labels when a sub-button opens its panel
         chatBtn.addEventListener('click', hideAllLabels);

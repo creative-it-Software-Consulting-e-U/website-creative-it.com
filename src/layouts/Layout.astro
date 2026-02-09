@@ -3,6 +3,9 @@ import "../styles/global.css";
 import { siteConfig } from "../config/site";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
+import ChatWidget from "../components/ChatWidget.astro";
+import RemixToggle from "../components/RemixToggle.astro";
+import TranslationToggle from "../components/TranslationToggle.astro";
 
 interface Props {
   title?: string;
@@ -62,6 +65,116 @@ const pageDescription = description || siteConfig.description;
       <slot />
     </main>
     <Footer />
+    <ChatWidget />
+    <RemixToggle />
+    <TranslationToggle />
+
+    <!-- AI Tools Parent Button -->
+    <button
+      id="ai-tools-toggle"
+      class="fixed bottom-6 left-6 z-50 w-14 h-14 rounded-full bg-gradient-to-br from-purple to-indigo shadow-[0_4px_24px_rgba(161,99,241,0.3)] flex items-center justify-center cursor-pointer hover:shadow-[0_4px_32px_rgba(161,99,241,0.5)] transition-all duration-300"
+      aria-label="AI Tools"
+      title="AI-Demo-Tools ausprobieren"
+    >
+      <!-- AI sparkles icon -->
+      <svg id="ai-tools-icon" class="w-6 h-6 text-white transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z" />
+      </svg>
+      <!-- Close icon -->
+      <svg id="ai-tools-close-icon" class="hidden w-6 h-6 text-white transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+      <!-- Pulse ring -->
+      <span id="ai-tools-pulse" class="absolute inset-0 rounded-full bg-purple/30 animate-ping opacity-20"></span>
+    </button>
+
+    <!-- Labels that appear next to sub-buttons -->
+    <span id="ai-label-chat" class="fixed bottom-[5.75rem] left-[4.5rem] z-50 text-xs text-text-muted bg-surface/90 border border-white/[0.06] rounded-lg px-2.5 py-1 shadow-lg backdrop-blur-sm opacity-0 scale-0 pointer-events-none transition-all duration-300">
+      AI Chat
+    </span>
+    <span id="ai-label-remix" class="fixed bottom-[9.25rem] left-[4.5rem] z-50 text-xs text-text-muted bg-surface/90 border border-white/[0.06] rounded-lg px-2.5 py-1 shadow-lg backdrop-blur-sm opacity-0 scale-0 pointer-events-none transition-all duration-300">
+      Theme Remix
+    </span>
+    <span id="ai-label-translate" class="fixed bottom-[12.75rem] left-[4.5rem] z-50 text-xs text-text-muted bg-surface/90 border border-white/[0.06] rounded-lg px-2.5 py-1 shadow-lg backdrop-blur-sm opacity-0 scale-0 pointer-events-none transition-all duration-300">
+      Translate
+    </span>
+
+    <script>
+      (() => {
+        const toggle = document.getElementById('ai-tools-toggle')!;
+        const icon = document.getElementById('ai-tools-icon')!;
+        const closeIcon = document.getElementById('ai-tools-close-icon')!;
+        const pulse = document.getElementById('ai-tools-pulse')!;
+        const chatBtn = document.getElementById('chat-toggle')!;
+        const remixBtn = document.getElementById('remix-toggle')!;
+        const translateBtn = document.getElementById('translate-toggle')!;
+        const labelChat = document.getElementById('ai-label-chat')!;
+        const labelRemix = document.getElementById('ai-label-remix')!;
+        const labelTranslate = document.getElementById('ai-label-translate')!;
+
+        let isMenuOpen = false;
+
+        function showSub(el: HTMLElement, delay: number) {
+          setTimeout(() => {
+            el.classList.remove('scale-0', 'opacity-0', 'pointer-events-none');
+            el.classList.add('scale-100', 'opacity-100');
+          }, delay);
+        }
+
+        function hideSub(el: HTMLElement, delay: number) {
+          setTimeout(() => {
+            el.classList.add('scale-0', 'opacity-0', 'pointer-events-none');
+            el.classList.remove('scale-100', 'opacity-100');
+          }, delay);
+        }
+
+        function hideAllLabels() {
+          labelChat.classList.add('opacity-0', 'scale-0', 'pointer-events-none');
+          labelRemix.classList.add('opacity-0', 'scale-0', 'pointer-events-none');
+          labelTranslate.classList.add('opacity-0', 'scale-0', 'pointer-events-none');
+        }
+
+        function openMenu() {
+          isMenuOpen = true;
+          icon.classList.add('hidden');
+          closeIcon.classList.remove('hidden');
+          pulse.classList.add('hidden');
+          toggle.classList.add('rotate-90');
+
+          showSub(chatBtn, 0);
+          showSub(labelChat, 50);
+          showSub(remixBtn, 80);
+          showSub(labelRemix, 130);
+          showSub(translateBtn, 160);
+          showSub(labelTranslate, 210);
+        }
+
+        function closeMenu() {
+          isMenuOpen = false;
+          icon.classList.remove('hidden');
+          closeIcon.classList.add('hidden');
+          pulse.classList.remove('hidden');
+          toggle.classList.remove('rotate-90');
+
+          hideSub(labelTranslate, 0);
+          hideSub(translateBtn, 30);
+          hideSub(labelRemix, 60);
+          hideSub(remixBtn, 90);
+          hideSub(labelChat, 120);
+          hideSub(chatBtn, 150);
+        }
+
+        toggle.addEventListener('click', () => {
+          if (isMenuOpen) closeMenu();
+          else openMenu();
+        });
+
+        // Hide labels when a sub-button opens its panel
+        chatBtn.addEventListener('click', hideAllLabels);
+        remixBtn.addEventListener('click', hideAllLabels);
+        translateBtn.addEventListener('click', hideAllLabels);
+      })();
+    </script>
 
     <script>
       import '../scripts/contact-protect';

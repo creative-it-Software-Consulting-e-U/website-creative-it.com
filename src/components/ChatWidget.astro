@@ -1,0 +1,362 @@
+---
+import { siteConfig } from "../config/site";
+const c = siteConfig.chatWidget;
+---
+
+<!-- Chat Widget Toggle Button (controlled by AI Tools menu) -->
+<button
+  id="chat-toggle"
+  class="fixed bottom-[5.5rem] left-6 z-50 w-11 h-11 rounded-full bg-gradient-to-br from-purple to-indigo shadow-[0_4px_24px_rgba(161,99,241,0.3)] flex items-center justify-center cursor-pointer hover:shadow-[0_4px_32px_rgba(161,99,241,0.5)] transition-all duration-300 scale-0 opacity-0 pointer-events-none"
+  aria-label={c.buttonLabel}
+  title={c.buttonLabel}
+>
+  <!-- Chat icon -->
+  <svg id="chat-icon" class="w-5 h-5 text-white transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+  </svg>
+  <!-- Close icon -->
+  <svg id="chat-close-icon" class="hidden w-5 h-5 text-white transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+  </svg>
+</button>
+
+<!-- Chat Panel -->
+<div
+  id="chat-panel"
+  class="fixed bottom-[8.5rem] left-6 z-50 w-[380px] max-w-[calc(100vw-3rem)] hidden opacity-0 translate-y-4 transition-all duration-300"
+>
+  <div class="card-elevated rounded-2xl overflow-hidden shadow-[0_8px_48px_rgba(0,0,0,0.5)] flex flex-col" style="height: 560px;">
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-purple/20 to-indigo/10 border-b border-white/[0.06] px-5 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple to-indigo flex items-center justify-center">
+          <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-sm font-semibold text-off-white">{c.headline}</h3>
+          <a href="/how-it-works#chat-widget" class="text-[10px] text-text-muted hover:text-purple transition-colors duration-200">{c.poweredBy} &middot; How it works</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div id="chat-messages" class="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+      <!-- Welcome message -->
+      <div class="flex gap-2">
+        <div class="flex-shrink-0 w-6 h-6 rounded-full bg-gradient-to-br from-purple to-indigo flex items-center justify-center mt-1">
+          <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+        </div>
+        <div class="bg-surface border border-white/[0.06] rounded-xl rounded-tl-sm px-4 py-3 max-w-[85%]">
+          <p class="text-sm text-text-secondary leading-relaxed">Hi! I'm the creative-it AI assistant. Ask me anything about our services, process, team, or capabilities. How can I help you?</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="border-t border-white/[0.06] px-4 py-3">
+      <div class="flex gap-2">
+        <input
+          id="chat-input"
+          type="text"
+          class="flex-1 bg-navy/60 border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-off-white placeholder-text-muted focus:outline-none focus:border-indigo focus:shadow-[0_0_0_3px_rgba(99,99,241,0.15)] transition-all duration-200"
+          placeholder={c.placeholder}
+          maxlength="1000"
+        />
+        <button
+          id="chat-send"
+          class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple to-indigo flex items-center justify-center cursor-pointer hover:opacity-90 transition-opacity duration-200 flex-shrink-0"
+          aria-label="Send"
+        >
+          <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
+        </button>
+      </div>
+      <div class="flex items-center justify-between mt-2">
+        <a href="/contact" id="chat-human-btn" class="text-xs text-text-muted hover:text-purple transition-colors duration-200">{c.talkToHuman}</a>
+        <span id="chat-remaining" class="text-[10px] text-text-muted"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const CHAT_API_URL = import.meta.env.PUBLIC_KNOWLEDGE_BOT_URL;
+
+  const chatToggle = document.getElementById('chat-toggle')!;
+  const chatPanel = document.getElementById('chat-panel')!;
+  const chatIcon = document.getElementById('chat-icon')!;
+  const chatCloseIcon = document.getElementById('chat-close-icon')!;
+  const chatMessages = document.getElementById('chat-messages')!;
+  const chatInput = document.getElementById('chat-input') as HTMLInputElement;
+  const chatSend = document.getElementById('chat-send') as HTMLButtonElement;
+  const chatRemaining = document.getElementById('chat-remaining')!;
+
+  let isOpen = false;
+  let isSending = false;
+  let sessionId: string | undefined;
+
+  function toggleChat() {
+    isOpen = !isOpen;
+    if (isOpen) {
+      chatPanel.classList.remove('hidden');
+      requestAnimationFrame(() => {
+        chatPanel.classList.remove('opacity-0', 'translate-y-4');
+      });
+      chatIcon.classList.add('hidden');
+      chatCloseIcon.classList.remove('hidden');
+      chatInput.focus();
+    } else {
+      chatPanel.classList.add('opacity-0', 'translate-y-4');
+      setTimeout(() => chatPanel.classList.add('hidden'), 300);
+      chatIcon.classList.remove('hidden');
+      chatCloseIcon.classList.add('hidden');
+    }
+  }
+
+  chatToggle.addEventListener('click', toggleChat);
+
+  function addMessage(role: 'user' | 'bot', text: string) {
+    const wrapper = document.createElement('div');
+
+    if (role === 'user') {
+      wrapper.className = 'flex justify-end';
+      wrapper.innerHTML = `
+        <div class="bg-purple/20 border border-purple/20 rounded-xl rounded-tr-sm px-4 py-3 max-w-[85%]">
+          <p class="text-sm text-off-white leading-relaxed">${escapeHtml(text)}</p>
+        </div>
+      `;
+    } else {
+      wrapper.className = 'flex gap-2';
+      wrapper.innerHTML = `
+        <div class="flex-shrink-0 w-6 h-6 rounded-full bg-gradient-to-br from-purple to-indigo flex items-center justify-center mt-1">
+          <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+        </div>
+        <div class="bg-surface border border-white/[0.06] rounded-xl rounded-tl-sm px-4 py-3 max-w-[85%]">
+          <div class="chat-md text-sm text-text-secondary leading-relaxed">${renderMarkdown(text)}</div>
+        </div>
+      `;
+    }
+
+    chatMessages.appendChild(wrapper);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    return wrapper;
+  }
+
+  function addTypingIndicator(): HTMLElement {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'flex gap-2';
+    wrapper.id = 'typing-indicator';
+    wrapper.innerHTML = `
+      <div class="flex-shrink-0 w-6 h-6 rounded-full bg-gradient-to-br from-purple to-indigo flex items-center justify-center mt-1">
+        <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+      </div>
+      <div class="bg-surface border border-white/[0.06] rounded-xl rounded-tl-sm px-4 py-3">
+        <div class="flex gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-purple/50 animate-bounce" style="animation-delay: 0ms"></span>
+          <span class="w-2 h-2 rounded-full bg-purple/50 animate-bounce" style="animation-delay: 150ms"></span>
+          <span class="w-2 h-2 rounded-full bg-purple/50 animate-bounce" style="animation-delay: 300ms"></span>
+        </div>
+      </div>
+    `;
+    chatMessages.appendChild(wrapper);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    return wrapper;
+  }
+
+  function escapeHtml(text: string): string {
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function renderMarkdown(text: string): string {
+    // Split into lines for block-level processing
+    const lines = text.split('\n');
+    let html = '';
+    let inList = false;
+    let listType = '';
+
+    for (let i = 0; i < lines.length; i++) {
+      let line = escapeHtml(lines[i]);
+
+      // Headings
+      if (line.match(/^### /)) {
+        if (inList) { html += `</${listType}>`; inList = false; }
+        html += `<h4 class="font-semibold text-off-white mt-2 mb-1">${renderInline(line.slice(4))}</h4>`;
+        continue;
+      }
+      if (line.match(/^## /)) {
+        if (inList) { html += `</${listType}>`; inList = false; }
+        html += `<h3 class="font-semibold text-off-white mt-2 mb-1">${renderInline(line.slice(3))}</h3>`;
+        continue;
+      }
+
+      // Unordered list items
+      if (line.match(/^[-*] /)) {
+        if (!inList || listType !== 'ul') {
+          if (inList) html += `</${listType}>`;
+          html += '<ul class="list-disc list-inside space-y-0.5 my-1">';
+          inList = true;
+          listType = 'ul';
+        }
+        html += `<li>${renderInline(line.replace(/^[-*] /, ''))}</li>`;
+        continue;
+      }
+
+      // Numbered list items
+      if (line.match(/^\d+\. /)) {
+        if (!inList || listType !== 'ol') {
+          if (inList) html += `</${listType}>`;
+          html += '<ol class="list-decimal list-inside space-y-0.5 my-1">';
+          inList = true;
+          listType = 'ol';
+        }
+        html += `<li>${renderInline(line.replace(/^\d+\. /, ''))}</li>`;
+        continue;
+      }
+
+      // Close any open list
+      if (inList) { html += `</${listType}>`; inList = false; }
+
+      // Empty line = paragraph break
+      if (line.trim() === '') {
+        html += '<br>';
+        continue;
+      }
+
+      // Regular paragraph
+      html += `<p>${renderInline(line)}</p>`;
+    }
+
+    if (inList) html += `</${listType}>`;
+    return html;
+  }
+
+  function renderInline(text: string): string {
+    return text
+      // Bold
+      .replace(/\*\*(.+?)\*\*/g, '<strong class="text-off-white font-semibold">$1</strong>')
+      // Italic
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      // Inline code
+      .replace(/`(.+?)`/g, '<code class="bg-navy/60 px-1 py-0.5 rounded text-cyan text-xs">$1</code>')
+      // Links
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-purple hover:text-cyan underline transition-colors">$1</a>');
+  }
+
+  async function sendMessage() {
+    const question = chatInput.value.trim();
+    if (!question || isSending || !CHAT_API_URL) return;
+
+    isSending = true;
+    chatInput.value = '';
+    chatSend.classList.add('opacity-50');
+
+    addMessage('user', question);
+    const typingEl = addTypingIndicator();
+
+    try {
+      const res = await fetch(CHAT_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question, sessionId }),
+      });
+
+      const remaining = res.headers.get('X-Remaining-Requests');
+      if (remaining !== null) {
+        chatRemaining.textContent = `${remaining} questions remaining`;
+      }
+
+      const newSessionId = res.headers.get('X-Session-Id');
+      if (newSessionId) sessionId = newSessionId;
+
+      if (!res.ok) {
+        const err = await res.text();
+        let message = 'Sorry, I encountered an error. Please try again.';
+        try { const parsed = JSON.parse(err); message = parsed.error || message; } catch {}
+        typingEl.remove();
+        addMessage('bot', message);
+        return;
+      }
+
+      // Stream response
+      const reader = res.body?.getReader();
+      if (!reader) {
+        typingEl.remove();
+        addMessage('bot', 'Sorry, streaming is not supported in your browser.');
+        return;
+      }
+
+      typingEl.remove();
+
+      // Create bot message element for streaming
+      const botWrapper = document.createElement('div');
+      botWrapper.className = 'flex gap-2';
+      botWrapper.innerHTML = `
+        <div class="flex-shrink-0 w-6 h-6 rounded-full bg-gradient-to-br from-purple to-indigo flex items-center justify-center mt-1">
+          <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+        </div>
+        <div class="bg-surface border border-white/[0.06] rounded-xl rounded-tl-sm px-4 py-3 max-w-[85%]">
+          <div id="streaming-text" class="chat-md text-sm text-text-secondary leading-relaxed"></div>
+        </div>
+      `;
+      chatMessages.appendChild(botWrapper);
+
+      // Scroll so the start of the bot message is visible
+      botWrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      const streamingText = document.getElementById('streaming-text')!;
+      const decoder = new TextDecoder();
+      let fullText = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        fullText += chunk;
+
+        streamingText.innerHTML = renderMarkdown(fullText);
+      }
+
+      streamingText.removeAttribute('id');
+    } catch (err) {
+      typingEl?.remove();
+      addMessage('bot', 'Sorry, I encountered a connection error. Please try again.');
+    } finally {
+      isSending = false;
+      chatSend.classList.remove('opacity-50');
+    }
+  }
+
+  chatSend.addEventListener('click', sendMessage);
+  chatInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+</script>
+
+<style>
+  .chat-md p {
+    margin-bottom: 0.25rem;
+  }
+  .chat-md p:last-child {
+    margin-bottom: 0;
+  }
+  .chat-md h3, .chat-md h4 {
+    font-size: 0.875rem;
+  }
+  .chat-md ul, .chat-md ol {
+    font-size: 0.8125rem;
+  }
+  .chat-md li {
+    color: var(--color-text-secondary);
+  }
+  .chat-md br + br {
+    display: none;
+  }
+</style>

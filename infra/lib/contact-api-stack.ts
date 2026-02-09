@@ -10,6 +10,10 @@ import * as apigwv2Integrations from "aws-cdk-lib/aws-apigatewayv2-integrations"
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import * as scheduler from "aws-cdk-lib/aws-scheduler";
+import * as s3 from "aws-cdk-lib/aws-s3";
+import * as s3deploy from "aws-cdk-lib/aws-s3-deployment";
+import * as opensearchserverless from "aws-cdk-lib/aws-opensearchserverless";
+import * as cr from "aws-cdk-lib/custom-resources";
 import { Construct } from "constructs";
 import * as path from "path";
 
@@ -240,6 +244,560 @@ export class ContactApiStack extends cdk.Stack {
     // DynamoDB access for rate limiting
     githubStatsTable.grantReadWriteData(aiPlaygroundHandler);
 
+    // ── Commit Story Lambda (non-streaming, API Gateway) ────────────────
+    const commitStoryHandler = new lambdaNode.NodejsFunction(
+      this,
+      "CommitStoryHandler",
+      {
+        runtime: lambda.Runtime.NODEJS_22_X,
+        architecture: lambda.Architecture.ARM_64,
+        memorySize: 512,
+        timeout: cdk.Duration.seconds(30),
+        entry: path.join(
+          __dirname,
+          "..",
+          "lambda",
+          "commit-story",
+          "index.ts"
+        ),
+        handler: "handler",
+        bundling: {
+          format: lambdaNode.OutputFormat.ESM,
+          mainFields: ["module", "main"],
+          externalModules: ["@aws-sdk/*"],
+        },
+        environment: {
+          TABLE_NAME: githubStatsTable.tableName,
+          ALLOWED_ORIGINS: config.allowedOrigins.join(","),
+        },
+      }
+    );
+
+    githubStatsTable.grantReadWriteData(commitStoryHandler);
+
+    commitStoryHandler.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ["bedrock:InvokeModel"],
+        resources: [
+          `arn:aws:bedrock:*:${this.account}:inference-profile/eu.anthropic.claude-sonnet-4-20250514-v1:0`,
+          "arn:aws:bedrock:eu-*::foundation-model/anthropic.claude-sonnet-4-20250514-v1:0",
+        ],
+      })
+    );
+
+    commitStoryHandler.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: [
+          "aws-marketplace:ViewSubscriptions",
+          "aws-marketplace:Subscribe",
+        ],
+        resources: ["*"],
+      })
+    );
+
+    // ── Tech Advisor Lambda (Bedrock streaming) ─────────────────────────
+    const techAdvisorHandler = new lambdaNode.NodejsFunction(
+      this,
+      "TechAdvisorHandler",
+      {
+        runtime: lambda.Runtime.NODEJS_22_X,
+        architecture: lambda.Architecture.ARM_64,
+        memorySize: 512,
+        timeout: cdk.Duration.seconds(60),
+        entry: path.join(
+          __dirname,
+          "..",
+          "lambda",
+          "tech-advisor",
+          "index.ts"
+        ),
+        handler: "handler",
+        bundling: {
+          format: lambdaNode.OutputFormat.ESM,
+          mainFields: ["module", "main"],
+          externalModules: [
+            "@aws-sdk/client-dynamodb",
+            "@aws-sdk/lib-dynamodb",
+          ],
+        },
+        environment: {
+          TABLE_NAME: githubStatsTable.tableName,
+        },
+      }
+    );
+
+    const techAdvisorUrl = techAdvisorHandler.addFunctionUrl({
+      authType: lambda.FunctionUrlAuthType.NONE,
+      invokeMode: lambda.InvokeMode.RESPONSE_STREAM,
+      cors: {
+        allowedOrigins: ["*"],
+        allowedMethods: [lambda.HttpMethod.POST],
+        allowedHeaders: ["Content-Type"],
+        exposedHeaders: ["X-Remaining-Requests"],
+        maxAge: cdk.Duration.hours(1),
+      },
+    });
+
+    techAdvisorHandler.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ["bedrock:InvokeModelWithResponseStream"],
+        resources: [
+          `arn:aws:bedrock:*:${this.account}:inference-profile/eu.anthropic.claude-sonnet-4-20250514-v1:0`,
+          "arn:aws:bedrock:eu-*::foundation-model/anthropic.claude-sonnet-4-20250514-v1:0",
+        ],
+      })
+    );
+
+    techAdvisorHandler.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: [
+          "aws-marketplace:ViewSubscriptions",
+          "aws-marketplace:Subscribe",
+        ],
+        resources: ["*"],
+      })
+    );
+
+    githubStatsTable.grantReadWriteData(techAdvisorHandler);
+
+    // ── Website Remix Lambda (Bedrock streaming) ────────────────────────
+    const websiteRemixHandler = new lambdaNode.NodejsFunction(
+      this,
+      "WebsiteRemixHandler",
+      {
+        runtime: lambda.Runtime.NODEJS_22_X,
+        architecture: lambda.Architecture.ARM_64,
+        memorySize: 512,
+        timeout: cdk.Duration.seconds(60),
+        entry: path.join(
+          __dirname,
+          "..",
+          "lambda",
+          "website-remix",
+          "index.ts"
+        ),
+        handler: "handler",
+        bundling: {
+          format: lambdaNode.OutputFormat.ESM,
+          mainFields: ["module", "main"],
+          externalModules: [
+            "@aws-sdk/client-dynamodb",
+            "@aws-sdk/lib-dynamodb",
+          ],
+        },
+        environment: {
+          TABLE_NAME: githubStatsTable.tableName,
+        },
+      }
+    );
+
+    const websiteRemixUrl = websiteRemixHandler.addFunctionUrl({
+      authType: lambda.FunctionUrlAuthType.NONE,
+      invokeMode: lambda.InvokeMode.RESPONSE_STREAM,
+      cors: {
+        allowedOrigins: ["*"],
+        allowedMethods: [lambda.HttpMethod.POST],
+        allowedHeaders: ["Content-Type"],
+        exposedHeaders: ["X-Remaining-Requests"],
+        maxAge: cdk.Duration.hours(1),
+      },
+    });
+
+    websiteRemixHandler.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ["bedrock:InvokeModelWithResponseStream"],
+        resources: [
+          `arn:aws:bedrock:*:${this.account}:inference-profile/eu.anthropic.claude-sonnet-4-20250514-v1:0`,
+          "arn:aws:bedrock:eu-*::foundation-model/anthropic.claude-sonnet-4-20250514-v1:0",
+        ],
+      })
+    );
+
+    websiteRemixHandler.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: [
+          "aws-marketplace:ViewSubscriptions",
+          "aws-marketplace:Subscribe",
+        ],
+        resources: ["*"],
+      })
+    );
+
+    githubStatsTable.grantReadWriteData(websiteRemixHandler);
+
+    // ── Live Translation Lambda (Bedrock streaming) ──────────────────────
+    const liveTranslationHandler = new lambdaNode.NodejsFunction(
+      this,
+      "LiveTranslationHandler",
+      {
+        runtime: lambda.Runtime.NODEJS_22_X,
+        architecture: lambda.Architecture.ARM_64,
+        memorySize: 512,
+        timeout: cdk.Duration.seconds(60),
+        entry: path.join(
+          __dirname,
+          "..",
+          "lambda",
+          "live-translation",
+          "index.ts"
+        ),
+        handler: "handler",
+        bundling: {
+          format: lambdaNode.OutputFormat.ESM,
+          mainFields: ["module", "main"],
+          externalModules: [
+            "@aws-sdk/client-dynamodb",
+            "@aws-sdk/lib-dynamodb",
+          ],
+        },
+        environment: {
+          TABLE_NAME: githubStatsTable.tableName,
+        },
+      }
+    );
+
+    const liveTranslationUrl = liveTranslationHandler.addFunctionUrl({
+      authType: lambda.FunctionUrlAuthType.NONE,
+      invokeMode: lambda.InvokeMode.RESPONSE_STREAM,
+      cors: {
+        allowedOrigins: ["*"],
+        allowedMethods: [lambda.HttpMethod.POST],
+        allowedHeaders: ["Content-Type"],
+        exposedHeaders: ["X-Remaining-Requests"],
+        maxAge: cdk.Duration.hours(1),
+      },
+    });
+
+    liveTranslationHandler.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ["bedrock:InvokeModelWithResponseStream"],
+        resources: [
+          `arn:aws:bedrock:*:${this.account}:inference-profile/eu.anthropic.claude-sonnet-4-20250514-v1:0`,
+          "arn:aws:bedrock:eu-*::foundation-model/anthropic.claude-sonnet-4-20250514-v1:0",
+        ],
+      })
+    );
+
+    liveTranslationHandler.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: [
+          "aws-marketplace:ViewSubscriptions",
+          "aws-marketplace:Subscribe",
+        ],
+        resources: ["*"],
+      })
+    );
+
+    githubStatsTable.grantReadWriteData(liveTranslationHandler);
+
+    // ── Agent Visualizer Lambda (Bedrock streaming) ─────────────────────
+    const agentVisualizerHandler = new lambdaNode.NodejsFunction(
+      this,
+      "AgentVisualizerHandler",
+      {
+        runtime: lambda.Runtime.NODEJS_22_X,
+        architecture: lambda.Architecture.ARM_64,
+        memorySize: 512,
+        timeout: cdk.Duration.seconds(60),
+        entry: path.join(
+          __dirname,
+          "..",
+          "lambda",
+          "agent-visualizer",
+          "index.ts"
+        ),
+        handler: "handler",
+        bundling: {
+          format: lambdaNode.OutputFormat.ESM,
+          mainFields: ["module", "main"],
+          externalModules: [
+            "@aws-sdk/client-dynamodb",
+            "@aws-sdk/lib-dynamodb",
+          ],
+        },
+        environment: {
+          TABLE_NAME: githubStatsTable.tableName,
+        },
+      }
+    );
+
+    const agentVisualizerUrl = agentVisualizerHandler.addFunctionUrl({
+      authType: lambda.FunctionUrlAuthType.NONE,
+      invokeMode: lambda.InvokeMode.RESPONSE_STREAM,
+      cors: {
+        allowedOrigins: ["*"],
+        allowedMethods: [lambda.HttpMethod.POST],
+        allowedHeaders: ["Content-Type"],
+        exposedHeaders: ["X-Remaining-Requests"],
+        maxAge: cdk.Duration.hours(1),
+      },
+    });
+
+    agentVisualizerHandler.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ["bedrock:InvokeModelWithResponseStream"],
+        resources: [
+          `arn:aws:bedrock:*:${this.account}:inference-profile/eu.anthropic.claude-sonnet-4-20250514-v1:0`,
+          "arn:aws:bedrock:eu-*::foundation-model/anthropic.claude-sonnet-4-20250514-v1:0",
+        ],
+      })
+    );
+
+    agentVisualizerHandler.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: [
+          "aws-marketplace:ViewSubscriptions",
+          "aws-marketplace:Subscribe",
+        ],
+        resources: ["*"],
+      })
+    );
+
+    githubStatsTable.grantReadWriteData(agentVisualizerHandler);
+
+    // ── Knowledge Bot Infrastructure (S3 + Bedrock Knowledge Base) ──────
+
+    // S3 bucket for knowledge base documents
+    const knowledgeBucket = new s3.Bucket(this, "KnowledgeBucket", {
+      bucketName: `creative-it-knowledge-${config.envName}`,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+    });
+
+    // Deploy knowledge base documents to S3
+    const kbDocsDeploy = new s3deploy.BucketDeployment(this, "KnowledgeBaseDocsDeploy", {
+      sources: [
+        s3deploy.Source.asset(
+          path.join(__dirname, "..", "knowledge-base")
+        ),
+      ],
+      destinationBucket: knowledgeBucket,
+    });
+
+    // Knowledge Base + Data Source IDs (created manually in Bedrock console)
+    const kbConfig: Record<string, { knowledgeBaseId: string; dataSourceId: string }> = {
+      gw:   { knowledgeBaseId: "GQFVI7ZE8C", dataSourceId: "JK5CKEJDFV" },
+      prod: { knowledgeBaseId: "ME4IUCQZDU", dataSourceId: "HEMTOV1CFQ" },
+    };
+    const kb = kbConfig[config.envName];
+
+    // Auto-sync Knowledge Base after S3 docs are deployed
+    if (kb?.knowledgeBaseId && kb?.dataSourceId) {
+      const kbSync = new cr.AwsCustomResource(this, "KnowledgeBaseSyncTrigger", {
+        onUpdate: {
+          service: "BedrockAgent",
+          action: "startIngestionJob",
+          parameters: {
+            knowledgeBaseId: kb.knowledgeBaseId,
+            dataSourceId: kb.dataSourceId,
+          },
+          physicalResourceId: cr.PhysicalResourceId.of(
+            `kb-sync-${Date.now()}`
+          ),
+        },
+        policy: cr.AwsCustomResourcePolicy.fromStatements([
+          new iam.PolicyStatement({
+            actions: ["bedrock:StartIngestionJob"],
+            resources: [
+              `arn:aws:bedrock:${config.region}:${config.account}:knowledge-base/${kb.knowledgeBaseId}`,
+            ],
+          }),
+        ]),
+      });
+      kbSync.node.addDependency(kbDocsDeploy);
+    }
+
+    // IAM role for Bedrock Knowledge Base to access S3 and embedding model
+    const kbRole = new iam.Role(this, "KnowledgeBaseRole", {
+      assumedBy: new iam.ServicePrincipal("bedrock.amazonaws.com"),
+      inlinePolicies: {
+        BedrockS3Access: new iam.PolicyDocument({
+          statements: [
+            new iam.PolicyStatement({
+              actions: ["s3:GetObject", "s3:ListBucket"],
+              resources: [
+                knowledgeBucket.bucketArn,
+                `${knowledgeBucket.bucketArn}/*`,
+              ],
+            }),
+            new iam.PolicyStatement({
+              actions: ["bedrock:InvokeModel"],
+              resources: [
+                "arn:aws:bedrock:eu-central-1::foundation-model/amazon.titan-embed-text-v2:0",
+              ],
+            }),
+          ],
+        }),
+      },
+    });
+
+    // OpenSearch Serverless encryption policy (must exist before collection)
+    const ossEncryptionPolicy = new opensearchserverless.CfnSecurityPolicy(
+      this,
+      "KBEncryptionPolicy",
+      {
+        name: `creative-it-kb-enc-${config.envName}`,
+        type: "encryption",
+        policy: JSON.stringify({
+          Rules: [
+            {
+              ResourceType: "collection",
+              Resource: [`collection/creative-it-kb-${config.envName}`],
+            },
+          ],
+          AWSOwnedKey: true,
+        }),
+      }
+    );
+
+    // OpenSearch Serverless network policy (must exist before collection)
+    const ossNetworkPolicy = new opensearchserverless.CfnSecurityPolicy(
+      this,
+      "KBNetworkPolicy",
+      {
+        name: `creative-it-kb-net-${config.envName}`,
+        type: "network",
+        policy: JSON.stringify([
+          {
+            Rules: [
+              {
+                ResourceType: "collection",
+                Resource: [`collection/creative-it-kb-${config.envName}`],
+              },
+              {
+                ResourceType: "dashboard",
+                Resource: [`collection/creative-it-kb-${config.envName}`],
+              },
+            ],
+            AllowFromPublic: true,
+          },
+        ]),
+      }
+    );
+
+    // OpenSearch Serverless collection for vector store
+    const ossCollection = new opensearchserverless.CfnCollection(
+      this,
+      "KBVectorCollection",
+      {
+        name: `creative-it-kb-${config.envName}`,
+        type: "VECTORSEARCH",
+      }
+    );
+
+    // Collection depends on security policies being created first
+    ossCollection.addDependency(ossEncryptionPolicy);
+    ossCollection.addDependency(ossNetworkPolicy);
+
+    // OpenSearch Serverless data access policy
+    new opensearchserverless.CfnAccessPolicy(
+      this,
+      "KBDataAccessPolicy",
+      {
+        name: `creative-it-kb-data-${config.envName}`,
+        type: "data",
+        policy: JSON.stringify([
+          {
+            Rules: [
+              {
+                ResourceType: "collection",
+                Resource: [`collection/creative-it-kb-${config.envName}`],
+                Permission: [
+                  "aoss:CreateCollectionItems",
+                  "aoss:UpdateCollectionItems",
+                  "aoss:DescribeCollectionItems",
+                ],
+              },
+              {
+                ResourceType: "index",
+                Resource: [`index/creative-it-kb-${config.envName}/*`],
+                Permission: [
+                  "aoss:CreateIndex",
+                  "aoss:UpdateIndex",
+                  "aoss:DescribeIndex",
+                  "aoss:ReadDocument",
+                  "aoss:WriteDocument",
+                ],
+              },
+            ],
+            Principal: [kbRole.roleArn],
+          },
+        ]),
+      }
+    );
+
+    // Knowledge Bot Lambda
+    const knowledgeBotHandler = new lambdaNode.NodejsFunction(
+      this,
+      "KnowledgeBotHandler",
+      {
+        runtime: lambda.Runtime.NODEJS_22_X,
+        architecture: lambda.Architecture.ARM_64,
+        memorySize: 512,
+        timeout: cdk.Duration.seconds(60),
+        entry: path.join(
+          __dirname,
+          "..",
+          "lambda",
+          "knowledge-bot",
+          "index.ts"
+        ),
+        handler: "handler",
+        bundling: {
+          format: lambdaNode.OutputFormat.ESM,
+          mainFields: ["module", "main"],
+          externalModules: [
+            "@aws-sdk/client-dynamodb",
+            "@aws-sdk/lib-dynamodb",
+            "@aws-sdk/client-bedrock-agent-runtime",
+          ],
+        },
+        environment: {
+          TABLE_NAME: githubStatsTable.tableName,
+          KNOWLEDGE_BASE_ID: kb?.knowledgeBaseId ?? "",
+          MODEL_ARN: `arn:aws:bedrock:eu-central-1:${config.account}:inference-profile/eu.anthropic.claude-sonnet-4-20250514-v1:0`,
+        },
+      }
+    );
+
+    const knowledgeBotUrl = knowledgeBotHandler.addFunctionUrl({
+      authType: lambda.FunctionUrlAuthType.NONE,
+      invokeMode: lambda.InvokeMode.RESPONSE_STREAM,
+      cors: {
+        allowedOrigins: ["*"],
+        allowedMethods: [lambda.HttpMethod.POST],
+        allowedHeaders: ["Content-Type"],
+        exposedHeaders: ["X-Remaining-Requests", "X-Session-Id"],
+        maxAge: cdk.Duration.hours(1),
+      },
+    });
+
+    knowledgeBotHandler.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: [
+          "bedrock:RetrieveAndGenerate",
+          "bedrock:Retrieve",
+          "bedrock:InvokeModel",
+          "bedrock:InvokeModelWithResponseStream",
+          "bedrock:GetInferenceProfile",
+        ],
+        resources: ["*"],
+      })
+    );
+
+    knowledgeBotHandler.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: [
+          "aws-marketplace:ViewSubscriptions",
+          "aws-marketplace:Subscribe",
+        ],
+        resources: ["*"],
+      })
+    );
+
+    githubStatsTable.grantReadWriteData(knowledgeBotHandler);
+
     // ── API Gateway HTTP API v2 ────────────────────────────────────────
     const httpApi = new apigwv2.HttpApi(this, "ContactApi", {
       apiName: "creative-it-contact-api",
@@ -269,6 +827,15 @@ export class ContactApiStack extends cdk.Stack {
       integration: new apigwv2Integrations.HttpLambdaIntegration(
         "GitHubStatsIntegration",
         githubStatsHandler
+      ),
+    });
+
+    httpApi.addRoutes({
+      path: "/commit-story",
+      methods: [apigwv2.HttpMethod.GET],
+      integration: new apigwv2Integrations.HttpLambdaIntegration(
+        "CommitStoryIntegration",
+        commitStoryHandler
       ),
     });
 
@@ -323,6 +890,41 @@ export class ContactApiStack extends cdk.Stack {
     new cdk.CfnOutput(this, "AiPlaygroundUrl", {
       value: aiPlaygroundUrl.url,
       description: "AI Playground Function URL (streaming)",
+    });
+
+    new cdk.CfnOutput(this, "CommitStoryUrl", {
+      value: `https://${apiDomainName}/commit-story`,
+      description: "Commit Story API endpoint",
+    });
+
+    new cdk.CfnOutput(this, "TechAdvisorUrl", {
+      value: techAdvisorUrl.url,
+      description: "Tech Advisor Function URL (streaming)",
+    });
+
+    new cdk.CfnOutput(this, "WebsiteRemixUrl", {
+      value: websiteRemixUrl.url,
+      description: "Website Remix Function URL (streaming)",
+    });
+
+    new cdk.CfnOutput(this, "AgentVisualizerUrl", {
+      value: agentVisualizerUrl.url,
+      description: "Agent Visualizer Function URL (streaming)",
+    });
+
+    new cdk.CfnOutput(this, "LiveTranslationUrl", {
+      value: liveTranslationUrl.url,
+      description: "Live Translation Function URL (streaming)",
+    });
+
+    new cdk.CfnOutput(this, "KnowledgeBotUrl", {
+      value: knowledgeBotUrl.url,
+      description: "Knowledge Bot Function URL (streaming)",
+    });
+
+    new cdk.CfnOutput(this, "KnowledgeBucketName", {
+      value: knowledgeBucket.bucketName,
+      description: "Knowledge Base S3 bucket",
     });
   }
 }

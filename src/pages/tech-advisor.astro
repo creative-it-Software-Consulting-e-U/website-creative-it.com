@@ -1,0 +1,459 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { siteConfig } from "../config/site";
+const p = siteConfig.pages.techAdvisor;
+---
+
+<Layout title={p.meta.title} description={p.meta.description}>
+  <!-- Hero -->
+  <section class="relative py-20 lg:py-28 overflow-hidden">
+    <div class="absolute inset-0">
+      <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[250px] md:w-[800px] md:h-[500px] bg-[radial-gradient(ellipse,rgba(161,99,241,0.08)_0%,rgba(99,99,241,0.05)_40%,transparent_70%)]"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl">
+        <div class="chip mb-4 animate-fade-in-up opacity-0" style="animation-delay: 0.1s; animation-fill-mode: forwards;">
+          <span class="w-1.5 h-1.5 rounded-full bg-purple animate-pulse"></span>
+          <span>{p.hero.chip}</span>
+        </div>
+        <h1 class="heading-xl text-5xl lg:text-6xl xl:text-7xl text-off-white mb-6 animate-fade-in-up opacity-0" style="animation-delay: 0.2s; animation-fill-mode: forwards;">
+          {p.hero.headline.before}<span class="gradient-text">{p.hero.headline.gradient}</span>{p.hero.headline.after}
+        </h1>
+        <p class="text-lg lg:text-xl text-text-secondary leading-relaxed animate-fade-in-up opacity-0" style="animation-delay: 0.3s; animation-fill-mode: forwards;">
+          {p.hero.description}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Advisor -->
+  <section class="pb-24 lg:pb-32 relative">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-6 reveal">
+        <!-- Input Panel -->
+        <div class="card-elevated p-6 lg:p-8 flex flex-col">
+          <label for="advisor-prompt" class="label text-text-muted mb-3">{p.inputSection.promptLabel}</label>
+          <textarea
+            id="advisor-prompt"
+            class="w-full h-40 bg-navy/60 border border-white/[0.08] rounded-xl px-4 py-3 text-off-white placeholder-text-muted resize-none focus:outline-none focus:border-indigo focus:shadow-[0_0_0_3px_rgba(99,99,241,0.15)] transition-all duration-200"
+            placeholder={p.inputSection.promptPlaceholder}
+            maxlength={p.inputSection.charLimit}
+          ></textarea>
+          <div class="flex items-center justify-between mt-2 mb-4">
+            <span id="char-count" class="text-xs text-text-muted">0 / {p.inputSection.charLimit}</span>
+            <span id="remaining-requests" class="text-xs text-text-muted"></span>
+          </div>
+
+          <!-- Example Chips -->
+          <div class="mb-6">
+            <span class="text-xs text-text-muted uppercase tracking-wider mb-2 block">Try an example</span>
+            <div class="flex flex-wrap gap-2">
+              {p.examples.map((example) => (
+                <button
+                  class="example-chip text-xs bg-purple/10 border border-purple/20 text-purple rounded-full px-3 py-1.5 hover:bg-purple/20 hover:border-purple/30 transition-colors duration-200 cursor-pointer text-left"
+                  data-prompt={example}
+                >
+                  {example.length > 55 ? example.slice(0, 55) + "..." : example}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <!-- Conversation indicator -->
+          <div id="conversation-bar" class="hidden flex items-center justify-between mb-3">
+            <div class="chip text-xs">
+              <span class="w-1.5 h-1.5 rounded-full bg-cyan animate-pulse"></span>
+              <span id="refining-label">{p.conversation.refiningLabel} &middot; 2 messages</span>
+            </div>
+            <button id="new-analysis-btn" class="text-xs text-text-muted hover:text-off-white border border-white/[0.08] rounded-lg px-3 py-1.5 transition-colors duration-200 cursor-pointer">
+              {p.conversation.newAnalysisButton}
+            </button>
+          </div>
+
+          <button
+            id="generate-btn"
+            class="btn-glow w-full mt-auto"
+          >
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+            <span id="generate-btn-text">{p.inputSection.generateButton}</span>
+          </button>
+          <p class="text-xs text-text-muted mt-3 text-center">Press <kbd class="px-1.5 py-0.5 bg-navy/60 border border-white/[0.08] rounded text-[10px]">Ctrl</kbd> + <kbd class="px-1.5 py-0.5 bg-navy/60 border border-white/[0.08] rounded text-[10px]">Enter</kbd> to analyze</p>
+        </div>
+
+        <!-- Results Panel -->
+        <div class="card-elevated p-6 lg:p-8 flex flex-col min-h-[500px]">
+          <!-- Tabs -->
+          <div class="flex items-center gap-1 mb-4">
+            <button id="tab-results" class="tab-btn text-sm font-medium px-4 py-2 rounded-lg bg-purple/10 text-purple border border-purple/20 transition-colors duration-200 cursor-pointer">
+              {p.previewSection.resultsTab}
+            </button>
+            <button id="tab-diagram" class="tab-btn text-sm font-medium px-4 py-2 rounded-lg text-text-muted hover:text-off-white transition-colors duration-200 cursor-pointer">
+              {p.previewSection.diagramTab}
+            </button>
+            <div class="flex-1"></div>
+            <button id="clear-btn" class="hidden text-xs text-text-muted hover:text-off-white border border-white/[0.08] rounded-lg px-3 py-1.5 transition-colors duration-200 cursor-pointer">
+              Clear
+            </button>
+          </div>
+
+          <!-- Results view -->
+          <div id="results-container" class="flex-1 relative rounded-xl overflow-hidden border border-white/[0.06]">
+            <div id="empty-state" class="absolute inset-0 flex items-center justify-center bg-navy/95">
+              <div class="text-center px-6">
+                <svg class="w-12 h-12 text-text-muted/30 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
+                <p class="text-sm text-text-muted">{p.previewSection.emptyState}</p>
+              </div>
+            </div>
+            <div id="results-output" class="hidden w-full h-full bg-navy/95 text-text-secondary text-sm p-6 overflow-auto prose-invert max-h-[600px]"></div>
+          </div>
+
+          <!-- Diagram view -->
+          <div id="diagram-container" class="hidden flex-1 relative rounded-xl overflow-hidden border border-white/[0.06]">
+            <div id="diagram-empty" class="absolute inset-0 flex items-center justify-center bg-navy/95">
+              <p class="text-sm text-text-muted">Architecture diagram will appear after analysis</p>
+            </div>
+            <div id="diagram-output" class="hidden w-full h-full bg-navy/95 p-6 overflow-auto flex items-center justify-center"></div>
+          </div>
+
+          <!-- Loading indicator -->
+          <div id="loading-indicator" class="hidden absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div class="flex items-center gap-3 bg-surface/90 backdrop-blur-sm border border-white/[0.08] rounded-xl px-5 py-3">
+              <div class="w-4 h-4 border-2 border-purple border-t-transparent rounded-full animate-spin"></div>
+              <span class="text-sm text-text-secondary">Analyzing...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Powered by AWS Bedrock badge -->
+      <div class="flex justify-center items-center gap-3 mt-6 reveal">
+        <div class="chip text-xs">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L3 7v10l9 5 9-5V7l-9-5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M12 22V12M3 7l9 5 9-5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+          Powered by AWS Bedrock
+        </div>
+        <a href="/how-it-works#tech-advisor" class="text-xs text-text-muted hover:text-purple transition-colors duration-200">How it works &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-24 lg:py-32 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="relative rounded-3xl overflow-hidden reveal">
+        <div class="absolute inset-0 bg-gradient-to-br from-purple via-indigo to-indigo"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(35,240,195,0.15),transparent_60%)]"></div>
+
+        <div class="relative px-8 py-16 lg:px-16 lg:py-24 text-center">
+          <h2 class="heading-xl text-4xl lg:text-5xl xl:text-6xl text-white mb-6">{p.cta.headline}</h2>
+          <p class="text-white/70 text-lg max-w-2xl mx-auto mb-10">{p.cta.description}</p>
+          <a href="/contact" class="btn-primary">{p.cta.button}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  const API_URL = import.meta.env.PUBLIC_TECH_ADVISOR_URL;
+  const CHAR_LIMIT = 2000;
+  const DEFAULT_PLACEHOLDER = 'We need a real-time dashboard for monitoring IoT sensor data from 500 devices...';
+  const REFINING_PLACEHOLDER = 'Ask a follow-up question about the recommendations...';
+
+  const promptEl = document.getElementById('advisor-prompt') as HTMLTextAreaElement;
+  const charCountEl = document.getElementById('char-count')!;
+  const remainingEl = document.getElementById('remaining-requests')!;
+  const generateBtn = document.getElementById('generate-btn') as HTMLButtonElement;
+  const generateBtnText = document.getElementById('generate-btn-text')!;
+  const tabResults = document.getElementById('tab-results')!;
+  const tabDiagram = document.getElementById('tab-diagram')!;
+  const resultsContainer = document.getElementById('results-container')!;
+  const diagramContainer = document.getElementById('diagram-container')!;
+  const resultsOutput = document.getElementById('results-output')!;
+  const diagramOutput = document.getElementById('diagram-output')!;
+  const diagramEmpty = document.getElementById('diagram-empty')!;
+  const clearBtn = document.getElementById('clear-btn')!;
+  const emptyState = document.getElementById('empty-state')!;
+  const loadingIndicator = document.getElementById('loading-indicator')!;
+  const exampleChips = document.querySelectorAll('.example-chip');
+  const conversationBar = document.getElementById('conversation-bar')!;
+  const refiningLabel = document.getElementById('refining-label')!;
+  const newAnalysisBtn = document.getElementById('new-analysis-btn')!;
+
+  let fullResponse = '';
+  let isGenerating = false;
+  let activeTab: 'results' | 'diagram' = 'results';
+  let conversationHistory: Array<{role: string, content: string}> = [];
+  let mermaidLoaded = false;
+
+  // Character counter
+  promptEl.addEventListener('input', () => {
+    charCountEl.textContent = `${promptEl.value.length} / ${CHAR_LIMIT}`;
+  });
+
+  // Example chips
+  exampleChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      promptEl.value = (chip as HTMLElement).dataset.prompt ?? '';
+      charCountEl.textContent = `${promptEl.value.length} / ${CHAR_LIMIT}`;
+      promptEl.focus();
+    });
+  });
+
+  // Tab switching
+  function setActiveTab(tab: 'results' | 'diagram') {
+    activeTab = tab;
+    if (tab === 'results') {
+      tabResults.classList.add('bg-purple/10', 'text-purple', 'border', 'border-purple/20');
+      tabResults.classList.remove('text-text-muted');
+      tabDiagram.classList.remove('bg-purple/10', 'text-purple', 'border', 'border-purple/20');
+      tabDiagram.classList.add('text-text-muted');
+      resultsContainer.classList.remove('hidden');
+      diagramContainer.classList.add('hidden');
+    } else {
+      tabDiagram.classList.add('bg-purple/10', 'text-purple', 'border', 'border-purple/20');
+      tabDiagram.classList.remove('text-text-muted');
+      tabResults.classList.remove('bg-purple/10', 'text-purple', 'border', 'border-purple/20');
+      tabResults.classList.add('text-text-muted');
+      diagramContainer.classList.remove('hidden');
+      resultsContainer.classList.add('hidden');
+    }
+  }
+
+  tabResults.addEventListener('click', () => setActiveTab('results'));
+  tabDiagram.addEventListener('click', () => setActiveTab('diagram'));
+
+  // Simple markdown to HTML
+  function renderMarkdown(text: string): string {
+    let html = text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+
+    // Headers
+    html = html.replace(/^### (.+)$/gm, '<h4 class="text-off-white font-semibold text-base mt-6 mb-2">$1</h4>');
+    html = html.replace(/^## (.+)$/gm, '<h3 class="text-off-white font-bold text-lg mt-8 mb-3 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-purple"></span>$1</h3>');
+
+    // Bold
+    html = html.replace(/\*\*(.+?)\*\*/g, '<strong class="text-off-white">$1</strong>');
+
+    // Code blocks
+    html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre class="bg-surface border border-white/[0.06] rounded-lg p-4 my-3 overflow-x-auto text-xs"><code>$2</code></pre>');
+
+    // Inline code
+    html = html.replace(/`([^`]+)`/g, '<code class="bg-surface px-1.5 py-0.5 rounded text-cyan text-xs">$1</code>');
+
+    // List items
+    html = html.replace(/^- (.+)$/gm, '<li class="ml-4 mb-1 text-text-secondary list-disc">$1</li>');
+
+    // Wrap consecutive li into ul
+    html = html.replace(/((?:<li[^>]*>.*<\/li>\n?)+)/g, '<ul class="my-2">$1</ul>');
+
+    // Paragraphs (lines that aren't headers, list items, or code blocks)
+    html = html.replace(/^(?!<[hul]|<pre|<li)(.+)$/gm, '<p class="text-text-secondary leading-relaxed mb-2">$1</p>');
+
+    return html;
+  }
+
+  // Extract and render Mermaid diagram
+  async function renderDiagram(text: string) {
+    const match = text.match(/---DIAGRAM---\n([\s\S]*?)\n---DIAGRAM---/);
+    if (!match) return;
+
+    const mermaidCode = match[1].trim();
+
+    if (!mermaidLoaded) {
+      await new Promise<void>((resolve) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js';
+        script.onload = () => {
+          (window as any).mermaid.initialize({
+            startOnLoad: false,
+            theme: 'dark',
+            themeVariables: {
+              primaryColor: '#A163F1',
+              primaryTextColor: '#F5F5F7',
+              primaryBorderColor: '#6363F1',
+              lineColor: '#6363F1',
+              secondaryColor: '#0F1132',
+              tertiaryColor: '#030520',
+              background: '#030520',
+              mainBkg: '#0F1132',
+              nodeBorder: '#A163F1',
+              clusterBkg: '#0F1132',
+              titleColor: '#F5F5F7',
+              edgeLabelBackground: '#0F1132',
+            },
+          });
+          mermaidLoaded = true;
+          resolve();
+        };
+        document.head.appendChild(script);
+      });
+    }
+
+    try {
+      const { svg } = await (window as any).mermaid.render('mermaid-diagram', mermaidCode);
+      diagramOutput.innerHTML = svg;
+      diagramOutput.classList.remove('hidden');
+      diagramEmpty.classList.add('hidden');
+    } catch (err) {
+      console.error('Mermaid render error:', err);
+      diagramOutput.innerHTML = `<pre class="text-text-muted text-xs p-4">${mermaidCode}</pre>`;
+      diagramOutput.classList.remove('hidden');
+      diagramEmpty.classList.add('hidden');
+    }
+  }
+
+  // Conversation UI
+  function updateConversationUI() {
+    if (conversationHistory.length > 0) {
+      conversationBar.classList.remove('hidden');
+      const msgCount = conversationHistory.length;
+      refiningLabel.innerHTML = `Follow-up &middot; ${msgCount} message${msgCount !== 1 ? 's' : ''}`;
+      promptEl.placeholder = REFINING_PLACEHOLDER;
+    } else {
+      conversationBar.classList.add('hidden');
+      promptEl.placeholder = DEFAULT_PLACEHOLDER;
+    }
+  }
+
+  function resetConversation() {
+    conversationHistory = [];
+    updateConversationUI();
+  }
+
+  newAnalysisBtn.addEventListener('click', () => {
+    resetConversation();
+    fullResponse = '';
+    resultsOutput.innerHTML = '';
+    resultsOutput.classList.add('hidden');
+    diagramOutput.innerHTML = '';
+    diagramOutput.classList.add('hidden');
+    diagramEmpty.classList.remove('hidden');
+    emptyState.classList.remove('hidden');
+    clearBtn.classList.add('hidden');
+    promptEl.value = '';
+    charCountEl.textContent = `0 / ${CHAR_LIMIT}`;
+    promptEl.focus();
+  });
+
+  clearBtn.addEventListener('click', () => {
+    fullResponse = '';
+    resultsOutput.innerHTML = '';
+    resultsOutput.classList.add('hidden');
+    diagramOutput.innerHTML = '';
+    diagramOutput.classList.add('hidden');
+    diagramEmpty.classList.remove('hidden');
+    emptyState.classList.remove('hidden');
+    clearBtn.classList.add('hidden');
+    resetConversation();
+  });
+
+  promptEl.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      if (!isGenerating) generate();
+    }
+  });
+
+  async function generate() {
+    const prompt = promptEl.value.trim();
+    if (!prompt || isGenerating || !API_URL) return;
+
+    const isFirstMessage = conversationHistory.length === 0;
+    const userContent = isFirstMessage
+      ? `Analyze this project and recommend a tech stack:\n\n${prompt}`
+      : prompt;
+
+    conversationHistory.push({ role: 'user', content: userContent });
+
+    isGenerating = true;
+    fullResponse = '';
+    generateBtn.disabled = true;
+    generateBtnText.textContent = 'Analyzing...';
+    generateBtn.classList.add('opacity-70');
+    loadingIndicator.classList.remove('hidden');
+    emptyState.classList.add('hidden');
+    clearBtn.classList.add('hidden');
+    resultsOutput.innerHTML = '';
+
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt,
+          messages: conversationHistory,
+        }),
+      });
+
+      const remaining = res.headers.get('X-Remaining-Requests');
+      if (remaining !== null) {
+        remainingEl.textContent = `${remaining} / 10 requests remaining today`;
+      }
+
+      if (!res.ok) {
+        const err = await res.text();
+        let message = 'Failed to analyze. Please try again.';
+        try { const parsed = JSON.parse(err); message = parsed.error || message; } catch {}
+        conversationHistory.pop();
+        throw new Error(message);
+      }
+
+      loadingIndicator.classList.add('hidden');
+      resultsOutput.classList.remove('hidden');
+
+      const reader = res.body?.getReader();
+      if (!reader) throw new Error('Streaming not supported');
+
+      const decoder = new TextDecoder();
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+        fullResponse += chunk;
+
+        // Render without diagram markers
+        const displayText = fullResponse.replace(/---DIAGRAM---[\s\S]*?---DIAGRAM---/, '').trim();
+        resultsOutput.innerHTML = renderMarkdown(displayText);
+        resultsOutput.scrollTop = resultsOutput.scrollHeight;
+      }
+
+      // Render diagram if present
+      await renderDiagram(fullResponse);
+
+      conversationHistory.push({ role: 'assistant', content: fullResponse });
+      updateConversationUI();
+
+      clearBtn.classList.remove('hidden');
+      promptEl.value = '';
+      charCountEl.textContent = `0 / ${CHAR_LIMIT}`;
+    } catch (err) {
+      loadingIndicator.classList.add('hidden');
+      emptyState.classList.remove('hidden');
+      resultsOutput.classList.add('hidden');
+      const errorDiv = document.createElement('div');
+      errorDiv.className = 'absolute inset-0 flex items-center justify-center bg-navy/95';
+      errorDiv.innerHTML = `<div class="text-center px-6"><svg class="w-10 h-10 text-red-400/60 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" /></svg><p class="text-sm text-red-400">${err instanceof Error ? err.message : 'An error occurred'}</p></div>`;
+      emptyState.replaceWith(errorDiv);
+      setTimeout(() => {
+        errorDiv.outerHTML = `<div id="empty-state" class="absolute inset-0 flex items-center justify-center bg-navy/95"><div class="text-center px-6"><svg class="w-12 h-12 text-text-muted/30 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg><p class="text-sm text-text-muted">Describe your project to get AI-powered architecture recommendations</p></div></div>`;
+      }, 5000);
+      updateConversationUI();
+    } finally {
+      isGenerating = false;
+      generateBtn.disabled = false;
+      generateBtnText.textContent = 'Analyze';
+      generateBtn.classList.remove('opacity-70');
+      loadingIndicator.classList.add('hidden');
+    }
+  }
+
+  generateBtn.addEventListener('click', generate);
+</script>

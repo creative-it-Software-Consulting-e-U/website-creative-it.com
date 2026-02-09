@@ -1,0 +1,307 @@
+---
+import { siteConfig } from "../config/site";
+const t = siteConfig.translation;
+
+const languages = [
+  { code: "de", flag: "\u{1F1E9}\u{1F1EA}", name: "German" },
+  { code: "fr", flag: "\u{1F1EB}\u{1F1F7}", name: "French" },
+  { code: "es", flag: "\u{1F1EA}\u{1F1F8}", name: "Spanish" },
+  { code: "it", flag: "\u{1F1EE}\u{1F1F9}", name: "Italian" },
+  { code: "pt", flag: "\u{1F1F5}\u{1F1F9}", name: "Portuguese" },
+  { code: "nl", flag: "\u{1F1F3}\u{1F1F1}", name: "Dutch" },
+  { code: "pl", flag: "\u{1F1F5}\u{1F1F1}", name: "Polish" },
+  { code: "cs", flag: "\u{1F1E8}\u{1F1FF}", name: "Czech" },
+  { code: "ro", flag: "\u{1F1F7}\u{1F1F4}", name: "Romanian" },
+  { code: "sv", flag: "\u{1F1F8}\u{1F1EA}", name: "Swedish" },
+  { code: "no", flag: "\u{1F1F3}\u{1F1F4}", name: "Norwegian" },
+  { code: "da", flag: "\u{1F1E9}\u{1F1F0}", name: "Danish" },
+  { code: "fi", flag: "\u{1F1EB}\u{1F1EE}", name: "Finnish" },
+  { code: "hu", flag: "\u{1F1ED}\u{1F1FA}", name: "Hungarian" },
+  { code: "el", flag: "\u{1F1EC}\u{1F1F7}", name: "Greek" },
+  { code: "bg", flag: "\u{1F1E7}\u{1F1EC}", name: "Bulgarian" },
+  { code: "hr", flag: "\u{1F1ED}\u{1F1F7}", name: "Croatian" },
+  { code: "sk", flag: "\u{1F1F8}\u{1F1F0}", name: "Slovak" },
+  { code: "uk", flag: "\u{1F1FA}\u{1F1E6}", name: "Ukrainian" },
+  { code: "tr", flag: "\u{1F1F9}\u{1F1F7}", name: "Turkish" },
+  { code: "zh", flag: "\u{1F1E8}\u{1F1F3}", name: "Chinese" },
+  { code: "ja", flag: "\u{1F1EF}\u{1F1F5}", name: "Japanese" },
+  { code: "ar", flag: "\u{1F1F8}\u{1F1E6}", name: "Arabic" },
+  { code: "hi", flag: "\u{1F1EE}\u{1F1F3}", name: "Hindi" },
+  { code: "ko", flag: "\u{1F1F0}\u{1F1F7}", name: "Korean" },
+];
+---
+
+<!-- Translate Toggle Button (controlled by AI Tools menu) -->
+<button
+  id="translate-toggle"
+  class="fixed bottom-[12.75rem] left-6 z-50 w-11 h-11 rounded-full bg-surface border border-white/[0.08] shadow-[0_4px_16px_rgba(0,0,0,0.3)] flex items-center justify-center cursor-pointer hover:border-purple/30 hover:shadow-[0_4px_24px_rgba(161,99,241,0.15)] transition-all duration-300 scale-0 opacity-0 pointer-events-none group"
+  aria-label={t.buttonLabel}
+  title={t.buttonLabel}
+>
+  <svg class="w-5 h-5 text-text-muted group-hover:text-purple transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
+  </svg>
+</button>
+
+<!-- Translate Panel -->
+<div
+  id="translate-panel"
+  class="fixed bottom-[16.25rem] left-6 z-50 w-[340px] max-w-[calc(100vw-3rem)] hidden opacity-0 translate-y-4 transition-all duration-300"
+>
+  <div class="card-elevated rounded-2xl overflow-hidden shadow-[0_8px_48px_rgba(0,0,0,0.5)]">
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-purple/10 to-indigo/5 border-b border-white/[0.06] px-5 py-3 flex items-center justify-between">
+      <h3 class="text-sm font-semibold text-off-white">{t.headline}</h3>
+      <button id="translate-close" class="text-text-muted hover:text-off-white transition-colors duration-200 cursor-pointer">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+      </button>
+    </div>
+
+    <div class="p-4">
+      <!-- Language Grid -->
+      <div class="grid grid-cols-5 gap-1.5">
+        {languages.map((lang) => (
+          <button
+            class="translate-lang-btn flex flex-col items-center gap-0.5 py-2 px-1 rounded-lg border border-transparent hover:border-purple/20 hover:bg-purple/5 transition-all duration-200 cursor-pointer"
+            data-lang={lang.code}
+            data-lang-name={lang.name}
+            title={lang.name}
+          >
+            <span class="text-lg leading-none">{lang.flag}</span>
+            <span class="text-[10px] text-text-muted uppercase tracking-wide">{lang.code}</span>
+          </button>
+        ))}
+      </div>
+
+      <!-- Status -->
+      <p id="translate-status" class="hidden text-xs text-text-muted mt-3 text-center"></p>
+
+      <!-- Footer -->
+      <div class="mt-3 pt-3 border-t border-white/[0.06] flex items-center justify-center gap-1.5">
+        <svg class="w-3 h-3 text-text-muted" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 2c0 .444-.074.863-.193 1.25a11.942 11.942 0 016.088 3.358l.885-.883a1 1 0 011.414 1.414l-.884.884A11.942 11.942 0 0123.75 12H24a1 1 0 110 2h-.25a11.942 11.942 0 01-2.94 4.977l.884.884a1 1 0 01-1.414 1.414l-.885-.883A11.942 11.942 0 0114 23.25V24a1 1 0 11-2 0v-.25a11.942 11.942 0 01-4.977-2.858l-.884.884a1 1 0 01-1.414-1.414l.883-.885A11.942 11.942 0 012.25 14H2a1 1 0 110-2h.25a11.942 11.942 0 013.358-6.088l-.883-.885A1 1 0 016.139 3.613l.884.884A11.942 11.942 0 0112 1.25V.5a1 1 0 112 0v.25A4.5 4.5 0 0013.5 2z" /></svg>
+        <a href="/how-it-works#live-translation" class="text-[10px] text-text-muted hover:text-purple transition-colors duration-200">{t.poweredBy} &middot; How it works</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Translation Active Banner -->
+<div
+  id="translate-banner"
+  class="fixed top-20 left-1/2 -translate-x-1/2 z-50 hidden opacity-0 -translate-y-4 transition-all duration-300"
+>
+  <div class="bg-surface border border-cyan/20 rounded-full px-5 py-2 shadow-[0_4px_24px_rgba(0,0,0,0.4)] flex items-center gap-3">
+    <svg class="w-4 h-4 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3" />
+    </svg>
+    <span id="translate-banner-text" class="text-sm text-text-secondary">Translated!</span>
+    <button id="translate-banner-reset" class="text-xs text-cyan hover:text-purple transition-colors duration-200 cursor-pointer font-medium">{t.resetButton}</button>
+  </div>
+</div>
+
+<script>
+  const TRANSLATION_API_URL = import.meta.env.PUBLIC_LIVE_TRANSLATION_URL;
+
+  const translateToggle = document.getElementById('translate-toggle')!;
+  const translatePanel = document.getElementById('translate-panel')!;
+  const translateClose = document.getElementById('translate-close')!;
+  const translateStatus = document.getElementById('translate-status')!;
+  const translateBanner = document.getElementById('translate-banner')!;
+  const translateBannerText = document.getElementById('translate-banner-text')!;
+  const translateBannerReset = document.getElementById('translate-banner-reset')!;
+  const langButtons = document.querySelectorAll('.translate-lang-btn');
+
+  let isPanelOpen = false;
+  let isTranslating = false;
+  let isTranslated = false;
+  const originalTexts = new Map<Element, string>();
+
+  const TRANSLATABLE_SELECTORS = 'h1, h2, h3, h4, h5, h6, p, li, span, a, button, label, figcaption, blockquote, td, th, dt, dd';
+  const SKIP_PARENTS = ['SCRIPT', 'STYLE', 'CODE', 'PRE'];
+
+  function openPanel() {
+    isPanelOpen = true;
+    translatePanel.classList.remove('hidden');
+    requestAnimationFrame(() => {
+      translatePanel.classList.remove('opacity-0', 'translate-y-4');
+    });
+  }
+
+  function closePanel() {
+    isPanelOpen = false;
+    translatePanel.classList.add('opacity-0', 'translate-y-4');
+    setTimeout(() => translatePanel.classList.add('hidden'), 300);
+  }
+
+  translateToggle.addEventListener('click', () => {
+    if (isPanelOpen) closePanel();
+    else openPanel();
+  });
+
+  translateClose.addEventListener('click', closePanel);
+
+  function collectTexts(): Element[] {
+    const main = document.querySelector('main');
+    if (!main) return [];
+
+    const elements: Element[] = [];
+    const candidates = main.querySelectorAll(TRANSLATABLE_SELECTORS);
+
+    for (const el of candidates) {
+      // Skip elements inside script, style, code, pre
+      let skip = false;
+      let parent = el.parentElement;
+      while (parent && parent !== main) {
+        if (SKIP_PARENTS.includes(parent.tagName)) { skip = true; break; }
+        parent = parent.parentElement;
+      }
+      if (skip) continue;
+
+      // Skip elements with no-translate class
+      if (el.classList.contains('no-translate')) continue;
+
+      // Skip elements that only contain child elements (no direct text)
+      const text = el.textContent?.trim();
+      if (!text) continue;
+
+      // Only collect leaf-level text nodes (skip parents whose text is just child text)
+      const childTranslatables = el.querySelectorAll(TRANSLATABLE_SELECTORS);
+      if (childTranslatables.length > 0) {
+        // Check if this element has its own direct text content beyond children
+        let hasOwnText = false;
+        for (const node of el.childNodes) {
+          if (node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) {
+            hasOwnText = true;
+            break;
+          }
+        }
+        if (!hasOwnText) continue;
+      }
+
+      elements.push(el);
+    }
+
+    return elements;
+  }
+
+  function storeOriginals(elements: Element[]) {
+    for (const el of elements) {
+      if (!originalTexts.has(el)) {
+        originalTexts.set(el, el.textContent ?? '');
+      }
+    }
+  }
+
+  function resetTranslation() {
+    for (const [el, text] of originalTexts) {
+      el.textContent = text;
+    }
+    isTranslated = false;
+    translateBanner.classList.add('opacity-0', '-translate-y-4');
+    setTimeout(() => translateBanner.classList.add('hidden'), 300);
+  }
+
+  translateBannerReset.addEventListener('click', resetTranslation);
+
+  async function translateTo(langCode: string, langName: string, clickedBtn: Element) {
+    if (isTranslating || !TRANSLATION_API_URL) return;
+
+    const elements = collectTexts();
+    if (elements.length === 0) return;
+
+    storeOriginals(elements);
+
+    // Always translate from originals
+    const texts = elements.map(el => originalTexts.get(el) ?? el.textContent ?? '');
+
+    isTranslating = true;
+
+    // Show loading state
+    langButtons.forEach(btn => {
+      (btn as HTMLButtonElement).disabled = true;
+      btn.classList.add('opacity-50');
+    });
+    clickedBtn.classList.remove('opacity-50');
+    clickedBtn.classList.add('animate-pulse');
+
+    translateStatus.classList.remove('hidden');
+    translateStatus.textContent = 'Translating...';
+
+    try {
+      // Send in batches of 50
+      const allTranslated: string[] = [];
+      for (let i = 0; i < texts.length; i += 50) {
+        const batch = texts.slice(i, i + 50);
+
+        const res = await fetch(TRANSLATION_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            texts: batch,
+            targetLanguage: langCode,
+            targetLanguageName: langName,
+          }),
+        });
+
+        if (!res.ok) {
+          const err = await res.text();
+          let message = 'Failed to translate.';
+          try { const parsed = JSON.parse(err); message = parsed.error || message; } catch {}
+          throw new Error(message);
+        }
+
+        const reader = res.body?.getReader();
+        if (!reader) throw new Error('Streaming not supported');
+
+        const decoder = new TextDecoder();
+        let fullResponse = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          fullResponse += decoder.decode(value, { stream: true });
+        }
+
+        const translated = JSON.parse(fullResponse);
+        if (!Array.isArray(translated)) throw new Error('Invalid response format');
+        allTranslated.push(...translated);
+      }
+
+      // Apply translations
+      for (let i = 0; i < elements.length && i < allTranslated.length; i++) {
+        elements[i].textContent = allTranslated[i];
+      }
+
+      isTranslated = true;
+
+      // Show banner
+      translateBannerText.textContent = `Translated to ${langName}`;
+      translateBanner.classList.remove('hidden');
+      requestAnimationFrame(() => {
+        translateBanner.classList.remove('opacity-0', '-translate-y-4');
+      });
+
+      translateStatus.textContent = 'Translation applied!';
+      closePanel();
+    } catch (err) {
+      translateStatus.textContent = err instanceof Error ? err.message : 'An error occurred';
+    } finally {
+      isTranslating = false;
+      langButtons.forEach(btn => {
+        (btn as HTMLButtonElement).disabled = false;
+        btn.classList.remove('opacity-50', 'animate-pulse');
+      });
+      setTimeout(() => {
+        translateStatus.classList.add('hidden');
+      }, 3000);
+    }
+  }
+
+  langButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const code = (btn as HTMLElement).dataset.lang ?? '';
+      const name = (btn as HTMLElement).dataset.langName ?? '';
+      translateTo(code, name, btn);
+    });
+  });
+</script>

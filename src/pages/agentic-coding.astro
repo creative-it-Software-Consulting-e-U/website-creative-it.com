@@ -23,6 +23,10 @@ const p = siteConfig.pages.agenticCoding;
         <p class="text-lg lg:text-xl text-text-secondary leading-relaxed animate-fade-in-up opacity-0" style="animation-delay: 0.3s; animation-fill-mode: forwards;">
           {p.hero.description}
         </p>
+        <a href="/how-it-works#agentic-coding" class="inline-flex items-center gap-1.5 text-sm text-text-muted hover:text-purple transition-colors duration-200 mt-4 animate-fade-in-up opacity-0" style="animation-delay: 0.4s; animation-fill-mode: forwards;">
+          How it works
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+        </a>
       </div>
     </div>
   </section>
@@ -64,6 +68,49 @@ const p = siteConfig.pages.agenticCoding;
           <div class="flex items-center gap-2">
             <span class="w-3 h-3 rounded-full" style="background: #23F0C3"></span>
             <span class="text-xs text-text-muted">Lines Changed</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI Story -->
+  <section class="pb-24 lg:pb-32 relative">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="reveal" style="transition-delay: 300ms">
+        <div class="chip mb-4">
+          <span class="w-1.5 h-1.5 rounded-full bg-cyan animate-pulse"></span>
+          <span>{p.storySection.chip}</span>
+        </div>
+        <h3 class="heading-md text-2xl text-off-white mb-6">{p.storySection.headline}</h3>
+
+        <div class="card-elevated p-8 lg:p-10 relative">
+          <!-- Quote decoration -->
+          <svg class="absolute top-6 left-6 w-8 h-8 text-purple/20" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391C0 7.905 3.748 4.039 9 3l.996 2.151C7.563 6.068 6 8.789 6 11h4v10H0z"/>
+          </svg>
+
+          <!-- Story content -->
+          <div id="story-content" class="pl-12">
+            <!-- Loading skeleton -->
+            <div id="story-skeleton" class="space-y-3">
+              <div class="h-4 bg-white/[0.06] rounded-lg w-full animate-pulse"></div>
+              <div class="h-4 bg-white/[0.06] rounded-lg w-4/5 animate-pulse"></div>
+              <div class="h-4 bg-white/[0.06] rounded-lg w-3/5 animate-pulse"></div>
+            </div>
+            <!-- Story text (hidden initially) -->
+            <p id="story-text" class="hidden text-text-secondary text-lg leading-relaxed italic"></p>
+            <!-- Fallback text (hidden initially) -->
+            <p id="story-fallback" class="hidden text-text-secondary text-lg leading-relaxed italic">{p.storySection.fallback}</p>
+          </div>
+
+          <!-- Refresh button -->
+          <div class="mt-6 pl-12 flex items-center gap-4">
+            <button id="story-refresh" class="text-sm text-purple hover:text-cyan border border-purple/20 hover:border-cyan/30 rounded-lg px-4 py-2 transition-colors duration-200 cursor-pointer flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+              <span>{p.storySection.refreshButton}</span>
+            </button>
+            <span id="story-loading-text" class="hidden text-xs text-text-muted">{p.storySection.loadingText}</span>
           </div>
         </div>
       </div>
@@ -389,4 +436,39 @@ const p = siteConfig.pages.agenticCoding;
       // Stats show dashes on error
     }
   })();
+
+  // AI Story
+  const storyText = document.getElementById('story-text')!;
+  const storySkeleton = document.getElementById('story-skeleton')!;
+  const storyFallback = document.getElementById('story-fallback')!;
+  const storyRefresh = document.getElementById('story-refresh') as HTMLButtonElement;
+  const storyLoadingText = document.getElementById('story-loading-text')!;
+  const STORY_API = `${import.meta.env.PUBLIC_API_URL}/commit-story`;
+
+  async function fetchStory() {
+    storySkeleton.classList.remove('hidden');
+    storyText.classList.add('hidden');
+    storyFallback.classList.add('hidden');
+    storyRefresh.disabled = true;
+    storyLoadingText.classList.remove('hidden');
+
+    try {
+      const res = await fetch(STORY_API, { cache: 'no-store' });
+      if (!res.ok) throw new Error('Failed');
+
+      const data = await res.json();
+      storyText.textContent = data.story;
+      storySkeleton.classList.add('hidden');
+      storyText.classList.remove('hidden');
+    } catch {
+      storySkeleton.classList.add('hidden');
+      storyFallback.classList.remove('hidden');
+    } finally {
+      storyRefresh.disabled = false;
+      storyLoadingText.classList.add('hidden');
+    }
+  }
+
+  storyRefresh.addEventListener('click', fetchStory);
+  fetchStory();
 </script>

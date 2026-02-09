@@ -1,0 +1,245 @@
+---
+import { siteConfig } from "../config/site";
+const r = siteConfig.remix;
+---
+
+<!-- Remix Toggle Button (controlled by AI Tools menu) -->
+<button
+  id="remix-toggle"
+  class="fixed bottom-[9rem] left-6 z-50 w-11 h-11 rounded-full bg-surface border border-white/[0.08] shadow-[0_4px_16px_rgba(0,0,0,0.3)] flex items-center justify-center cursor-pointer hover:border-purple/30 hover:shadow-[0_4px_24px_rgba(161,99,241,0.15)] transition-all duration-300 scale-0 opacity-0 pointer-events-none group"
+  aria-label={r.buttonLabel}
+  title={r.buttonLabel}
+>
+  <svg class="w-5 h-5 text-text-muted group-hover:text-purple transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42" />
+  </svg>
+</button>
+
+<!-- Remix Panel -->
+<div
+  id="remix-panel"
+  class="fixed bottom-[12.5rem] left-6 z-50 w-[340px] max-w-[calc(100vw-3rem)] hidden opacity-0 translate-y-4 transition-all duration-300"
+>
+  <div class="card-elevated rounded-2xl overflow-hidden shadow-[0_8px_48px_rgba(0,0,0,0.5)]">
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-purple/10 to-indigo/5 border-b border-white/[0.06] px-5 py-3 flex items-center justify-between">
+      <h3 class="text-sm font-semibold text-off-white">{r.headline}</h3>
+      <button id="remix-close" class="text-text-muted hover:text-off-white transition-colors duration-200 cursor-pointer">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+      </button>
+    </div>
+
+    <div class="p-5">
+      <!-- Input -->
+      <input
+        id="remix-input"
+        type="text"
+        class="w-full bg-navy/60 border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-off-white placeholder-text-muted focus:outline-none focus:border-indigo focus:shadow-[0_0_0_3px_rgba(99,99,241,0.15)] transition-all duration-200"
+        placeholder={r.placeholder}
+        maxlength="500"
+      />
+
+      <!-- Example chips -->
+      <div class="flex flex-wrap gap-1.5 mt-3">
+        {r.examples.map((example) => (
+          <button
+            class="remix-example text-[11px] bg-purple/10 border border-purple/20 text-purple rounded-full px-2.5 py-1 hover:bg-purple/20 hover:border-purple/30 transition-colors duration-200 cursor-pointer"
+            data-prompt={example}
+          >
+            {example}
+          </button>
+        ))}
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex gap-2 mt-4">
+        <button
+          id="remix-btn"
+          class="flex-1 btn-glow text-sm py-2.5"
+        >
+          <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+          <span id="remix-btn-text">{r.remixButton}</span>
+        </button>
+        <button
+          id="remix-reset"
+          class="hidden text-sm text-text-muted hover:text-off-white border border-white/[0.08] rounded-lg px-3 py-2 transition-colors duration-200 cursor-pointer"
+        >
+          {r.resetButton}
+        </button>
+      </div>
+
+      <!-- Status -->
+      <p id="remix-status" class="hidden text-xs text-text-muted mt-3 text-center"></p>
+
+      <!-- Footer -->
+      <div class="mt-3 pt-3 border-t border-white/[0.06] flex items-center justify-center">
+        <a href="/how-it-works#website-remix" class="text-[10px] text-text-muted hover:text-purple transition-colors duration-200">
+          Powered by AWS Bedrock &middot; How it works
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Remix Active Banner -->
+<div
+  id="remix-banner"
+  class="fixed top-20 left-1/2 -translate-x-1/2 z-50 hidden opacity-0 -translate-y-4 transition-all duration-300"
+>
+  <div class="bg-surface border border-purple/20 rounded-full px-5 py-2 shadow-[0_4px_24px_rgba(0,0,0,0.4)] flex items-center gap-3">
+    <svg class="w-4 h-4 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
+    <span id="remix-banner-text" class="text-sm text-text-secondary">Remixed!</span>
+    <button id="remix-banner-reset" class="text-xs text-purple hover:text-cyan transition-colors duration-200 cursor-pointer font-medium">Reset</button>
+  </div>
+</div>
+
+<script>
+  const REMIX_API_URL = import.meta.env.PUBLIC_WEBSITE_REMIX_URL;
+
+  const remixToggle = document.getElementById('remix-toggle')!;
+  const remixPanel = document.getElementById('remix-panel')!;
+  const remixClose = document.getElementById('remix-close')!;
+  const remixInput = document.getElementById('remix-input') as HTMLInputElement;
+  const remixBtn = document.getElementById('remix-btn') as HTMLButtonElement;
+  const remixBtnText = document.getElementById('remix-btn-text')!;
+  const remixReset = document.getElementById('remix-reset') as HTMLButtonElement;
+  const remixStatus = document.getElementById('remix-status')!;
+  const remixBanner = document.getElementById('remix-banner')!;
+  const remixBannerText = document.getElementById('remix-banner-text')!;
+  const remixBannerReset = document.getElementById('remix-banner-reset')!;
+  const exampleChips = document.querySelectorAll('.remix-example');
+
+  let isPanelOpen = false;
+  let isRemixing = false;
+  let isRemixed = false;
+
+  function openPanel() {
+    isPanelOpen = true;
+    remixPanel.classList.remove('hidden');
+    requestAnimationFrame(() => {
+      remixPanel.classList.remove('opacity-0', 'translate-y-4');
+    });
+    remixInput.focus();
+  }
+
+  function closePanel() {
+    isPanelOpen = false;
+    remixPanel.classList.add('opacity-0', 'translate-y-4');
+    setTimeout(() => remixPanel.classList.add('hidden'), 300);
+  }
+
+  remixToggle.addEventListener('click', () => {
+    if (isPanelOpen) closePanel();
+    else openPanel();
+  });
+
+  remixClose.addEventListener('click', closePanel);
+
+  exampleChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      remixInput.value = (chip as HTMLElement).dataset.prompt ?? '';
+      remixInput.focus();
+    });
+  });
+
+  function resetRemix() {
+    const existing = document.getElementById('remix-override');
+    if (existing) existing.remove();
+    isRemixed = false;
+    remixReset.classList.add('hidden');
+    remixBanner.classList.add('opacity-0', '-translate-y-4');
+    setTimeout(() => remixBanner.classList.add('hidden'), 300);
+  }
+
+  remixReset.addEventListener('click', resetRemix);
+  remixBannerReset.addEventListener('click', resetRemix);
+
+  async function doRemix() {
+    const prompt = remixInput.value.trim();
+    if (!prompt || isRemixing || !REMIX_API_URL) return;
+
+    isRemixing = true;
+    remixBtn.disabled = true;
+    remixBtnText.textContent = 'Remixing...';
+    remixBtn.classList.add('opacity-70');
+    remixStatus.classList.remove('hidden');
+    remixStatus.textContent = 'Generating theme...';
+
+    try {
+      const res = await fetch(REMIX_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt }),
+      });
+
+      if (!res.ok) {
+        const err = await res.text();
+        let message = 'Failed to generate remix.';
+        try { const parsed = JSON.parse(err); message = parsed.error || message; } catch {}
+        throw new Error(message);
+      }
+
+      const reader = res.body?.getReader();
+      if (!reader) throw new Error('Streaming not supported');
+
+      const decoder = new TextDecoder();
+      let fullResponse = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        fullResponse += decoder.decode(value, { stream: true });
+      }
+
+      // Parse CSS from response
+      const cssMatch = fullResponse.match(/---CSS---\n([\s\S]*?)\n---CSS---/);
+      if (!cssMatch) throw new Error('No valid CSS generated');
+
+      const css = cssMatch[1].trim();
+
+      // Extract description (text before ---CSS---)
+      const description = fullResponse.split('---CSS---')[0].trim() || 'Theme applied!';
+
+      // Remove existing remix override
+      const existing = document.getElementById('remix-override');
+      if (existing) existing.remove();
+
+      // Inject CSS
+      const style = document.createElement('style');
+      style.id = 'remix-override';
+      style.textContent = css;
+      document.head.appendChild(style);
+
+      isRemixed = true;
+      remixReset.classList.remove('hidden');
+
+      // Show banner
+      remixBannerText.textContent = description;
+      remixBanner.classList.remove('hidden');
+      requestAnimationFrame(() => {
+        remixBanner.classList.remove('opacity-0', '-translate-y-4');
+      });
+
+      remixStatus.textContent = 'Theme applied!';
+      closePanel();
+    } catch (err) {
+      remixStatus.textContent = err instanceof Error ? err.message : 'An error occurred';
+    } finally {
+      isRemixing = false;
+      remixBtn.disabled = false;
+      remixBtnText.textContent = 'Remix';
+      remixBtn.classList.remove('opacity-70');
+      setTimeout(() => {
+        remixStatus.classList.add('hidden');
+      }, 3000);
+    }
+  }
+
+  remixBtn.addEventListener('click', doRemix);
+  remixInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      doRemix();
+    }
+  });
+</script>

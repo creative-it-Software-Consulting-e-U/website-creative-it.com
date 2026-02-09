@@ -1,0 +1,351 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { siteConfig } from "../config/site";
+const p = siteConfig.pages.aiAgents;
+---
+
+<Layout title={p.meta.title} description={p.meta.description}>
+  <!-- Hero -->
+  <section class="relative py-20 lg:py-28 overflow-hidden">
+    <div class="absolute inset-0">
+      <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[250px] md:w-[800px] md:h-[500px] bg-[radial-gradient(ellipse,rgba(161,99,241,0.08)_0%,rgba(99,99,241,0.05)_40%,transparent_70%)]"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl">
+        <div class="chip mb-4 animate-fade-in-up opacity-0" style="animation-delay: 0.1s; animation-fill-mode: forwards;">
+          <span class="w-1.5 h-1.5 rounded-full bg-purple animate-pulse"></span>
+          <span>{p.hero.chip}</span>
+        </div>
+        <h1 class="heading-xl text-5xl lg:text-6xl xl:text-7xl text-off-white mb-6 animate-fade-in-up opacity-0" style="animation-delay: 0.2s; animation-fill-mode: forwards;">
+          {p.hero.headline.before}<span class="gradient-text">{p.hero.headline.gradient}</span>{p.hero.headline.after}
+        </h1>
+        <p class="text-lg lg:text-xl text-text-secondary leading-relaxed animate-fade-in-up opacity-0" style="animation-delay: 0.3s; animation-fill-mode: forwards;">
+          {p.hero.description}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scenario Selector -->
+  <section class="pb-12 relative">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 reveal">
+        {p.scenarios.map((scenario, index) => (
+          <button
+            class="scenario-card group card p-6 text-left cursor-pointer transition-all duration-300 hover:border-purple/30"
+            data-scenario={scenario.id}
+            style={`transition-delay: ${index * 50}ms`}
+          >
+            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple/20 to-indigo/10 border border-purple/20 flex items-center justify-center mb-4 group-hover:border-purple/40 transition-colors duration-300">
+              {scenario.icon === "code" && (
+                <svg class="w-5 h-5 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+              )}
+              {scenario.icon === "chart" && (
+                <svg class="w-5 h-5 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+              )}
+              {scenario.icon === "rocket" && (
+                <svg class="w-5 h-5 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.58-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" /></svg>
+              )}
+              {scenario.icon === "bug" && (
+                <svg class="w-5 h-5 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 12.75c1.148 0 2.278.08 3.383.237 1.037.146 1.866.966 1.866 2.013 0 3.728-2.35 6.75-5.25 6.75S6.75 18.728 6.75 15c0-1.046.83-1.867 1.866-2.013A24.204 24.204 0 0112 12.75zm0 0c2.883 0 5.647.508 8.207 1.44a23.91 23.91 0 01-1.152-6.135 3.001 3.001 0 10-2.055 0 23.935 23.935 0 01-1.066 5.248M12 12.75c-2.883 0-5.647.508-8.208 1.44.125-2.104.52-4.136 1.153-6.135a3.001 3.001 0 112.055 0A23.935 23.935 0 018.066 13.31" /></svg>
+              )}
+            </div>
+            <h3 class="heading-md text-base text-off-white mb-1 group-hover:text-purple transition-colors duration-300">{scenario.title}</h3>
+            <p class="text-xs text-text-muted">{scenario.description}</p>
+          </button>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Visualization Panel -->
+  <section class="pb-24 lg:pb-32 relative">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="card-elevated p-6 lg:p-8 reveal" style="transition-delay: 200ms">
+        <!-- Pipeline bar -->
+        <div class="flex items-center justify-between mb-6 overflow-x-auto">
+          <div class="flex items-center gap-2 min-w-max">
+            <div id="step-think" class="step-indicator flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-white/[0.04] text-text-muted transition-all duration-500">
+              <span class="w-2 h-2 rounded-full bg-current opacity-50"></span>
+              {p.steps.think}
+            </div>
+            <svg class="w-4 h-4 text-white/10 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+            <div id="step-plan" class="step-indicator flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-white/[0.04] text-text-muted transition-all duration-500">
+              <span class="w-2 h-2 rounded-full bg-current opacity-50"></span>
+              {p.steps.plan}
+            </div>
+            <svg class="w-4 h-4 text-white/10 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+            <div id="step-execute" class="step-indicator flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-white/[0.04] text-text-muted transition-all duration-500">
+              <span class="w-2 h-2 rounded-full bg-current opacity-50"></span>
+              {p.steps.execute}
+            </div>
+            <svg class="w-4 h-4 text-white/10 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+            <div id="step-verify" class="step-indicator flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-white/[0.04] text-text-muted transition-all duration-500">
+              <span class="w-2 h-2 rounded-full bg-current opacity-50"></span>
+              {p.steps.verify}
+            </div>
+            <svg class="w-4 h-4 text-white/10 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+            <div id="step-result" class="step-indicator flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-white/[0.04] text-text-muted transition-all duration-500">
+              <span class="w-2 h-2 rounded-full bg-current opacity-50"></span>
+              {p.steps.result}
+            </div>
+          </div>
+        </div>
+
+        <!-- Terminal output -->
+        <div id="terminal" class="bg-navy/80 border border-white/[0.06] rounded-xl p-6 font-mono text-sm min-h-[400px] max-h-[600px] overflow-y-auto">
+          <div id="terminal-empty" class="flex items-center justify-center h-64 text-text-muted">
+            <div class="text-center">
+              <svg class="w-10 h-10 mx-auto mb-3 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+              <p class="text-sm">Select a scenario above to start</p>
+            </div>
+          </div>
+          <div id="terminal-content" class="hidden space-y-4"></div>
+        </div>
+
+        <!-- Controls -->
+        <div class="flex items-center justify-between mt-4">
+          <div id="remaining-display" class="text-xs text-text-muted"></div>
+          <button id="run-again-btn" class="hidden text-sm text-purple hover:text-cyan border border-purple/20 hover:border-cyan/30 rounded-lg px-4 py-2 transition-colors duration-200 cursor-pointer flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+            {p.runAgainButton}
+          </button>
+        </div>
+      </div>
+
+      <!-- Powered by AWS Bedrock badge -->
+      <div class="flex justify-center items-center gap-3 mt-6 reveal">
+        <div class="chip text-xs">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L3 7v10l9 5 9-5V7l-9-5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M12 22V12M3 7l9 5 9-5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+          Powered by AWS Bedrock
+        </div>
+        <a href="/how-it-works#ai-agents" class="text-xs text-text-muted hover:text-purple transition-colors duration-200">How it works &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-24 lg:py-32 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="relative rounded-3xl overflow-hidden reveal">
+        <div class="absolute inset-0 bg-gradient-to-br from-purple via-indigo to-indigo"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(35,240,195,0.15),transparent_60%)]"></div>
+
+        <div class="relative px-8 py-16 lg:px-16 lg:py-24 text-center">
+          <h2 class="heading-xl text-4xl lg:text-5xl xl:text-6xl text-white mb-6">{p.cta.headline}</h2>
+          <p class="text-white/70 text-lg max-w-2xl mx-auto mb-10">{p.cta.description}</p>
+          <a href="/contact" class="btn-primary">{p.cta.button}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  const API_URL = import.meta.env.PUBLIC_AGENT_VISUALIZER_URL;
+
+  const scenarioCards = document.querySelectorAll('.scenario-card');
+  const terminal = document.getElementById('terminal')!;
+  const terminalEmpty = document.getElementById('terminal-empty')!;
+  const terminalContent = document.getElementById('terminal-content')!;
+  const runAgainBtn = document.getElementById('run-again-btn') as HTMLButtonElement;
+  const remainingDisplay = document.getElementById('remaining-display')!;
+
+  const stepColors: Record<string, string> = {
+    think: 'text-purple border-purple/30 bg-purple/10',
+    plan: 'text-indigo border-indigo/30 bg-indigo/10',
+    execute: 'text-cyan border-cyan/30 bg-cyan/10',
+    verify: 'text-green-400 border-green-400/30 bg-green-400/10',
+    result: 'text-off-white border-white/20 bg-white/[0.06]',
+  };
+
+  const stepLabels: Record<string, string> = {
+    think: 'Thinking',
+    plan: 'Planning',
+    execute: 'Executing',
+    verify: 'Verifying',
+    result: 'Result',
+  };
+
+  let currentScenario = '';
+  let isRunning = false;
+
+  function resetSteps() {
+    ['think', 'plan', 'execute', 'verify', 'result'].forEach(step => {
+      const el = document.getElementById(`step-${step}`);
+      if (el) {
+        el.className = 'step-indicator flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-white/[0.04] text-text-muted transition-all duration-500';
+      }
+    });
+  }
+
+  function activateStep(step: string) {
+    const el = document.getElementById(`step-${step}`);
+    if (el) {
+      const colors = stepColors[step] || '';
+      el.className = `step-indicator flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium ${colors} transition-all duration-500`;
+    }
+  }
+
+  function escapeHtml(text: string): string {
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function renderStepContent(content: string): string {
+    let html = escapeHtml(content);
+
+    // Code blocks with backticks
+    html = html.replace(/```(\w+)?\n([\s\S]*?)```/g,
+      '<pre class="bg-surface border border-white/[0.06] rounded-lg p-3 my-2 overflow-x-auto text-xs"><code>$2</code></pre>');
+
+    // Inline code
+    html = html.replace(/`([^`]+)`/g, '<code class="bg-surface px-1 py-0.5 rounded text-cyan text-xs">$1</code>');
+
+    // Newlines
+    html = html.replace(/\\n/g, '<br>');
+
+    return html;
+  }
+
+  function addStepToTerminal(step: string, title: string, content: string) {
+    const colorClass = stepColors[step]?.split(' ')[0] || 'text-text-secondary';
+    const borderColor = stepColors[step]?.split(' ')[1] || 'border-white/10';
+
+    const div = document.createElement('div');
+    div.className = `border-l-2 ${borderColor} pl-4 animate-fade-in`;
+    div.innerHTML = `
+      <div class="flex items-center gap-2 mb-1">
+        <span class="text-xs font-bold uppercase tracking-wider ${colorClass}">${stepLabels[step] || step}</span>
+        ${title ? `<span class="text-xs text-text-muted">&mdash; ${escapeHtml(title)}</span>` : ''}
+      </div>
+      <div class="text-text-secondary text-sm leading-relaxed">${renderStepContent(content)}</div>
+    `;
+
+    terminalContent.appendChild(div);
+    terminal.scrollTop = terminal.scrollHeight;
+  }
+
+  async function runScenario(scenario: string) {
+    if (isRunning || !API_URL) return;
+
+    currentScenario = scenario;
+    isRunning = true;
+    runAgainBtn.classList.add('hidden');
+    terminalEmpty.classList.add('hidden');
+    terminalContent.classList.remove('hidden');
+    terminalContent.innerHTML = '';
+    resetSteps();
+
+    // Highlight selected scenario card
+    scenarioCards.forEach(card => {
+      const id = (card as HTMLElement).dataset.scenario;
+      if (id === scenario) {
+        card.classList.add('border-purple/40', 'bg-purple/5');
+      } else {
+        card.classList.remove('border-purple/40', 'bg-purple/5');
+      }
+    });
+
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ scenario }),
+      });
+
+      const remaining = res.headers.get('X-Remaining-Requests');
+      if (remaining !== null) {
+        remainingDisplay.textContent = `${remaining} / 10 runs remaining today`;
+      }
+
+      if (!res.ok) {
+        const err = await res.text();
+        let message = 'Failed to run scenario.';
+        try { const parsed = JSON.parse(err); message = parsed.error || message; } catch {}
+        throw new Error(message);
+      }
+
+      const reader = res.body?.getReader();
+      if (!reader) throw new Error('Streaming not supported');
+
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+
+        // Try to parse complete JSON lines
+        const lines = buffer.split('\n');
+        buffer = lines.pop() ?? '';
+
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed) continue;
+
+          try {
+            const parsed = JSON.parse(trimmed);
+            if (parsed.step && parsed.content) {
+              activateStep(parsed.step);
+              addStepToTerminal(parsed.step, parsed.title || '', parsed.content);
+            }
+          } catch {
+            // Not a complete JSON line, might be partial — skip
+          }
+        }
+      }
+
+      // Process remaining buffer
+      if (buffer.trim()) {
+        try {
+          const parsed = JSON.parse(buffer.trim());
+          if (parsed.step && parsed.content) {
+            activateStep(parsed.step);
+            addStepToTerminal(parsed.step, parsed.title || '', parsed.content);
+          }
+        } catch {}
+      }
+    } catch (err) {
+      const div = document.createElement('div');
+      div.className = 'text-red-400 text-sm';
+      div.textContent = err instanceof Error ? err.message : 'An error occurred';
+      terminalContent.appendChild(div);
+    } finally {
+      isRunning = false;
+      runAgainBtn.classList.remove('hidden');
+    }
+  }
+
+  // Scenario card clicks
+  scenarioCards.forEach(card => {
+    card.addEventListener('click', () => {
+      const scenario = (card as HTMLElement).dataset.scenario!;
+      runScenario(scenario);
+    });
+  });
+
+  // Run again
+  runAgainBtn.addEventListener('click', () => {
+    if (currentScenario) runScenario(currentScenario);
+  });
+</script>
+
+<style>
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in {
+    animation: fade-in 0.4s ease-out;
+  }
+</style>

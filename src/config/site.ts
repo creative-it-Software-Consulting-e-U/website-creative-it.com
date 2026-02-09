@@ -29,6 +29,9 @@ export const siteConfig = {
     { name: "Services", href: "/services" },
     { name: "About", href: "/about" },
     { name: "AI Playground", href: "/ai-playground" },
+    { name: "Tech Advisor", href: "/tech-advisor" },
+    { name: "AI Agents", href: "/ai-agents" },
+    { name: "How It Works", href: "/how-it-works" },
     { name: "Contact", href: "/contact" },
   ],
 
@@ -403,6 +406,13 @@ export const siteConfig = {
           { value: "More", label: "Focus for Engineers", description: "With routine work handled, engineers spend their time on architecture, user experience, and creative problem-solving." },
         ],
       },
+      storySection: {
+        chip: "AI Narrative",
+        headline: "What We Built Today",
+        refreshButton: "New Story",
+        loadingText: "AI is writing today's story...",
+        fallback: "Our agents have been busy shipping code. Check the stats above to see the numbers.",
+      },
       cta: {
         headline: "Ready to Ship Faster?",
         description:
@@ -503,6 +513,308 @@ export const siteConfig = {
       },
     },
 
+    techAdvisor: {
+      meta: {
+        title: "Tech Stack Advisor",
+        description: "Describe your project and get AI-powered architecture recommendations with reasoning",
+      },
+      hero: {
+        chip: "AI Tech Advisor",
+        headline: { before: "Describe Your Project. ", gradient: "Get Your Stack.", after: "" },
+        description:
+          "Tell us about your project requirements and our AI will recommend a complete tech stack with architecture diagrams and reasoning.",
+      },
+      inputSection: {
+        promptLabel: "Describe your project",
+        promptPlaceholder: "We need a real-time dashboard for monitoring IoT sensor data from 500 devices...",
+        generateButton: "Analyze",
+        generatingButton: "Analyzing...",
+        charLimit: 2000,
+      },
+      examples: [
+        "E-commerce platform for 10k daily users with payments and inventory",
+        "Real-time dashboard for IoT sensor data from 500 devices",
+        "Mobile app with offline sync and push notifications",
+        "AI-powered document processor with OCR and classification",
+      ],
+      previewSection: {
+        resultsTab: "Recommendations",
+        diagramTab: "Architecture",
+        emptyState: "Describe your project to get AI-powered architecture recommendations",
+      },
+      conversation: {
+        newAnalysisButton: "New Analysis",
+        refiningLabel: "Follow-up",
+        refiningPlaceholder: "Ask a follow-up question about the recommendations...",
+      },
+      cta: {
+        headline: "Want Us to Build This?",
+        description:
+          "Our team can turn these recommendations into reality. Let's discuss your project.",
+        button: "Start a Conversation",
+      },
+    },
+
+    aiAgents: {
+      meta: {
+        title: "AI Agents",
+        description: "Watch AI agents solve real tasks step-by-step with live visualization",
+      },
+      hero: {
+        chip: "AI Agents",
+        headline: { before: "Watch AI ", gradient: "Think.", after: "" },
+        description:
+          "See how AI agents break down complex problems, plan solutions, and execute tasks step-by-step — powered by real Bedrock calls.",
+      },
+      scenarios: [
+        { id: "code-review", title: "Code Review", description: "Agent reviews code for bugs and improvements", icon: "code" },
+        { id: "data-analysis", title: "Data Analysis", description: "Agent analyzes data and extracts insights", icon: "chart" },
+        { id: "deployment", title: "Deployment Pipeline", description: "Agent plans and executes a deployment", icon: "rocket" },
+        { id: "bug-fix", title: "Bug Investigation", description: "Agent investigates and fixes a bug", icon: "bug" },
+      ],
+      runButton: "Run Scenario",
+      runAgainButton: "Run Again",
+      steps: { think: "Thinking", plan: "Planning", execute: "Executing", verify: "Verifying", result: "Result" },
+      cta: {
+        headline: "Bring AI Agents to Your Project",
+        description:
+          "Let our team build intelligent agents tailored to your workflows and business processes.",
+        button: "Start a Conversation",
+      },
+    },
+
+    howItWorks: {
+      meta: {
+        title: "How It Works",
+        description: "Behind the scenes of creative-it's AI-powered features — architecture, AWS services, and technical flows",
+      },
+      hero: {
+        chip: "Behind the Scenes",
+        headline: { before: "How Our AI ", gradient: "Actually Works", after: "" },
+        description:
+          "Every AI feature on this site is powered by real AWS infrastructure. Explore the architecture, services, and technical flows behind each one.",
+      },
+      features: [
+        {
+          id: "ai-playground",
+          title: "AI Playground",
+          subtitle: "Describe it. Watch it build.",
+          icon: "lightning",
+          link: "/ai-playground",
+          whatItDoes:
+            "Type a plain-English description of any UI component and watch AI generate production-ready HTML + Tailwind CSS in real time. Supports multi-turn conversations to refine and iterate on your component.",
+          howItWorks:
+            "Your prompt is sent to an API Gateway endpoint backed by a Lambda function. The Lambda calls Amazon Bedrock with Claude, streaming tokens back through a chunked HTTP response. The frontend renders each chunk into a live preview iframe as it arrives.",
+          techFlow: [
+            "User types a component description in the browser",
+            "Request hits API Gateway with rate limiting (10/day per IP)",
+            "Lambda constructs a system prompt optimized for HTML/Tailwind generation",
+            "Amazon Bedrock streams Claude's response token-by-token",
+            "Frontend renders each chunk into a sandboxed iframe in real time",
+            "Conversation history is maintained client-side for multi-turn refinement",
+          ],
+          awsServices: [
+            { name: "Amazon Bedrock", role: "LLM inference with Claude" },
+            { name: "AWS Lambda", role: "Serverless request handler" },
+            { name: "API Gateway", role: "REST endpoint with throttling" },
+            { name: "CloudWatch", role: "Logging and monitoring" },
+          ],
+        },
+        {
+          id: "tech-advisor",
+          title: "Tech Stack Advisor",
+          subtitle: "Describe your project. Get your stack.",
+          icon: "beaker",
+          link: "/tech-advisor",
+          whatItDoes:
+            "Describe your project requirements and get AI-powered architecture recommendations with a complete tech stack, reasoning, and a Mermaid architecture diagram. Follow up with questions to refine the recommendations.",
+          howItWorks:
+            "The Lambda function sends your project description to Claude via Bedrock with a specialized system prompt that instructs the model to analyze requirements, recommend technologies, and generate a Mermaid diagram. Responses stream back with a special marker format for the diagram section.",
+          techFlow: [
+            "User describes their project requirements",
+            "Lambda sends the prompt to Bedrock with architecture-focused system instructions",
+            "Claude analyzes requirements and generates structured recommendations",
+            "Response includes a Mermaid diagram between ---DIAGRAM--- markers",
+            "Frontend renders markdown recommendations and loads Mermaid.js for the diagram",
+            "Follow-up questions maintain conversation context for deeper analysis",
+          ],
+          awsServices: [
+            { name: "Amazon Bedrock", role: "Architecture analysis with Claude" },
+            { name: "AWS Lambda", role: "Prompt orchestration" },
+            { name: "API Gateway", role: "REST endpoint with rate limiting" },
+            { name: "CloudWatch", role: "Request logging" },
+          ],
+        },
+        {
+          id: "ai-agents",
+          title: "AI Agent Visualizer",
+          subtitle: "Watch AI think step-by-step.",
+          icon: "robot",
+          link: "/ai-agents",
+          whatItDoes:
+            "Select a scenario (code review, data analysis, deployment, bug fix) and watch an AI agent break down the problem, plan a solution, execute steps, and verify results — all streamed live to a terminal-style interface.",
+          howItWorks:
+            "The Lambda receives a scenario ID, constructs a multi-step prompt chain, and calls Bedrock for each agent phase (think → plan → execute → verify → result). Each phase's output is streamed as newline-delimited JSON, with the frontend updating the pipeline visualization in real time.",
+          techFlow: [
+            "User selects a predefined scenario (e.g., 'Code Review')",
+            "Lambda receives the scenario and initiates a multi-phase prompt chain",
+            "Each phase (Think, Plan, Execute, Verify, Result) calls Bedrock independently",
+            "Responses stream as NDJSON with step metadata",
+            "Frontend highlights the active pipeline step and appends terminal output",
+            "Rate limiting tracks daily usage per IP",
+          ],
+          awsServices: [
+            { name: "Amazon Bedrock", role: "Multi-step agent reasoning" },
+            { name: "AWS Lambda", role: "Agent orchestration" },
+            { name: "API Gateway", role: "Streaming endpoint" },
+            { name: "CloudWatch", role: "Step-level tracing" },
+          ],
+        },
+        {
+          id: "chat-widget",
+          title: "AI Chat Assistant",
+          subtitle: "Ask anything about creative-it.",
+          icon: "chat",
+          link: null,
+          whatItDoes:
+            "A floating chat widget that answers questions about creative-it's services, process, team, and capabilities. Maintains session context for natural follow-up conversations with streaming responses.",
+          howItWorks:
+            "The Lambda uses a Bedrock Knowledge Base backed by an S3 bucket of curated company documents. When a user asks a question, it performs RAG (Retrieval-Augmented Generation) — retrieving relevant chunks from the knowledge base, then generating a grounded answer with Claude. Session IDs enable multi-turn conversations.",
+          techFlow: [
+            "User types a question in the floating chat widget",
+            "Request includes a session ID for conversation continuity",
+            "Lambda queries the Bedrock Knowledge Base for relevant document chunks",
+            "Retrieved context is injected into Claude's prompt (RAG pattern)",
+            "Claude generates a grounded answer, streamed back to the widget",
+            "Session state persists across messages for follow-up questions",
+          ],
+          awsServices: [
+            { name: "Amazon Bedrock", role: "LLM inference + Knowledge Bases" },
+            { name: "Amazon S3", role: "Document storage for RAG" },
+            { name: "AWS Lambda", role: "Query orchestration" },
+            { name: "API Gateway", role: "Chat endpoint with session tracking" },
+          ],
+        },
+        {
+          id: "website-remix",
+          title: "Website Remix",
+          subtitle: "Restyle this site with AI.",
+          icon: "paintbrush",
+          link: null,
+          whatItDoes:
+            "Type a visual theme (e.g., 'retro 80s neon' or 'minimalist monochrome') and AI generates custom CSS that transforms the entire site's look in real time. Reset anytime to return to the original.",
+          howItWorks:
+            "The Lambda sends your theme description to Claude with a system prompt containing the site's CSS custom properties and design token structure. Claude generates override CSS that targets the existing theme variables. The frontend injects the CSS as a <style> tag, instantly restyling the page.",
+          techFlow: [
+            "User types a theme description (e.g., 'warm earthy tones')",
+            "Lambda sends the prompt with the site's CSS variable schema",
+            "Claude generates CSS overrides targeting theme custom properties",
+            "Response streams with CSS between ---CSS--- markers",
+            "Frontend extracts the CSS and injects it as a <style> element",
+            "A banner appears with a reset button to restore the original theme",
+          ],
+          awsServices: [
+            { name: "Amazon Bedrock", role: "CSS generation with Claude" },
+            { name: "AWS Lambda", role: "Theme prompt handler" },
+            { name: "API Gateway", role: "Remix endpoint" },
+          ],
+        },
+        {
+          id: "live-translation",
+          title: "Live Translation",
+          subtitle: "Read this site in 25+ languages.",
+          icon: "globe",
+          link: null,
+          whatItDoes:
+            "Click any language flag and the entire page is translated in place — headlines, paragraphs, buttons, and all. Translations are context-aware and preserve formatting. Reset to return to English anytime.",
+          howItWorks:
+            "The frontend collects all translatable text nodes from the DOM, batches them (50 per request), and sends them to a Lambda that calls Claude with translation-specific prompts. Claude returns a JSON array of translated strings, which the frontend applies back to the corresponding DOM elements.",
+          techFlow: [
+            "User clicks a language flag (e.g., German, Japanese)",
+            "Frontend traverses the DOM and collects text from translatable elements",
+            "Original text is stored in a Map for later reset",
+            "Texts are batched (50 per request) and sent to the translation Lambda",
+            "Claude translates the batch while preserving formatting and context",
+            "Translated strings are applied to DOM elements; a banner shows active language",
+          ],
+          awsServices: [
+            { name: "Amazon Bedrock", role: "Context-aware translation with Claude" },
+            { name: "AWS Lambda", role: "Batch translation handler" },
+            { name: "API Gateway", role: "Translation endpoint" },
+          ],
+        },
+        {
+          id: "agentic-coding",
+          title: "Agentic Coding Stats",
+          subtitle: "Live GitHub activity from AI agents.",
+          icon: "code",
+          link: "/agentic-coding",
+          whatItDoes:
+            "Displays real-time GitHub statistics — commits, lines changed, and a 7-day activity chart — from our organization's repositories. An AI-generated narrative summarizes the day's development activity.",
+          howItWorks:
+            "Two Lambda functions power this feature. The stats Lambda queries the GitHub API for commit and diff data across all org repos, caching results in DynamoDB with TTL. The story Lambda takes the stats and sends them to Claude, which generates a creative narrative about the day's coding activity.",
+          techFlow: [
+            "Page loads and fetches /github-stats from the API",
+            "Stats Lambda checks DynamoDB cache (5-minute TTL)",
+            "On cache miss, Lambda queries GitHub API for org-wide commit data",
+            "Stats are aggregated (24h, 7d) and history points are stored",
+            "Frontend renders stats cards and draws a Canvas-based activity chart",
+            "Story Lambda sends stats to Claude for a narrative summary",
+          ],
+          awsServices: [
+            { name: "Amazon Bedrock", role: "AI story generation with Claude" },
+            { name: "Amazon DynamoDB", role: "Stats caching with TTL" },
+            { name: "AWS Lambda", role: "GitHub API integration + story generation" },
+            { name: "API Gateway", role: "Stats and story endpoints" },
+          ],
+        },
+      ],
+      architectureSection: {
+        chip: "Architecture",
+        headline: { before: "The Full ", gradient: "Stack", after: "" },
+        description:
+          "All AI features run on a serverless AWS architecture. Here's every service involved, grouped by layer.",
+        categories: [
+          {
+            title: "AI / ML Layer",
+            services: [
+              { name: "Amazon Bedrock", description: "Managed LLM inference with Claude — powers all AI features" },
+              { name: "Bedrock Knowledge Bases", description: "RAG pipeline for the chat assistant's document retrieval" },
+            ],
+          },
+          {
+            title: "Compute Layer",
+            services: [
+              { name: "AWS Lambda", description: "Serverless functions for every API endpoint — zero idle cost" },
+              { name: "API Gateway", description: "REST APIs with throttling, CORS, and custom domain mapping" },
+            ],
+          },
+          {
+            title: "Data Layer",
+            services: [
+              { name: "Amazon DynamoDB", description: "Low-latency caching for GitHub stats and rate limiting" },
+              { name: "Amazon S3", description: "Document storage for the knowledge base and static assets" },
+            ],
+          },
+          {
+            title: "Networking & Orchestration",
+            services: [
+              { name: "Amazon CloudFront", description: "CDN for the static Astro site and asset delivery" },
+              { name: "AWS CDK", description: "Infrastructure as code — the entire stack defined in TypeScript" },
+              { name: "Amazon CloudWatch", description: "Centralized logging, metrics, and alerting across all Lambdas" },
+              { name: "AWS IAM", description: "Fine-grained permissions between services" },
+            ],
+          },
+        ],
+      },
+      cta: {
+        headline: "Want This for Your Product?",
+        description:
+          "Every feature on this site is built with the same tools and patterns we use for clients. Let's build something intelligent together.",
+        button: "Start a Conversation",
+      },
+    },
+
     contact: {
       meta: {
         title: "Contact",
@@ -545,6 +857,34 @@ export const siteConfig = {
         headline: "Common Questions",
       },
     },
+  },
+
+  // ── Chat Widget ──────────────────────────────────────────────────────────
+  chatWidget: {
+    buttonLabel: "Ask AI",
+    headline: "Ask creative-it AI",
+    placeholder: "Ask about our services, process, or team...",
+    talkToHuman: "Talk to a human",
+    poweredBy: "Powered by AWS Bedrock",
+  },
+
+  // ── Live Translation ────────────────────────────────────────────────────
+  translation: {
+    buttonLabel: "Translate",
+    headline: "Live Translation",
+    poweredBy: "Powered by AWS Bedrock",
+    translating: "Translating...",
+    resetButton: "Original",
+  },
+
+  // ── Website Remix ───────────────────────────────────────────────────────
+  remix: {
+    buttonLabel: "Remix",
+    headline: "Remix This Site",
+    placeholder: "How should it look? (e.g., retro 80s neon)",
+    remixButton: "Remix",
+    resetButton: "Reset to Original",
+    examples: ["Retro 80s neon", "Warm earthy tones", "Minimalist monochrome", "Cyberpunk"],
   },
 
   // ── Colors (reference only) ───────────────────────────────────────────────

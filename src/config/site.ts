@@ -409,6 +409,7 @@ export const siteConfig = {
       storySection: {
         chip: "AI Narrative",
         headline: "What We Built Today",
+        description: "This story is generated live by AI based on our actual GitHub activity — a different narrative every time.",
         refreshButton: "New Story",
         loadingText: "AI is writing today's story...",
         fallback: "Our agents have been busy shipping code. Check the stats above to see the numbers.",

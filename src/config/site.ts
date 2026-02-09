@@ -941,7 +941,7 @@ export const siteConfig = {
         },
         {
           title: "Privacy",
-          content: "This website does not use cookies for tracking. No personal data is collected beyond what is voluntarily provided through the contact form. Contact form submissions are processed solely for the purpose of responding to your inquiry.",
+          content: "For detailed information about how we process personal data on this website, please see our full Privacy Policy at /privacy.",
           items: [],
         },
       ],
@@ -998,8 +998,220 @@ export const siteConfig = {
         },
         {
           title: "Datenschutz",
-          content: "Diese Website verwendet keine Tracking-Cookies. Es werden keine personenbezogenen Daten erhoben, die über die freiwilligen Angaben im Kontaktformular hinausgehen. Kontaktformular-Eingaben werden ausschließlich zur Beantwortung Ihrer Anfrage verarbeitet.",
+          content: "Ausführliche Informationen zur Verarbeitung personenbezogener Daten auf dieser Website finden Sie in unserer vollständigen Datenschutzerklärung unter /privacy/de.",
           items: [],
+        },
+      ],
+    },
+  },
+
+  // ── Privacy Policy / Datenschutzerklärung ─────────────────────────────────
+  privacy: {
+    en: {
+      meta: {
+        title: "Privacy Policy",
+        description: "Privacy policy of creative-it Software Consulting e.U. — information about data processing on this website.",
+      },
+      chip: "Privacy Policy",
+      headline: { before: "Privacy ", gradient: "Policy", after: "" },
+      switchLabel: "Auf Deutsch lesen",
+      switchHref: "/privacy/de",
+      lastUpdated: "February 2025",
+      sections: [
+        {
+          title: "1. Controller",
+          paragraphs: [
+            "creative-it Software Consulting e.U., Georg Wieser, Am Gassl 25, A-3482 Gösing am Wagram, Austria. Email: info@creative-it.com, Phone: +43 660 4943737.",
+          ],
+        },
+        {
+          title: "2. Overview",
+          paragraphs: [
+            "This privacy policy informs you about the nature, scope, and purpose of the processing of personal data on our website creative-it.com in accordance with the General Data Protection Regulation (GDPR) and the Austrian Data Protection Act (DSG).",
+          ],
+        },
+        {
+          title: "3. Legal Basis",
+          paragraphs: [
+            "We process personal data on the following legal bases: Consent (Art. 6(1)(a) GDPR) — e.g. when using the contact form or AI-powered services. Contract performance or pre-contractual measures (Art. 6(1)(b) GDPR). Legitimate interest (Art. 6(1)(f) GDPR) — e.g. secure operation of the website, rate limiting, and abuse prevention.",
+          ],
+        },
+        {
+          title: "4. Hosting",
+          paragraphs: [
+            "This website is hosted by Vercel Inc. (440 N Barranca Ave #4133, Covina, CA 91723, USA). When you visit our website, information is automatically stored in server log files, including: IP address, date and time of access, page visited, browser type and operating system, and referrer URL.",
+            "This data is processed for the purpose of secure and reliable operation of the website (Art. 6(1)(f) GDPR). Vercel is certified under the EU-US Data Privacy Framework.",
+          ],
+        },
+        {
+          title: "5. Contact Form",
+          paragraphs: [
+            "When you send us a message via the contact form, your name, email address, and message are transmitted to us via Amazon Web Services (AWS) Simple Email Service (SES). The processing is carried out to handle your inquiry (Art. 6(1)(a) or (b) GDPR).",
+            "Your data is used solely to respond to your inquiry and is not stored beyond that unless a business relationship is established. AWS processes data in the EU region (Frankfurt, eu-central-1).",
+          ],
+        },
+        {
+          title: "6. AI-Powered Services",
+          paragraphs: [
+            "Our website offers several AI-powered features (including AI Playground, Tech Advisor, Knowledge Bot, Website Remix, Live Translation, Agent Visualizer, and Commit Story). When you use these services, your text inputs are transmitted to Amazon Bedrock (AWS) for processing by AI models.",
+            "Processing takes place in the AWS EU region (Frankfurt, eu-central-1). No text inputs are permanently stored or used for training purposes. Usage is based on your consent (Art. 6(1)(a) GDPR), which you grant by actively using the services.",
+          ],
+        },
+        {
+          title: "7. Rate Limiting and Abuse Prevention",
+          paragraphs: [
+            "To protect our services from abuse, we use IP-based rate limiting. A hashed version of your IP address is temporarily stored in Amazon DynamoDB to limit the number of requests. This data is automatically deleted after 24 hours.",
+            "The legal basis is our legitimate interest in secure operation (Art. 6(1)(f) GDPR).",
+          ],
+        },
+        {
+          title: "8. Google Fonts",
+          paragraphs: [
+            "This website uses Google Fonts by Google LLC (1600 Amphitheatre Parkway, Mountain View, CA 94043, USA) for consistent font display. When loading the page, fonts are retrieved from Google servers (fonts.googleapis.com, fonts.gstatic.com), during which your IP address is transmitted to Google.",
+            "The legal basis is our legitimate interest in an appealing presentation (Art. 6(1)(f) GDPR). Google is certified under the EU-US Data Privacy Framework.",
+          ],
+        },
+        {
+          title: "9. Cookies",
+          paragraphs: [
+            "This website does not use tracking cookies or analytics tools. Only technically necessary cookies are used if required for the operation of the website.",
+          ],
+        },
+        {
+          title: "10. Data Transfers to Third Countries",
+          paragraphs: [
+            "Some of our service providers are based in the USA: Vercel Inc. (hosting) and Google LLC (Google Fonts). Data transfers are based on the EU-US Data Privacy Framework (Art. 45 GDPR) or Standard Contractual Clauses (Art. 46(2)(c) GDPR).",
+            "AWS services (Bedrock, DynamoDB, SES) are operated in the EU region (Frankfurt).",
+          ],
+        },
+        {
+          title: "11. Data Retention",
+          paragraphs: [
+            "Server logs (Vercel): according to Vercel's policies (typically 30 days). Contact form data: only for the duration of processing the inquiry. Rate limiting data: automatically deleted after 24 hours. AI inputs: not permanently stored.",
+          ],
+        },
+        {
+          title: "12. Your Rights",
+          paragraphs: [
+            "Under the GDPR, you have the following rights: Right of access (Art. 15), Right to rectification (Art. 16), Right to erasure (Art. 17), Right to restriction of processing (Art. 18), Right to data portability (Art. 20), Right to object (Art. 21), and Right to withdraw consent (Art. 7(3)).",
+            "To exercise your rights, contact us at info@creative-it.com.",
+          ],
+        },
+        {
+          title: "13. Right to Lodge a Complaint",
+          paragraphs: [
+            "You have the right to lodge a complaint with the competent supervisory authority: Austrian Data Protection Authority (Österreichische Datenschutzbehörde), Barichgasse 40-42, 1030 Vienna, Austria. Phone: +43 1 52 152-0, Email: dsb@dsb.gv.at, Website: www.dsb.gv.at.",
+          ],
+        },
+        {
+          title: "14. Changes to This Policy",
+          paragraphs: [
+            "We reserve the right to update this privacy policy as needed, for example due to changes to our website or legal requirements. The current version is always available on this page.",
+          ],
+        },
+      ],
+    },
+    de: {
+      meta: {
+        title: "Datenschutzerklärung",
+        description: "Datenschutzerklärung der creative-it Software Consulting e.U. — Informationen zur Datenverarbeitung auf dieser Website.",
+      },
+      chip: "Datenschutz",
+      headline: { before: "Datenschutz", gradient: "erklärung", after: "" },
+      switchLabel: "Read in English",
+      switchHref: "/privacy",
+      lastUpdated: "Februar 2025",
+      sections: [
+        {
+          title: "1. Verantwortlicher",
+          paragraphs: [
+            "creative-it Software Consulting e.U., Georg Wieser, Am Gassl 25, A-3482 Gösing am Wagram, Österreich. E-Mail: info@creative-it.com, Telefon: +43 660 4943737.",
+          ],
+        },
+        {
+          title: "2. Übersicht",
+          paragraphs: [
+            "Diese Datenschutzerklärung informiert Sie über Art, Umfang und Zweck der Verarbeitung personenbezogener Daten auf unserer Website creative-it.com gemäß der Datenschutz-Grundverordnung (DSGVO) und dem österreichischen Datenschutzgesetz (DSG).",
+          ],
+        },
+        {
+          title: "3. Rechtsgrundlagen",
+          paragraphs: [
+            "Die Verarbeitung personenbezogener Daten erfolgt auf folgenden Rechtsgrundlagen: Einwilligung (Art. 6 Abs. 1 lit. a DSGVO) — z.\u00A0B. bei der Nutzung des Kontaktformulars oder der KI-gestützten Dienste. Vertragserfüllung oder vorvertragliche Maßnahmen (Art. 6 Abs. 1 lit. b DSGVO). Berechtigtes Interesse (Art. 6 Abs. 1 lit. f DSGVO) — z.\u00A0B. für den sicheren Betrieb der Website, Rate Limiting und Missbrauchsschutz.",
+          ],
+        },
+        {
+          title: "4. Hosting",
+          paragraphs: [
+            "Diese Website wird von Vercel Inc. (440 N Barranca Ave #4133, Covina, CA 91723, USA) gehostet. Bei jedem Zugriff auf unsere Website werden automatisch Informationen in Server-Logfiles gespeichert, darunter: IP-Adresse, Datum und Uhrzeit des Zugriffs, aufgerufene Seite, Browser-Typ und Betriebssystem sowie Referrer-URL.",
+            "Diese Daten werden zum Zweck des sicheren und störungsfreien Betriebs der Website verarbeitet (Art. 6 Abs. 1 lit. f DSGVO). Vercel ist unter dem EU-US Data Privacy Framework zertifiziert.",
+          ],
+        },
+        {
+          title: "5. Kontaktformular",
+          paragraphs: [
+            "Wenn Sie uns über das Kontaktformular eine Nachricht senden, werden Ihr Name, Ihre E-Mail-Adresse und Ihre Nachricht über Amazon Web Services (AWS) Simple Email Service (SES) an uns übermittelt. Die Verarbeitung erfolgt zum Zweck der Bearbeitung Ihrer Anfrage (Art. 6 Abs. 1 lit. a bzw. lit. b DSGVO).",
+            "Ihre Daten werden ausschließlich zur Beantwortung Ihrer Anfrage verwendet und darüber hinaus nicht gespeichert, sofern keine weitergehende Geschäftsbeziehung entsteht. AWS verarbeitet die Daten in der Region EU (Frankfurt, eu-central-1).",
+          ],
+        },
+        {
+          title: "6. KI-gestützte Dienste",
+          paragraphs: [
+            "Unsere Website bietet mehrere KI-gestützte Funktionen an (u.\u00A0a. AI Playground, Tech Advisor, Knowledge Bot, Website Remix, Live Translation, Agent Visualizer und Commit Story). Wenn Sie diese Dienste nutzen, werden Ihre Texteingaben an Amazon Bedrock (AWS) zur Verarbeitung durch KI-Modelle übermittelt.",
+            "Die Verarbeitung erfolgt in der AWS-Region EU (Frankfurt, eu-central-1). Es werden keine Texteingaben dauerhaft gespeichert oder für Trainingszwecke verwendet. Die Nutzung erfolgt auf Grundlage Ihrer Einwilligung (Art. 6 Abs. 1 lit. a DSGVO), die Sie durch aktive Nutzung der Dienste erteilen.",
+          ],
+        },
+        {
+          title: "7. Rate Limiting und Missbrauchsschutz",
+          paragraphs: [
+            "Zum Schutz unserer Dienste vor Missbrauch setzen wir ein IP-basiertes Rate Limiting ein. Dabei wird eine gehashte Version Ihrer IP-Adresse temporär in Amazon DynamoDB gespeichert, um die Anzahl der Anfragen zu begrenzen. Diese Daten werden automatisch nach 24 Stunden gelöscht.",
+            "Rechtsgrundlage ist unser berechtigtes Interesse am sicheren Betrieb (Art. 6 Abs. 1 lit. f DSGVO).",
+          ],
+        },
+        {
+          title: "8. Google Fonts",
+          paragraphs: [
+            "Diese Website verwendet Google Fonts der Google LLC (1600 Amphitheatre Parkway, Mountain View, CA 94043, USA) zur einheitlichen Darstellung von Schriftarten. Beim Laden der Seite werden Schriftarten von Google-Servern (fonts.googleapis.com, fonts.gstatic.com) abgerufen, wobei Ihre IP-Adresse an Google übermittelt wird.",
+            "Rechtsgrundlage ist unser berechtigtes Interesse an einer ansprechenden Darstellung (Art. 6 Abs. 1 lit. f DSGVO). Google ist unter dem EU-US Data Privacy Framework zertifiziert.",
+          ],
+        },
+        {
+          title: "9. Cookies",
+          paragraphs: [
+            "Diese Website verwendet keine Tracking-Cookies und keine Analyse-Tools. Es werden ausschließlich technisch notwendige Cookies eingesetzt, sofern für den Betrieb der Website erforderlich.",
+          ],
+        },
+        {
+          title: "10. Datenweitergabe an Drittländer",
+          paragraphs: [
+            "Einige unserer Dienstleister haben ihren Sitz in den USA: Vercel Inc. (Hosting) und Google LLC (Google Fonts). Die Datenübermittlung erfolgt auf Grundlage des EU-US Data Privacy Frameworks (Art. 45 DSGVO) bzw. Standardvertragsklauseln (Art. 46 Abs. 2 lit. c DSGVO).",
+            "AWS-Dienste (Bedrock, DynamoDB, SES) werden in der Region EU (Frankfurt) betrieben.",
+          ],
+        },
+        {
+          title: "11. Speicherdauer",
+          paragraphs: [
+            "Server-Logs (Vercel): gemäß Vercel-Richtlinien (typischerweise 30 Tage). Kontaktformular-Daten: nur für die Dauer der Anfragenbearbeitung. Rate-Limiting-Daten: automatische Löschung nach 24 Stunden. KI-Eingaben: werden nicht dauerhaft gespeichert.",
+          ],
+        },
+        {
+          title: "12. Ihre Rechte",
+          paragraphs: [
+            "Sie haben gemäß DSGVO folgende Rechte: Auskunftsrecht (Art. 15), Recht auf Berichtigung (Art. 16), Recht auf Löschung (Art. 17), Recht auf Einschränkung der Verarbeitung (Art. 18), Recht auf Datenübertragbarkeit (Art. 20), Widerspruchsrecht (Art. 21) sowie Recht auf Widerruf einer Einwilligung (Art. 7 Abs. 3).",
+            "Zur Ausübung Ihrer Rechte kontaktieren Sie uns unter info@creative-it.com.",
+          ],
+        },
+        {
+          title: "13. Beschwerderecht",
+          paragraphs: [
+            "Sie haben das Recht, sich bei der zuständigen Aufsichtsbehörde zu beschweren: Österreichische Datenschutzbehörde, Barichgasse 40-42, 1030 Wien, Österreich. Telefon: +43 1 52 152-0, E-Mail: dsb@dsb.gv.at, Website: www.dsb.gv.at.",
+          ],
+        },
+        {
+          title: "14. Änderungen",
+          paragraphs: [
+            "Wir behalten uns vor, diese Datenschutzerklärung bei Bedarf anzupassen, z.\u00A0B. bei Änderungen unserer Website oder der rechtlichen Anforderungen. Die aktuelle Fassung ist stets auf dieser Seite abrufbar.",
+          ],
         },
       ],
     },

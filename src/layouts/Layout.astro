@@ -73,7 +73,7 @@ const pageDescription = description || siteConfig.description;
     <button
       id="ai-tools-toggle"
       class="fixed left-6 z-50 w-14 h-14 rounded-full bg-gradient-to-br from-purple to-indigo shadow-[0_4px_24px_rgba(161,99,241,0.3)] flex items-center justify-center cursor-pointer hover:shadow-[0_4px_32px_rgba(161,99,241,0.5)] transition-[transform,box-shadow] duration-300"
-      style="bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px)); -webkit-transform: translateZ(0); transform: translateZ(0)"
+      style="bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px))"
       aria-label="AI Tools"
       title="AI-Demo-Tools ausprobieren"
     >
@@ -176,25 +176,9 @@ const pageDescription = description || siteConfig.description;
           else openMenu();
         }
 
-        // Use a single handler that works on both touch and mouse.
-        // A flag prevents the click that follows touchend from double-firing.
-        let handledByTouch = false;
-
-        toggle.addEventListener('touchstart', () => { handledByTouch = false; }, { passive: true });
-        toggle.addEventListener('touchmove', () => { handledByTouch = false; }, { passive: true });
-        toggle.addEventListener('touchend', (e) => {
-          e.preventDefault(); // suppress the subsequent click on iOS
-          handledByTouch = true;
-          handleToggle();
-        }, { passive: false });
-
-        toggle.addEventListener('click', () => {
-          if (handledByTouch) {
-            handledByTouch = false;
-            return; // already handled by touchend
-          }
-          handleToggle();
-        });
+        // touch-action: manipulation (set in global.css) removes the 300ms
+        // tap delay on iOS, so a simple click handler works everywhere.
+        toggle.addEventListener('click', handleToggle);
 
         // Hide labels when a sub-button opens its panel
         chatBtn.addEventListener('click', hideAllLabels);

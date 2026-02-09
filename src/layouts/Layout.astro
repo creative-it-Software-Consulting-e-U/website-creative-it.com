@@ -210,6 +210,26 @@ const pageDescription = description || siteConfig.description;
           }
         }, { passive: false });
 
+        // iOS Safari fallback for sub-buttons (same transform hit-test bug)
+        document.addEventListener('touchend', (e) => {
+          if (!isMenuOpen) return;
+          const touch = e.changedTouches[0];
+          if (!touch) return;
+
+          for (const { btn } of items) {
+            const rect = btn.getBoundingClientRect();
+            if (rect.width === 0) continue;
+            if (touch.clientX >= rect.left && touch.clientX <= rect.right &&
+                touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
+              // If touch target is already this button, native click handles it
+              if (e.target === btn || btn.contains(e.target as Node)) return;
+              e.preventDefault();
+              btn.click();
+              return;
+            }
+          }
+        }, { passive: false });
+
         // Hide labels when a sub-button opens its panel
         chatBtn.addEventListener('click', hideAllLabels);
         remixBtn.addEventListener('click', hideAllLabels);

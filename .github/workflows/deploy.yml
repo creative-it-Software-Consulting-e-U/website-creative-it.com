@@ -13,6 +13,11 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       ai_playground_url: ${{ steps.cdk-deploy.outputs.ai_playground_url }}
+      tech_advisor_url: ${{ steps.cdk-deploy.outputs.tech_advisor_url }}
+      knowledge_bot_url: ${{ steps.cdk-deploy.outputs.knowledge_bot_url }}
+      agent_visualizer_url: ${{ steps.cdk-deploy.outputs.agent_visualizer_url }}
+      website_remix_url: ${{ steps.cdk-deploy.outputs.website_remix_url }}
+      live_translation_url: ${{ steps.cdk-deploy.outputs.live_translation_url }}
     steps:
       - uses: actions/checkout@v4
 
@@ -38,6 +43,11 @@ jobs:
         run: |
           GITHUB_TOKEN=${{ secrets.GH_PAT_SCHEDULER }} npx cdk deploy -c env=${{ github.ref == 'refs/heads/main' && 'prod' || 'gw' }} --require-approval never --outputs-file cdk-outputs.json
           echo "ai_playground_url=$(jq -r '.ContactApiStack.AiPlaygroundUrl // empty' cdk-outputs.json)" >> "$GITHUB_OUTPUT"
+          echo "tech_advisor_url=$(jq -r '.ContactApiStack.TechAdvisorUrl // empty' cdk-outputs.json)" >> "$GITHUB_OUTPUT"
+          echo "knowledge_bot_url=$(jq -r '.ContactApiStack.KnowledgeBotUrl // empty' cdk-outputs.json)" >> "$GITHUB_OUTPUT"
+          echo "agent_visualizer_url=$(jq -r '.ContactApiStack.AgentVisualizerUrl // empty' cdk-outputs.json)" >> "$GITHUB_OUTPUT"
+          echo "website_remix_url=$(jq -r '.ContactApiStack.WebsiteRemixUrl // empty' cdk-outputs.json)" >> "$GITHUB_OUTPUT"
+          echo "live_translation_url=$(jq -r '.ContactApiStack.LiveTranslationUrl // empty' cdk-outputs.json)" >> "$GITHUB_OUTPUT"
         working-directory: infra
 
   deploy-vercel:
@@ -70,6 +80,11 @@ jobs:
         env:
           PUBLIC_API_URL: https://api.creative-it.com
           PUBLIC_AI_PLAYGROUND_URL: ${{ needs.deploy-cdk.outputs.ai_playground_url }}
+          PUBLIC_TECH_ADVISOR_URL: ${{ needs.deploy-cdk.outputs.tech_advisor_url }}
+          PUBLIC_KNOWLEDGE_BOT_URL: ${{ needs.deploy-cdk.outputs.knowledge_bot_url }}
+          PUBLIC_AGENT_VISUALIZER_URL: ${{ needs.deploy-cdk.outputs.agent_visualizer_url }}
+          PUBLIC_WEBSITE_REMIX_URL: ${{ needs.deploy-cdk.outputs.website_remix_url }}
+          PUBLIC_LIVE_TRANSLATION_URL: ${{ needs.deploy-cdk.outputs.live_translation_url }}
 
       - name: Build (preview)
         if: github.ref == 'refs/heads/dev'
@@ -77,6 +92,11 @@ jobs:
         env:
           PUBLIC_API_URL: https://api.gw.dev.creative-it.com
           PUBLIC_AI_PLAYGROUND_URL: ${{ needs.deploy-cdk.outputs.ai_playground_url }}
+          PUBLIC_TECH_ADVISOR_URL: ${{ needs.deploy-cdk.outputs.tech_advisor_url }}
+          PUBLIC_KNOWLEDGE_BOT_URL: ${{ needs.deploy-cdk.outputs.knowledge_bot_url }}
+          PUBLIC_AGENT_VISUALIZER_URL: ${{ needs.deploy-cdk.outputs.agent_visualizer_url }}
+          PUBLIC_WEBSITE_REMIX_URL: ${{ needs.deploy-cdk.outputs.website_remix_url }}
+          PUBLIC_LIVE_TRANSLATION_URL: ${{ needs.deploy-cdk.outputs.live_translation_url }}
 
       - name: Deploy (production)
         if: github.ref == 'refs/heads/main'

@@ -6,7 +6,8 @@ const r = siteConfig.remix;
 <!-- Remix Toggle Button (controlled by AI Tools menu) -->
 <button
   id="remix-toggle"
-  class="fixed bottom-[9rem] left-6 z-50 w-11 h-11 rounded-full bg-surface border border-white/[0.08] shadow-[0_4px_16px_rgba(0,0,0,0.3)] flex items-center justify-center cursor-pointer hover:border-purple/30 hover:shadow-[0_4px_24px_rgba(161,99,241,0.15)] transition-all duration-300 scale-0 opacity-0 pointer-events-none group"
+  class="fixed left-6 z-50 w-11 h-11 rounded-full bg-surface border border-white/[0.08] shadow-[0_4px_16px_rgba(0,0,0,0.3)] flex items-center justify-center cursor-pointer hover:border-purple/30 hover:shadow-[0_4px_24px_rgba(161,99,241,0.15)] transition-[transform,opacity,box-shadow,border-color] duration-300 scale-0 opacity-0 pointer-events-none group"
+  style="bottom: calc(9rem + env(safe-area-inset-bottom, 0px))"
   aria-label={r.buttonLabel}
   title={r.buttonLabel}
 >
@@ -18,7 +19,8 @@ const r = siteConfig.remix;
 <!-- Remix Panel -->
 <div
   id="remix-panel"
-  class="fixed bottom-[12.5rem] left-6 z-50 w-[340px] max-w-[calc(100vw-3rem)] hidden opacity-0 translate-y-4 transition-all duration-300"
+  class="fixed left-6 z-50 w-[340px] max-w-[calc(100vw-3rem)] hidden opacity-0 translate-y-4 transition-[transform,opacity] duration-300"
+  style="bottom: calc(12.5rem + env(safe-area-inset-bottom, 0px))"
 >
   <div class="card-elevated rounded-2xl overflow-hidden shadow-[0_8px_48px_rgba(0,0,0,0.5)]">
     <!-- Header -->

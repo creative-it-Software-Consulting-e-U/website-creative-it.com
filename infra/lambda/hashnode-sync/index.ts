@@ -140,6 +140,46 @@ async function writePostToS3(post: HashnodePost): Promise<void> {
   );
 }
 
+function buildIndexMarkdown(posts: HashnodePost[]): string {
+  const sorted = [...posts].sort(
+    (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+  );
+
+  const lines = [
+    "# creative-it Blog — Article Index",
+    "",
+    `The creative-it blog is available at https://buildgrowmatter.hashnode.dev`,
+    "",
+    `There are currently ${sorted.length} published articles:`,
+    "",
+  ];
+
+  for (const post of sorted) {
+    const date = new Date(post.publishedAt).toISOString().split("T")[0];
+    const tags = post.tags.map((t) => t.name).join(", ");
+    lines.push(`## ${post.title}`);
+    lines.push("");
+    lines.push(`- **Published:** ${date}`);
+    if (tags) lines.push(`- **Tags:** ${tags}`);
+    lines.push(`- **URL:** ${post.url}`);
+    lines.push(`- **Summary:** ${post.brief}`);
+    lines.push("");
+  }
+
+  return lines.join("\n");
+}
+
+async function writeIndexToS3(posts: HashnodePost[]): Promise<void> {
+  await s3.send(
+    new PutObjectCommand({
+      Bucket: BUCKET_NAME,
+      Key: "hashnode/index.md",
+      Body: buildIndexMarkdown(posts),
+      ContentType: "text/markdown",
+    })
+  );
+}
+
 // ── Handler ──────────────────────────────────────────────────────────────────
 
 export async function handler(): Promise<void> {
@@ -150,7 +190,8 @@ export async function handler(): Promise<void> {
   for (const post of posts) {
     await writePostToS3(post);
   }
-  console.log(`Wrote ${posts.length} articles to s3://${BUCKET_NAME}/hashnode/`);
+  await writeIndexToS3(posts);
+  console.log(`Wrote ${posts.length} articles + index to s3://${BUCKET_NAME}/hashnode/`);
 
   if (KNOWLEDGE_BASE_ID && DATA_SOURCE_ID) {
     await bedrock.send(

@@ -133,17 +133,24 @@ const pageDescription = description || siteConfig.description;
           { btn: translateBtn, label: labelTranslate },
         ];
 
+        const toolNames = ['chat', 'remix', 'translate'];
+
         // Remove pulse entirely after 8s (display:none stops the animation
         // AND removes the element from the compositing tree)
         setTimeout(() => { pulse.style.display = 'none'; }, 8000);
 
         function hideAllLabels() {
-          labelChat.classList.add('opacity-0', 'pointer-events-none');
-          labelChat.classList.remove('opacity-100');
-          labelRemix.classList.add('opacity-0', 'pointer-events-none');
-          labelRemix.classList.remove('opacity-100');
-          labelTranslate.classList.add('opacity-0', 'pointer-events-none');
-          labelTranslate.classList.remove('opacity-100');
+          for (const { label } of items) {
+            label.style.transform = '';
+            label.classList.add('opacity-0', 'pointer-events-none');
+            label.classList.remove('opacity-100');
+          }
+        }
+
+        function hideBtn(btn: HTMLElement) {
+          btn.style.transform = '';
+          btn.classList.add('opacity-0', 'pointer-events-none');
+          btn.classList.remove('opacity-100');
         }
 
         function openMenu() {
@@ -181,9 +188,7 @@ const pageDescription = description || siteConfig.description;
               label.classList.remove('opacity-100');
             }, i * 30);
             setTimeout(() => {
-              btn.style.transform = '';
-              btn.classList.add('opacity-0', 'pointer-events-none');
-              btn.classList.remove('opacity-100');
+              hideBtn(btn);
             }, i * 30 + 30);
           });
         }
@@ -196,32 +201,30 @@ const pageDescription = description || siteConfig.description;
         // Primary: click handler (works on desktop + mobile with touch-action: manipulation)
         toggle.addEventListener('click', handleToggle);
 
-        // iOS Safari fallback: if the button itself doesn't receive touch events
-        // (due to compositor bugs), catch them at the document level and check bounds
+        // iOS Safari fallback for all AI tool buttons (compositor hit-test bug
+        // with fixed-position elements moved via CSS transform)
         document.addEventListener('touchend', (e) => {
-          if (e.target === toggle || toggle.contains(e.target as Node)) return; // already handled by click
           const touch = e.changedTouches[0];
           if (!touch) return;
-          const rect = toggle.getBoundingClientRect();
-          if (touch.clientX >= rect.left && touch.clientX <= rect.right &&
-              touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
-            e.preventDefault();
-            handleToggle();
+
+          // Check main toggle
+          if (!(e.target === toggle || toggle.contains(e.target as Node))) {
+            const rect = toggle.getBoundingClientRect();
+            if (touch.clientX >= rect.left && touch.clientX <= rect.right &&
+                touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
+              e.preventDefault();
+              handleToggle();
+              return;
+            }
           }
-        }, { passive: false });
 
-        // iOS Safari fallback for sub-buttons (same transform hit-test bug)
-        document.addEventListener('touchend', (e) => {
-          if (!isMenuOpen) return;
-          const touch = e.changedTouches[0];
-          if (!touch) return;
-
+          // Check sub-buttons (menu open OR single active button visible)
           for (const { btn } of items) {
+            if (btn.classList.contains('pointer-events-none')) continue;
             const rect = btn.getBoundingClientRect();
             if (rect.width === 0) continue;
             if (touch.clientX >= rect.left && touch.clientX <= rect.right &&
                 touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
-              // If touch target is already this button, native click handles it
               if (e.target === btn || btn.contains(e.target as Node)) return;
               e.preventDefault();
               btn.click();
@@ -230,10 +233,38 @@ const pageDescription = description || siteConfig.description;
           }
         }, { passive: false });
 
-        // Hide labels when a sub-button opens its panel
-        chatBtn.addEventListener('click', hideAllLabels);
-        remixBtn.addEventListener('click', hideAllLabels);
-        translateBtn.addEventListener('click', hideAllLabels);
+        // When a sub-button is clicked: collapse menu, close other open panels
+        function collapseMenuFor(clickedIndex: number) {
+          document.dispatchEvent(new CustomEvent('ai-tool-activated', {
+            detail: { tool: toolNames[clickedIndex] }
+          }));
+
+          hideAllLabels();
+
+          // Hide other sub-buttons
+          items.forEach(({ btn }, i) => {
+            if (i !== clickedIndex) hideBtn(btn);
+          });
+
+          // Collapse main toggle
+          if (isMenuOpen) {
+            isMenuOpen = false;
+            icon.classList.remove('hidden');
+            closeIcon.classList.add('hidden');
+            toggle.classList.remove('rotate-90');
+          }
+        }
+
+        // When a panel closes (via its close button), hide its sub-button
+        document.addEventListener('ai-panel-closed', (e) => {
+          const tool = (e as CustomEvent).detail?.tool;
+          const i = toolNames.indexOf(tool);
+          if (i >= 0) hideBtn(items[i].btn);
+        });
+
+        chatBtn.addEventListener('click', () => collapseMenuFor(0));
+        remixBtn.addEventListener('click', () => collapseMenuFor(1));
+        translateBtn.addEventListener('click', () => collapseMenuFor(2));
       })();
     </script>
 

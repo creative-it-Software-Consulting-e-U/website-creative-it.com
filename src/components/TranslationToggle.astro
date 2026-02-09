@@ -130,10 +130,17 @@ const languages = [
   }
 
   function closePanel() {
+    if (!isPanelOpen) return;
     isPanelOpen = false;
     translatePanel.classList.add('opacity-0', 'translate-y-4');
     setTimeout(() => translatePanel.classList.add('hidden'), 300);
+    document.dispatchEvent(new CustomEvent('ai-panel-closed', { detail: { tool: 'translate' } }));
   }
+
+  // Close when another AI tool is activated
+  document.addEventListener('ai-tool-activated', (e) => {
+    if ((e as CustomEvent).detail?.tool !== 'translate') closePanel();
+  });
 
   translateToggle.addEventListener('click', () => {
     if (isPanelOpen) closePanel();

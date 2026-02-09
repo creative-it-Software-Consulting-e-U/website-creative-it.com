@@ -21,6 +21,13 @@
 }
 
 /* Base Styles */
+html {
+  /* Prevent horizontal scroll — applied to <html> instead of <body> because
+     overflow on <body> creates a scroll container in iOS Safari, which causes
+     position:fixed elements to lose touch interactivity. */
+  overflow-x: clip;
+}
+
 body {
   font-family: var(--font-sans);
   background-color: var(--color-navy);
@@ -30,8 +37,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
   /* Safe-area padding for notched iPhones */
   padding-bottom: env(safe-area-inset-bottom, 0px);
-  /* Use clip instead of hidden — overflow:hidden breaks position:fixed on iOS Safari */
-  overflow-x: clip;
 }
 
 /* Typography */
@@ -287,19 +292,6 @@ body {
 button, a, [role="button"], input, select, textarea {
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
-}
-
-/* iOS Safari: promote fixed-position floating buttons to GPU layer
-   using will-change (not transform — that conflicts with Tailwind's
-   scale-0 / scale-100 / rotate-* utilities due to ID specificity) */
-#ai-tools-toggle,
-#chat-toggle,
-#remix-toggle,
-#translate-toggle,
-#ai-label-chat,
-#ai-label-remix,
-#ai-label-translate {
-  will-change: transform, opacity;
 }
 
 /* Focus States */

@@ -608,6 +608,77 @@ export class ContactApiStack extends cdk.Stack {
       kbSync.node.addDependency(kbDocsDeploy);
     }
 
+    // ── Hashnode Sync Lambda (fetches blog articles → S3 → KB re-index) ──
+    const hashnodeSyncHandler = new lambdaNode.NodejsFunction(
+      this,
+      "HashnodeSyncHandler",
+      {
+        runtime: lambda.Runtime.NODEJS_22_X,
+        architecture: lambda.Architecture.ARM_64,
+        memorySize: 256,
+        timeout: cdk.Duration.seconds(120),
+        entry: path.join(
+          __dirname,
+          "..",
+          "lambda",
+          "hashnode-sync",
+          "index.ts"
+        ),
+        handler: "handler",
+        bundling: {
+          format: lambdaNode.OutputFormat.ESM,
+          mainFields: ["module", "main"],
+          externalModules: ["@aws-sdk/*"],
+        },
+        environment: {
+          BUCKET_NAME: knowledgeBucket.bucketName,
+          KNOWLEDGE_BASE_ID: kb?.knowledgeBaseId ?? "",
+          DATA_SOURCE_ID: kb?.dataSourceId ?? "",
+          HASHNODE_HOST: "buildgrowmatter.hashnode.dev",
+        },
+      }
+    );
+
+    hashnodeSyncHandler.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ["s3:PutObject", "s3:DeleteObject"],
+        resources: [`${knowledgeBucket.bucketArn}/hashnode/*`],
+      })
+    );
+
+    if (kb?.knowledgeBaseId) {
+      hashnodeSyncHandler.addToRolePolicy(
+        new iam.PolicyStatement({
+          actions: ["bedrock:StartIngestionJob"],
+          resources: [
+            `arn:aws:bedrock:${config.region}:${config.account}:knowledge-base/${kb.knowledgeBaseId}`,
+          ],
+        })
+      );
+    }
+
+    const hashnodeSyncSchedulerRole = new iam.Role(
+      this,
+      "HashnodeSyncSchedulerRole",
+      {
+        assumedBy: new iam.ServicePrincipal("scheduler.amazonaws.com"),
+      }
+    );
+
+    hashnodeSyncHandler.grantInvoke(hashnodeSyncSchedulerRole);
+
+    new scheduler.CfnSchedule(this, "HashnodeSyncSchedule", {
+      name: `hashnode-sync-daily-${config.envName}`,
+      scheduleExpression: "cron(0 6 * * ? *)",
+      scheduleExpressionTimezone: "UTC",
+      flexibleTimeWindow: { mode: "OFF" },
+      target: {
+        arn: hashnodeSyncHandler.functionArn,
+        roleArn: hashnodeSyncSchedulerRole.roleArn,
+      },
+      state: "ENABLED",
+    });
+
     // IAM role for Bedrock Knowledge Base to access S3 and embedding model
     const kbRole = new iam.Role(this, "KnowledgeBaseRole", {
       assumedBy: new iam.ServicePrincipal("bedrock.amazonaws.com"),

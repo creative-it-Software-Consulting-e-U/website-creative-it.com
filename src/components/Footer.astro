@@ -142,9 +142,12 @@ const phoneEncoded = btoa(siteConfig.contact.phone);
 
     <!-- Bottom Bar -->
     <div class="mt-16 pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
-      <p class="text-text-muted text-sm">
-        &copy; {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
-      </p>
+      <div class="flex items-center gap-4">
+        <p class="text-text-muted text-sm">
+          &copy; {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
+        </p>
+        <a href="/legal" class="text-text-muted hover:text-off-white transition-colors duration-200 text-sm">Legal Notice</a>
+      </div>
       <p class="text-sm font-medium">
         <span class="gradient-text">{siteConfig.tagline}</span>
       </p>

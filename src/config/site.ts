@@ -887,6 +887,124 @@ export const siteConfig = {
     examples: ["Retro 80s neon", "Warm earthy tones", "Minimalist monochrome", "Cyberpunk"],
   },
 
+  // ── Legal / Impressum ────────────────────────────────────────────────────
+  legal: {
+    en: {
+      meta: {
+        title: "Legal Notice",
+        description: "Legal notice and company information for creative-it Software Consulting e.U.",
+      },
+      chip: "Legal Notice",
+      headline: { before: "Legal ", gradient: "Notice", after: "" },
+      switchLabel: "Auf Deutsch lesen",
+      switchHref: "/legal/de",
+      sections: [
+        {
+          title: "Information according to E-Commerce Act (ECG) and Media Act",
+          content: null,
+          items: [
+            { label: "Company", value: "creative-it Software Consulting e.U." },
+            { label: "Owner", value: "Georg Wieser" },
+            { label: "Address", value: "Am Gassl 25, A-3482 Gösing am Wagram, Austria" },
+            { label: "Phone", value: "+43 660 4943737" },
+            { label: "Email", value: "info@creative-it.com" },
+            { label: "Website", value: "https://www.creative-it.com" },
+          ],
+        },
+        {
+          title: "Company Registration",
+          content: null,
+          items: [
+            { label: "Company Register Number", value: "FN 535024 w" },
+            { label: "Commercial Court", value: "Landesgericht St. Pölten" },
+            { label: "Legal Form", value: "Einzelunternehmen (sole proprietorship)" },
+            { label: "Business Purpose", value: "IT services (IT-Dienstleistungen)" },
+            { label: "Chamber Membership", value: "Wirtschaftskammer Niederösterreich (WKO NÖ)" },
+          ],
+        },
+        {
+          title: "Applicable Law & Jurisdiction",
+          content: "Austrian law applies. Place of jurisdiction is St. Pölten, Austria.",
+          items: [],
+        },
+        {
+          title: "VAT",
+          content: null,
+          items: [
+            { label: "VAT ID (UID)", value: "ATU76261648" },
+          ],
+        },
+        {
+          title: "Disclaimer",
+          content: "Despite careful content control, we assume no liability for the content of external links. The operators of the linked pages are solely responsible for their content. All content on this website is subject to Austrian copyright law. Any reproduction, distribution, or use beyond the boundaries of copyright law requires written consent.",
+          items: [],
+        },
+        {
+          title: "Privacy",
+          content: "This website does not use cookies for tracking. No personal data is collected beyond what is voluntarily provided through the contact form. Contact form submissions are processed solely for the purpose of responding to your inquiry.",
+          items: [],
+        },
+      ],
+    },
+    de: {
+      meta: {
+        title: "Impressum",
+        description: "Impressum und Unternehmensinformationen der creative-it Software Consulting e.U.",
+      },
+      chip: "Impressum",
+      headline: { before: "", gradient: "Impressum", after: "" },
+      switchLabel: "Read in English",
+      switchHref: "/legal",
+      sections: [
+        {
+          title: "Informationen gemäß E-Commerce-Gesetz (ECG) und Mediengesetz",
+          content: null,
+          items: [
+            { label: "Unternehmen", value: "creative-it Software Consulting e.U." },
+            { label: "Inhaber", value: "Georg Wieser" },
+            { label: "Adresse", value: "Am Gassl 25, A-3482 Gösing am Wagram, Österreich" },
+            { label: "Telefon", value: "+43 660 4943737" },
+            { label: "E-Mail", value: "info@creative-it.com" },
+            { label: "Website", value: "https://www.creative-it.com" },
+          ],
+        },
+        {
+          title: "Firmenbucheintragung",
+          content: null,
+          items: [
+            { label: "Firmenbuchnummer", value: "FN 535024 w" },
+            { label: "Firmenbuchgericht", value: "Landesgericht St. Pölten" },
+            { label: "Rechtsform", value: "Einzelunternehmen" },
+            { label: "Unternehmensgegenstand", value: "IT-Dienstleistungen" },
+            { label: "Kammerzugehörigkeit", value: "Wirtschaftskammer Niederösterreich (WKO NÖ)" },
+          ],
+        },
+        {
+          title: "Anwendbares Recht & Gerichtsstand",
+          content: "Es gilt österreichisches Recht. Gerichtsstand ist St. Pölten, Österreich.",
+          items: [],
+        },
+        {
+          title: "Umsatzsteuer",
+          content: null,
+          items: [
+            { label: "UID-Nummer", value: "ATU76261648" },
+          ],
+        },
+        {
+          title: "Haftungsausschluss",
+          content: "Trotz sorgfältiger inhaltlicher Kontrolle übernehmen wir keine Haftung für die Inhalte externer Links. Für den Inhalt der verlinkten Seiten sind ausschließlich deren Betreiber verantwortlich. Alle Inhalte dieser Website unterliegen dem österreichischen Urheberrecht. Jede Vervielfältigung, Verbreitung oder Nutzung über die Grenzen des Urheberrechts hinaus bedarf der schriftlichen Zustimmung.",
+          items: [],
+        },
+        {
+          title: "Datenschutz",
+          content: "Diese Website verwendet keine Tracking-Cookies. Es werden keine personenbezogenen Daten erhoben, die über die freiwilligen Angaben im Kontaktformular hinausgehen. Kontaktformular-Eingaben werden ausschließlich zur Beantwortung Ihrer Anfrage verarbeitet.",
+          items: [],
+        },
+      ],
+    },
+  },
+
   // ── Colors (reference only) ───────────────────────────────────────────────
   colors: {
     navy: "#030520",

@@ -1,0 +1,49 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { siteConfig } from "../../config/site";
+const p = siteConfig.legal.en;
+---
+
+<Layout title={p.meta.title} description={p.meta.description}>
+  <section class="relative py-20 lg:py-32 overflow-hidden">
+    <div class="absolute inset-0">
+      <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[250px] md:w-[800px] md:h-[500px] bg-[radial-gradient(ellipse,rgba(161,99,241,0.08)_0%,rgba(99,99,241,0.05)_40%,transparent_70%)]"></div>
+    </div>
+
+    <div class="relative max-w-4xl mx-auto px-6 lg:px-8">
+      <div class="mb-12">
+        <div class="chip mb-4 animate-fade-in-up opacity-0" style="animation-delay: 0.1s; animation-fill-mode: forwards;">
+          <span>{p.chip}</span>
+        </div>
+        <h1 class="heading-xl text-5xl lg:text-6xl text-off-white mb-6 animate-fade-in-up opacity-0" style="animation-delay: 0.2s; animation-fill-mode: forwards;">
+          {p.headline.before}<span class="gradient-text">{p.headline.gradient}</span>{p.headline.after}
+        </h1>
+        <a href={p.switchHref} class="inline-flex items-center gap-1.5 text-sm text-purple hover:text-cyan transition-colors duration-200 animate-fade-in-up opacity-0" style="animation-delay: 0.3s; animation-fill-mode: forwards;">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3" /></svg>
+          {p.switchLabel}
+        </a>
+      </div>
+
+      <div class="space-y-10">
+        {p.sections.map((section, index) => (
+          <div class="reveal" style={`transition-delay: ${index * 50}ms`}>
+            <h2 class="heading-md text-xl text-off-white mb-4">{section.title}</h2>
+            {section.items.length > 0 && (
+              <div class="card p-6 space-y-3">
+                {section.items.map((item) => (
+                  <div class="flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-3">
+                    <span class="text-sm text-text-muted font-medium min-w-[200px]">{item.label}</span>
+                    <span class="text-sm text-text-secondary">{item.value}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+            {section.content && (
+              <p class="text-text-secondary text-sm leading-relaxed">{section.content}</p>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>

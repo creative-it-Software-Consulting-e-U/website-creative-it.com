@@ -30,6 +30,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
   /* Safe-area padding for notched iPhones */
   padding-bottom: env(safe-area-inset-bottom, 0px);
+  /* Use clip instead of hidden — overflow:hidden breaks position:fixed on iOS Safari */
+  overflow-x: clip;
 }
 
 /* Typography */
@@ -285,6 +287,21 @@ body {
 button, a, [role="button"], input, select, textarea {
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+}
+
+/* iOS Safari: force GPU layer for fixed-position floating buttons
+   so position:fixed is reliable and touch events register correctly */
+#ai-tools-toggle,
+#chat-toggle,
+#remix-toggle,
+#translate-toggle,
+#ai-label-chat,
+#ai-label-remix,
+#ai-label-translate {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 /* Focus States */

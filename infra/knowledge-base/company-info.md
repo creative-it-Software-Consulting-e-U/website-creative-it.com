@@ -122,6 +122,14 @@ AI-powered invoice processing for your accounting workflow. Scan invoices, extra
 ### FlowAgent (Coming Soon)
 Automated bookkeeping and financial management built for Austrian tax law. AI-powered invoice processing, transaction tracking, and cash flow forecasting.
 
+## Blog
+
+creative-it publishes articles about software development, AI, cloud architecture, and technology insights on their Hashnode blog.
+
+- **Blog URL:** https://buildgrowmatter.hashnode.dev
+- Topics include: Agentic Coding, AI applications, software architecture, cloud infrastructure, and industry best practices
+- When referencing blog content, always link to the original article URL
+
 ## AI Capabilities
 
 creative-it actively uses and builds AI solutions:

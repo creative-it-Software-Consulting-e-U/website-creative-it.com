@@ -28,6 +28,8 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Safe-area padding for notched iPhones */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 /* Typography */
@@ -278,6 +280,12 @@ body {
 .hl-attr { color: #A163F1; }
 .hl-string { color: #9CA3FF; }
 .hl-comment { color: #8F96BD; font-style: italic; }
+
+/* iOS touch – remove 300ms tap delay on interactive elements */
+button, a, [role="button"], input, select, textarea {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
 
 /* Focus States */
 *:focus-visible {

@@ -22,7 +22,7 @@ const pageDescription = description || siteConfig.description;
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="color-scheme" content="dark" />
 
     <!-- Preconnect to Google Fonts for faster font loading -->
@@ -72,7 +72,8 @@ const pageDescription = description || siteConfig.description;
     <!-- AI Tools Parent Button -->
     <button
       id="ai-tools-toggle"
-      class="fixed bottom-6 left-6 z-50 w-14 h-14 rounded-full bg-gradient-to-br from-purple to-indigo shadow-[0_4px_24px_rgba(161,99,241,0.3)] flex items-center justify-center cursor-pointer hover:shadow-[0_4px_32px_rgba(161,99,241,0.5)] transition-all duration-300"
+      class="fixed left-6 z-50 w-14 h-14 rounded-full bg-gradient-to-br from-purple to-indigo shadow-[0_4px_24px_rgba(161,99,241,0.3)] flex items-center justify-center cursor-pointer hover:shadow-[0_4px_32px_rgba(161,99,241,0.5)] transition-all duration-300"
+      style="bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px))"
       aria-label="AI Tools"
       title="AI-Demo-Tools ausprobieren"
     >
@@ -85,17 +86,17 @@ const pageDescription = description || siteConfig.description;
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
       </svg>
       <!-- Pulse ring -->
-      <span id="ai-tools-pulse" class="absolute inset-0 rounded-full bg-purple/30 animate-ping opacity-20"></span>
+      <span id="ai-tools-pulse" class="absolute inset-0 rounded-full bg-purple/30 animate-ping opacity-20 pointer-events-none"></span>
     </button>
 
     <!-- Labels that appear next to sub-buttons -->
-    <span id="ai-label-chat" class="fixed bottom-[5.75rem] left-[4.5rem] z-50 text-xs text-text-muted bg-surface/90 border border-white/[0.06] rounded-lg px-2.5 py-1 shadow-lg backdrop-blur-sm opacity-0 scale-0 pointer-events-none transition-all duration-300">
+    <span id="ai-label-chat" class="fixed left-[4.5rem] z-50 text-xs text-text-muted bg-surface/90 border border-white/[0.06] rounded-lg px-2.5 py-1 shadow-lg backdrop-blur-sm opacity-0 scale-0 pointer-events-none transition-[transform,opacity] duration-300" style="bottom: calc(5.75rem + env(safe-area-inset-bottom, 0px))">
       AI Chat
     </span>
-    <span id="ai-label-remix" class="fixed bottom-[9.25rem] left-[4.5rem] z-50 text-xs text-text-muted bg-surface/90 border border-white/[0.06] rounded-lg px-2.5 py-1 shadow-lg backdrop-blur-sm opacity-0 scale-0 pointer-events-none transition-all duration-300">
+    <span id="ai-label-remix" class="fixed left-[4.5rem] z-50 text-xs text-text-muted bg-surface/90 border border-white/[0.06] rounded-lg px-2.5 py-1 shadow-lg backdrop-blur-sm opacity-0 scale-0 pointer-events-none transition-[transform,opacity] duration-300" style="bottom: calc(9.25rem + env(safe-area-inset-bottom, 0px))">
       Theme Remix
     </span>
-    <span id="ai-label-translate" class="fixed bottom-[12.75rem] left-[4.5rem] z-50 text-xs text-text-muted bg-surface/90 border border-white/[0.06] rounded-lg px-2.5 py-1 shadow-lg backdrop-blur-sm opacity-0 scale-0 pointer-events-none transition-all duration-300">
+    <span id="ai-label-translate" class="fixed left-[4.5rem] z-50 text-xs text-text-muted bg-surface/90 border border-white/[0.06] rounded-lg px-2.5 py-1 shadow-lg backdrop-blur-sm opacity-0 scale-0 pointer-events-none transition-[transform,opacity] duration-300" style="bottom: calc(12.75rem + env(safe-area-inset-bottom, 0px))">
       Translate
     </span>
 
@@ -219,7 +220,7 @@ const pageDescription = description || siteConfig.description;
 
     {!hideStatsBanner && (
       <!-- Collapsible GitHub Stats Banner -->
-      <div id="github-stats-wrapper" class="hidden fixed bottom-6 right-0 z-50 flex items-end">
+      <div id="github-stats-wrapper" class="hidden fixed right-0 z-50 flex items-end" style="bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px))">
         <!-- Expanded card -->
         <div id="github-stats-banner" class="mr-6 transition-all duration-400 ease-in-out origin-right">
           <div class="relative">

@@ -95,14 +95,14 @@ const pageDescription = description || siteConfig.description;
       </svg>
     </button>
 
-    <!-- Labels that appear next to sub-buttons -->
-    <span id="ai-label-chat" class="fixed left-[4.5rem] z-50 text-xs text-text-muted bg-surface/90 border border-white/[0.06] rounded-lg px-2.5 py-1 shadow-lg backdrop-blur-sm opacity-0 scale-0 pointer-events-none transition-[transform,opacity] duration-300" style="bottom: calc(5.75rem + env(safe-area-inset-bottom, 0px))">
+    <!-- Labels that appear next to sub-buttons (base position matches main toggle; JS translates them) -->
+    <span id="ai-label-chat" class="fixed left-6 z-50 text-xs text-text-muted bg-surface/90 border border-white/[0.06] rounded-lg px-2.5 py-1 shadow-lg backdrop-blur-sm opacity-0 pointer-events-none transition-[transform,opacity] duration-300" style="bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px))">
       AI Chat
     </span>
-    <span id="ai-label-remix" class="fixed left-[4.5rem] z-50 text-xs text-text-muted bg-surface/90 border border-white/[0.06] rounded-lg px-2.5 py-1 shadow-lg backdrop-blur-sm opacity-0 scale-0 pointer-events-none transition-[transform,opacity] duration-300" style="bottom: calc(9.25rem + env(safe-area-inset-bottom, 0px))">
+    <span id="ai-label-remix" class="fixed left-6 z-50 text-xs text-text-muted bg-surface/90 border border-white/[0.06] rounded-lg px-2.5 py-1 shadow-lg backdrop-blur-sm opacity-0 pointer-events-none transition-[transform,opacity] duration-300" style="bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px))">
       Theme Remix
     </span>
-    <span id="ai-label-translate" class="fixed left-[4.5rem] z-50 text-xs text-text-muted bg-surface/90 border border-white/[0.06] rounded-lg px-2.5 py-1 shadow-lg backdrop-blur-sm opacity-0 scale-0 pointer-events-none transition-[transform,opacity] duration-300" style="bottom: calc(12.75rem + env(safe-area-inset-bottom, 0px))">
+    <span id="ai-label-translate" class="fixed left-6 z-50 text-xs text-text-muted bg-surface/90 border border-white/[0.06] rounded-lg px-2.5 py-1 shadow-lg backdrop-blur-sm opacity-0 pointer-events-none transition-[transform,opacity] duration-300" style="bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px))">
       Translate
     </span>
 
@@ -121,28 +121,29 @@ const pageDescription = description || siteConfig.description;
 
         let isMenuOpen = false;
 
+        // Vertical stack geometry
+        const CENTER_X = 6;    // (56 - 44) / 2 — center sub-buttons on main
+        const LABEL_GAP = 52;  // 44 button + 8 gap
+        const BASE_Y = 68;     // 56 main + 12 gap
+        const STEP_Y = 56;     // 44 sub + 12 gap
+
+        const items = [
+          { btn: chatBtn, label: labelChat },
+          { btn: remixBtn, label: labelRemix },
+          { btn: translateBtn, label: labelTranslate },
+        ];
+
         // Remove pulse entirely after 8s (display:none stops the animation
         // AND removes the element from the compositing tree)
         setTimeout(() => { pulse.style.display = 'none'; }, 8000);
 
-        function showSub(el: HTMLElement, delay: number) {
-          setTimeout(() => {
-            el.classList.remove('scale-0', 'opacity-0', 'pointer-events-none');
-            el.classList.add('scale-100', 'opacity-100');
-          }, delay);
-        }
-
-        function hideSub(el: HTMLElement, delay: number) {
-          setTimeout(() => {
-            el.classList.add('scale-0', 'opacity-0', 'pointer-events-none');
-            el.classList.remove('scale-100', 'opacity-100');
-          }, delay);
-        }
-
         function hideAllLabels() {
-          labelChat.classList.add('opacity-0', 'scale-0', 'pointer-events-none');
-          labelRemix.classList.add('opacity-0', 'scale-0', 'pointer-events-none');
-          labelTranslate.classList.add('opacity-0', 'scale-0', 'pointer-events-none');
+          labelChat.classList.add('opacity-0', 'pointer-events-none');
+          labelChat.classList.remove('opacity-100');
+          labelRemix.classList.add('opacity-0', 'pointer-events-none');
+          labelRemix.classList.remove('opacity-100');
+          labelTranslate.classList.add('opacity-0', 'pointer-events-none');
+          labelTranslate.classList.remove('opacity-100');
         }
 
         function openMenu() {
@@ -152,12 +153,19 @@ const pageDescription = description || siteConfig.description;
           pulse.style.display = 'none';
           toggle.classList.add('rotate-90');
 
-          showSub(chatBtn, 0);
-          showSub(labelChat, 50);
-          showSub(remixBtn, 80);
-          showSub(labelRemix, 130);
-          showSub(translateBtn, 160);
-          showSub(labelTranslate, 210);
+          items.forEach(({ btn, label }, i) => {
+            const y = BASE_Y + i * STEP_Y;
+            setTimeout(() => {
+              btn.style.transform = `translate(${CENTER_X}px, ${-y}px)`;
+              btn.classList.remove('opacity-0', 'pointer-events-none');
+              btn.classList.add('opacity-100');
+            }, i * 60);
+            setTimeout(() => {
+              label.style.transform = `translate(${CENTER_X + LABEL_GAP}px, ${-y}px)`;
+              label.classList.remove('opacity-0', 'pointer-events-none');
+              label.classList.add('opacity-100');
+            }, i * 60 + 40);
+          });
         }
 
         function closeMenu() {
@@ -166,12 +174,18 @@ const pageDescription = description || siteConfig.description;
           closeIcon.classList.add('hidden');
           toggle.classList.remove('rotate-90');
 
-          hideSub(labelTranslate, 0);
-          hideSub(translateBtn, 30);
-          hideSub(labelRemix, 60);
-          hideSub(remixBtn, 90);
-          hideSub(labelChat, 120);
-          hideSub(chatBtn, 150);
+          [...items].reverse().forEach(({ btn, label }, i) => {
+            setTimeout(() => {
+              label.style.transform = '';
+              label.classList.add('opacity-0', 'pointer-events-none');
+              label.classList.remove('opacity-100');
+            }, i * 30);
+            setTimeout(() => {
+              btn.style.transform = '';
+              btn.classList.add('opacity-0', 'pointer-events-none');
+              btn.classList.remove('opacity-100');
+            }, i * 30 + 30);
+          });
         }
 
         function handleToggle() {

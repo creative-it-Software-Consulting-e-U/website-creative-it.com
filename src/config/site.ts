@@ -32,6 +32,7 @@ export const siteConfig = {
     { name: "Tech Advisor", href: "/tech-advisor" },
     { name: "AI Agents", href: "/ai-agents" },
     { name: "How It Works", href: "/how-it-works" },
+    { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" },
   ],
 
@@ -813,6 +814,25 @@ export const siteConfig = {
         description:
           "Every feature on this site is built with the same tools and patterns we use for clients. Let's build something intelligent together.",
         button: "Start a Conversation",
+      },
+    },
+
+    blog: {
+      meta: {
+        title: "Blog",
+        description: "Articles about software development, AI, cloud architecture, and technology insights from creative-it",
+      },
+      hero: {
+        chip: "Blog",
+        headline: { before: "Insights & ", gradient: "Articles", after: "" },
+        description:
+          "Thoughts on software development, AI, cloud architecture, and the future of technology.",
+      },
+      cta: {
+        headline: "Have a Project in Mind?",
+        description:
+          "Let's discuss how we can bring these ideas to life for your business.",
+        button: "Get in Touch",
       },
     },
 

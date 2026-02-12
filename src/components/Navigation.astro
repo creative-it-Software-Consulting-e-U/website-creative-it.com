@@ -168,6 +168,39 @@ const currentPath = Astro.url.pathname;
       }
     });
   });
+
+  // Close mobile menu on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isOpen) {
+      button?.click();
+      button?.focus();
+    }
+  });
+
+  // Focus trap within mobile menu when open
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Tab' || !isOpen || !menu) return;
+
+    const focusableEls = menu.querySelectorAll<HTMLElement>(
+      'a[href], button, [tabindex]:not([tabindex="-1"])'
+    );
+    if (focusableEls.length === 0) return;
+
+    const firstEl = focusableEls[0];
+    const lastEl = focusableEls[focusableEls.length - 1];
+
+    if (e.shiftKey) {
+      if (document.activeElement === firstEl || document.activeElement === button) {
+        e.preventDefault();
+        lastEl.focus();
+      }
+    } else {
+      if (document.activeElement === lastEl) {
+        e.preventDefault();
+        firstEl.focus();
+      }
+    }
+  });
 </script>
 
 <style>

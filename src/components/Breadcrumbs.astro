@@ -1,0 +1,44 @@
+---
+interface Props {
+  items: { name: string; href?: string }[];
+}
+
+const { items } = Astro.props;
+
+const breadcrumbItems = [
+  { name: "Home", href: "/" },
+  ...items,
+];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: breadcrumbItems.map((item, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    name: item.name,
+    ...(item.href ? { item: `https://creative-it.com${item.href}` } : {}),
+  })),
+};
+---
+
+<nav aria-label="Breadcrumb" class="max-w-7xl mx-auto px-6 lg:px-8 pt-24 pb-0">
+  <ol class="flex items-center gap-2 text-sm text-text-muted">
+    {breadcrumbItems.map((item, index) => (
+      <li class="flex items-center gap-2">
+        {index > 0 && (
+          <svg class="w-3.5 h-3.5 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        )}
+        {item.href ? (
+          <a href={item.href} class="hover:text-off-white transition-colors duration-200">{item.name}</a>
+        ) : (
+          <span class="text-text-secondary">{item.name}</span>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

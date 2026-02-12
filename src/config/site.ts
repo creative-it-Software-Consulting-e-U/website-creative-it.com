@@ -259,7 +259,7 @@ export const siteConfig = {
       chip: "AI · Software · Teams · Trust",
       // Headline parts: "Build. " + gradient("Grow.") + " Matter."
       headline: { before: "Build. ", gradient: "Grow.", after: " Matter." },
-      ctaPrimary: "Start a Project",
+      ctaPrimary: "Get a Free Consultation",
       ctaSecondary: "Explore Services",
 
       animation: {
@@ -303,7 +303,7 @@ export const siteConfig = {
         headline: "Ready to Build\nSomething That Matters?",
         description:
           "Let's discuss how we can help you achieve your technology goals and create lasting impact.",
-        button: "Start the Conversation",
+        button: "Schedule a Consultation",
       },
     },
 

@@ -1,13 +1,11 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Breadcrumbs from "../components/Breadcrumbs.astro";
-import { t, type Locale } from "../config/site";
+import { siteConfig } from "../config/site";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-const locale = (Astro.currentLocale || 'en') as Locale;
-const config = t(locale);
-const p = config.pages.blog;
+const p = siteConfig.pages.blog;
 
 // ── Read articles from local JSON (populated by DynamoDB scan in CI) ────────
 
@@ -48,12 +46,12 @@ function formatDate(dateStr: string): string {
 const blogSchema = {
   "@context": "https://schema.org",
   "@type": "Blog",
-  name: `${config.name} Blog`,
+  name: `${siteConfig.name} Blog`,
   description: p.meta.description,
   url: "https://creative-it.com/blog",
   publisher: {
     "@type": "Organization",
-    name: config.name,
+    name: siteConfig.name,
     url: "https://creative-it.com",
   },
   blogPost: posts.map((post) => ({
@@ -65,7 +63,7 @@ const blogSchema = {
     ...(post.coverImage && { image: post.coverImage }),
     author: {
       "@type": "Organization",
-      name: config.name,
+      name: siteConfig.name,
     },
   })),
 };

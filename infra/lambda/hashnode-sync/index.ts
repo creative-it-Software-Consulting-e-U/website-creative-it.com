@@ -1,4 +1,8 @@
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import {
+  S3Client,
+  PutObjectCommand,
+  ListObjectsV2Command,
+} from "@aws-sdk/client-s3";
 import {
   BedrockAgentClient,
   StartIngestionJobCommand,
@@ -71,7 +75,23 @@ const POSTS_QUERY = `
   }
 `;
 
-async function fetchAllPosts(): Promise<HashnodePost[]> {
+const SINGLE_POST_QUERY = `
+  query Post($host: String!, $slug: String!) {
+    publication(host: $host) {
+      post(slug: $slug) {
+        title
+        slug
+        brief
+        content { markdown }
+        tags { name }
+        publishedAt
+        url
+      }
+    }
+  }
+`;
+
+async function fetchPostsFromListing(): Promise<HashnodePost[]> {
   const allPosts: HashnodePost[] = [];
   let after: string | null = null;
 
@@ -106,6 +126,70 @@ async function fetchAllPosts(): Promise<HashnodePost[]> {
   } while (after);
 
   return allPosts;
+}
+
+// Fetch a single post by slug (reliable even when listing is broken)
+async function fetchPostBySlug(slug: string): Promise<HashnodePost | null> {
+  try {
+    const res = await fetch("https://gql.hashnode.com", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        query: SINGLE_POST_QUERY,
+        variables: { host: HASHNODE_HOST, slug },
+      }),
+    });
+    if (!res.ok) return null;
+    const json = await res.json();
+    return json.data?.publication?.post ?? null;
+  } catch {
+    return null;
+  }
+}
+
+// Load known slugs from existing S3 objects
+async function loadKnownSlugsFromS3(): Promise<string[]> {
+  try {
+    const result = await s3.send(
+      new ListObjectsV2Command({
+        Bucket: BUCKET_NAME,
+        Prefix: "hashnode/",
+      })
+    );
+    return (result.Contents ?? [])
+      .map((obj) => obj.Key ?? "")
+      .filter((key) => key.endsWith(".md") && key !== "hashnode/index.md")
+      .map((key) => key.replace("hashnode/", "").replace(".md", ""));
+  } catch {
+    return [];
+  }
+}
+
+// Fetch all posts, recovering missing ones via individual slug queries
+async function fetchAllPosts(): Promise<HashnodePost[]> {
+  const [listingPosts, knownSlugs] = await Promise.all([
+    fetchPostsFromListing(),
+    loadKnownSlugsFromS3(),
+  ]);
+
+  const listingSlugs = new Set(listingPosts.map((p) => p.slug));
+  const missingSlugs = knownSlugs.filter((s) => !listingSlugs.has(s));
+
+  console.log(`Listing returned ${listingPosts.length} articles`);
+
+  if (missingSlugs.length > 0) {
+    console.log(
+      `${missingSlugs.length} known articles missing from listing, fetching individually: ${missingSlugs.join(", ")}`
+    );
+    const recovered = await Promise.all(missingSlugs.map(fetchPostBySlug));
+    const recoveredPosts = recovered.filter(
+      (p): p is HashnodePost => p !== null
+    );
+    console.log(`Recovered ${recoveredPosts.length} articles via slug queries`);
+    return [...listingPosts, ...recoveredPosts];
+  }
+
+  return listingPosts;
 }
 
 // ── S3 helpers ───────────────────────────────────────────────────────────────

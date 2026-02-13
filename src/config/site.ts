@@ -591,6 +591,17 @@ const content = {
       },
     ],
 
+    statsBanner: {
+      description: "Code changes made by our team of agentic coding agents",
+      last24h: "Last 24h",
+      last7d: "Last 7d",
+      learnMore: "Learn about agentic coding",
+      commits: "commits",
+      lines: "lines",
+      collapseLabel: "Collapse stats card",
+      expandLabel: "Show agentic coding stats",
+    },
+
     pages: {
       home: {
         chip: "AI · Software · Teams · Trust",
@@ -741,6 +752,17 @@ const content = {
             { value: "Higher", label: "Code Quality", description: "Every change comes with tests and documentation. Agents are thorough by default — no shortcuts, no tech debt." },
             { value: "More", label: "Focus for Engineers", description: "With routine work handled, engineers spend their time on architecture, user experience, and creative problem-solving." },
           ],
+        },
+        statsSection: {
+          commits24h: "Commits (24h)",
+          linesChanged24h: "Lines Changed (24h)",
+          commits7d: "Commits (7d)",
+          linesChanged7d: "Lines Changed (7d)",
+          liveDataNote: "Live data from our GitHub organization — updated in real time",
+          chartTitle: "7-Day Activity",
+          legendCommits: "Commits",
+          legendLines: "Lines Changed",
+          howItWorksLink: "How it works",
         },
         storySection: {
           chip: "AI Narrative",
@@ -1473,6 +1495,17 @@ const content = {
       },
     ],
 
+    statsBanner: {
+      description: "Code-Änderungen unseres Teams von KI-Coding-Agenten",
+      last24h: "Letzte 24h",
+      last7d: "Letzte 7d",
+      learnMore: "Mehr über Agentic Coding",
+      commits: "Commits",
+      lines: "Zeilen",
+      collapseLabel: "Statistik-Karte einklappen",
+      expandLabel: "Agentic-Coding-Statistiken anzeigen",
+    },
+
     pages: {
       home: {
         chip: "KI · Software · Teams · Vertrauen",
@@ -1623,6 +1656,17 @@ const content = {
             { value: "Höhere", label: "Codequalität", description: "Jede Änderung kommt mit Tests und Dokumentation. Agenten sind von Haus aus gründlich — keine Abkürzungen, keine technischen Schulden." },
             { value: "Mehr", label: "Fokus für Ingenieure", description: "Da Routinearbeit erledigt wird, verbringen Ingenieure ihre Zeit mit Architektur, User Experience und kreativem Problemlösen." },
           ],
+        },
+        statsSection: {
+          commits24h: "Commits (24h)",
+          linesChanged24h: "Geänderte Zeilen (24h)",
+          commits7d: "Commits (7d)",
+          linesChanged7d: "Geänderte Zeilen (7d)",
+          liveDataNote: "Live-Daten aus unserer GitHub-Organisation — in Echtzeit aktualisiert",
+          chartTitle: "7-Tage-Aktivität",
+          legendCommits: "Commits",
+          legendLines: "Geänderte Zeilen",
+          howItWorksLink: "So funktioniert's",
         },
         storySection: {
           chip: "KI-Erzählung",

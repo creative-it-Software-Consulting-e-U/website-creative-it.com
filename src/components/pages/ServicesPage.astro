@@ -1,0 +1,183 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../Breadcrumbs.astro";
+import { t, type Locale } from "../../config/site";
+const locale = (Astro.currentLocale || 'en') as Locale;
+const config = t(locale);
+const p = config.pages.services;
+
+const serviceSchema = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  itemListElement: config.services.map((service, index) => ({
+    "@type": "ListItem",
+    position: index + 1,
+    item: {
+      "@type": "Service",
+      name: service.title,
+      description: service.description,
+      provider: {
+        "@type": "Organization",
+        name: "creative-it Software Consulting e.U.",
+      },
+    },
+  })),
+};
+---
+
+<Layout title={p.meta.title} description={p.meta.description}>
+  <Breadcrumbs items={[{ name: "Services" }]} />
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <!-- Hero -->
+  <section class="relative py-20 lg:py-32 overflow-hidden">
+    <div class="absolute inset-0">
+      <div class="absolute top-0 right-1/4 w-[300px] h-[200px] md:w-[600px] md:h-[400px] bg-[radial-gradient(circle,rgba(99,99,241,0.05)_0%,transparent_70%)]"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl">
+        <div class="chip mb-4 animate-fade-in-up opacity-0" style="animation-delay: 0.1s; animation-fill-mode: forwards;">
+          <span>{p.hero.chip}</span>
+        </div>
+        <h1 class="heading-xl text-5xl lg:text-6xl xl:text-7xl text-off-white mb-6 animate-fade-in-up opacity-0" style="animation-delay: 0.2s; animation-fill-mode: forwards;">
+          {p.hero.headline.before}<span class="gradient-text">{p.hero.headline.gradient}</span>{p.hero.headline.after}
+        </h1>
+        <p class="text-lg text-text-secondary leading-relaxed animate-fade-in-up opacity-0" style="animation-delay: 0.3s; animation-fill-mode: forwards;">
+          {p.hero.description}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Detail -->
+  <section class="py-12 lg:py-20">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="space-y-20 lg:space-y-32">
+        {config.services.map((service, index) => (
+          <div id={service.title.toLowerCase().replace(/[\s-]+/g, '-').replace(/[^a-z0-9-]/g, '')} class={`reveal grid lg:grid-cols-2 gap-12 lg:gap-20 items-center ${index % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}>
+            <div class={`relative ${index % 2 === 1 ? 'lg:order-2' : ''}`}>
+              <div class="relative aspect-square max-w-md mx-auto lg:max-w-none">
+                <div class="absolute inset-0 bg-gradient-to-br from-purple/15 to-indigo/10 rounded-3xl transform rotate-3"></div>
+                <div class="absolute inset-0 bg-surface rounded-3xl border border-white/5 flex items-center justify-center">
+                  <div class="w-32 h-32 lg:w-40 lg:h-40">
+                    {service.icon === "brain" && (
+                      <svg class="w-full h-full text-purple/20" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="0.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                    )}
+                    {service.icon === "robot" && (
+                      <svg class="w-full h-full text-purple/20" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="0.5" d="M9 3v1m6-1v1m-6 8h.01M15 12h.01M12 2a1 1 0 011 1v1h-2V3a1 1 0 011-1zM5 8h14a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2v-8a2 2 0 012-2zm3 12v2m8-2v2" /></svg>
+                    )}
+                    {service.icon === "mobile" && (
+                      <svg class="w-full h-full text-purple/20" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="0.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+                    )}
+                    {service.icon === "code" && (
+                      <svg class="w-full h-full text-purple/20" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="0.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+                    )}
+                    {service.icon === "cloud" && (
+                      <svg class="w-full h-full text-purple/20" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="0.5" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" /></svg>
+                    )}
+                    {service.icon === "ruler" && (
+                      <svg class="w-full h-full text-purple/20" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="0.5" d="M4 20V4l16 16H4zM4 8h2M4 12h2M4 16h2M8 20v-2M12 20v-2M16 20v-2" /></svg>
+                    )}
+                  </div>
+                </div>
+
+                <div class="absolute -top-4 -left-4 lg:-top-6 lg:-left-6 w-16 h-16 lg:w-20 lg:h-20 rounded-2xl bg-gradient-to-br from-purple to-indigo flex items-center justify-center shadow-lg shadow-purple/20">
+                  <span class="heading-lg text-2xl lg:text-3xl text-white">{String(index + 1).padStart(2, '0')}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class={index % 2 === 1 ? 'lg:order-1' : ''}>
+              <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple/20 to-indigo/10 border border-purple/20 flex items-center justify-center mb-6">
+                {service.icon === "brain" && (
+                  <svg class="w-6 h-6 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                )}
+                {service.icon === "robot" && (
+                  <svg class="w-6 h-6 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 3v1m6-1v1m-6 8h.01M15 12h.01M12 2a1 1 0 011 1v1h-2V3a1 1 0 011-1zM5 8h14a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2v-8a2 2 0 012-2zm3 12v2m8-2v2" /></svg>
+                )}
+                {service.icon === "mobile" && (
+                  <svg class="w-6 h-6 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+                )}
+                {service.icon === "code" && (
+                  <svg class="w-6 h-6 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+                )}
+                {service.icon === "cloud" && (
+                  <svg class="w-6 h-6 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" /></svg>
+                )}
+                {service.icon === "ruler" && (
+                  <svg class="w-6 h-6 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 20V4l16 16H4zM4 8h2M4 12h2M4 16h2M8 20v-2M12 20v-2M16 20v-2" /></svg>
+                )}
+                {service.icon === "shield" && (
+                  <svg class="w-6 h-6 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                )}
+              </div>
+
+              <h2 class="heading-lg text-3xl lg:text-4xl text-off-white mb-4">{service.title}</h2>
+              <p class="text-text-secondary text-lg leading-relaxed mb-8">{service.description}</p>
+
+              <div class="space-y-3 mb-8">
+                {service.features.map((feature) => (
+                  <div class="flex items-center gap-3">
+                    <div class="w-6 h-6 rounded-lg bg-cyan/10 border border-cyan/20 flex items-center justify-center flex-shrink-0">
+                      <svg class="w-3 h-3 text-cyan" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+                    </div>
+                    <span class="text-text-secondary">{feature}</span>
+                  </div>
+                ))}
+              </div>
+
+              <a href="/contact" class="btn-secondary">{p.serviceButton}</a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Process Section -->
+  <section class="py-24 lg:py-32 bg-surface relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-purple/3 via-transparent to-transparent"></div>
+
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="text-center mb-16 reveal">
+        <div class="chip mb-4 inline-flex">
+          <span>{p.processSection.chip}</span>
+        </div>
+        <h2 class="heading-lg text-4xl lg:text-5xl text-off-white mb-6">{p.processSection.headline}</h2>
+        <p class="text-text-secondary text-lg max-w-2xl mx-auto">{p.processSection.description}</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 reveal">
+        {config.process.map((item, index) => (
+          <div class="relative group" style={`transition-delay: ${index * 100}ms`}>
+            {index < 3 && (
+              <div class="hidden lg:block absolute top-10 left-full w-full h-px bg-gradient-to-r from-purple/30 to-transparent z-0"></div>
+            )}
+
+            <div class="card-elevated p-8 h-full">
+              <div class="heading-lg text-4xl text-purple/15 mb-4 group-hover:text-purple/30 transition-colors duration-300">{item.step}</div>
+              <h3 class="heading-md text-xl text-off-white mb-3">{item.title}</h3>
+              <p class="text-text-muted text-sm leading-relaxed">{item.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-24 lg:py-32">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="relative rounded-3xl overflow-hidden reveal">
+        <div class="absolute inset-0 bg-gradient-to-br from-purple via-indigo to-indigo"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(35,240,195,0.15),transparent_60%)]"></div>
+
+        <div class="relative px-8 py-16 lg:px-16 lg:py-24 text-center">
+          <h2 class="heading-xl text-4xl lg:text-5xl text-white mb-6">{p.cta.headline}</h2>
+          <p class="text-white/70 text-lg max-w-2xl mx-auto mb-10">{p.cta.description}</p>
+          <a href="/contact" class="btn-primary">{p.cta.button}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

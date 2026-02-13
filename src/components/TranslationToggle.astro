@@ -1,6 +1,13 @@
 ---
-import { siteConfig } from "../config/site";
-const t = siteConfig.translation;
+import { t as getConfig, type Locale } from "../config/site";
+
+interface Props {
+  locale?: Locale;
+}
+
+const locale = Astro.props.locale || (Astro.currentLocale as Locale) || 'en';
+const config = getConfig(locale);
+const tr = config.translation;
 
 const languages = [
   { code: "de", flag: "\u{1F1E9}\u{1F1EA}", name: "German" },
@@ -36,8 +43,8 @@ const languages = [
   id="translate-toggle"
   class="fixed left-6 z-50 w-11 h-11 rounded-full bg-surface border border-white/[0.08] shadow-[0_4px_16px_rgba(0,0,0,0.3)] flex items-center justify-center cursor-pointer hover:border-purple/30 hover:shadow-[0_4px_24px_rgba(161,99,241,0.15)] transition-[transform,opacity,box-shadow,border-color] duration-300 opacity-0 pointer-events-none group"
   style="bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px)); -webkit-backface-visibility: hidden"
-  aria-label={t.buttonLabel}
-  title={t.buttonLabel}
+  aria-label={tr.buttonLabel}
+  title={tr.buttonLabel}
 >
   <svg class="w-5 h-5 text-text-muted group-hover:text-purple transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0112 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 013 12c0-1.605.42-3.113 1.157-4.418" />
@@ -53,7 +60,7 @@ const languages = [
   <div class="card-elevated rounded-2xl overflow-hidden shadow-[0_8px_48px_rgba(0,0,0,0.5)]">
     <!-- Header -->
     <div class="bg-gradient-to-r from-purple/10 to-indigo/5 border-b border-white/[0.06] px-5 py-3 flex items-center justify-between">
-      <h3 class="text-sm font-semibold text-off-white">{t.headline}</h3>
+      <h3 class="text-sm font-semibold text-off-white">{tr.headline}</h3>
       <button id="translate-close" class="text-text-muted hover:text-off-white transition-colors duration-200 cursor-pointer">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
       </button>
@@ -81,7 +88,7 @@ const languages = [
       <!-- Footer -->
       <div class="mt-3 pt-3 border-t border-white/[0.06] flex items-center justify-center gap-1.5">
         <svg class="w-3 h-3 text-text-muted" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 2c0 .444-.074.863-.193 1.25a11.942 11.942 0 016.088 3.358l.885-.883a1 1 0 011.414 1.414l-.884.884A11.942 11.942 0 0123.75 12H24a1 1 0 110 2h-.25a11.942 11.942 0 01-2.94 4.977l.884.884a1 1 0 01-1.414 1.414l-.885-.883A11.942 11.942 0 0114 23.25V24a1 1 0 11-2 0v-.25a11.942 11.942 0 01-4.977-2.858l-.884.884a1 1 0 01-1.414-1.414l.883-.885A11.942 11.942 0 012.25 14H2a1 1 0 110-2h.25a11.942 11.942 0 013.358-6.088l-.883-.885A1 1 0 016.139 3.613l.884.884A11.942 11.942 0 0112 1.25V.5a1 1 0 112 0v.25A4.5 4.5 0 0013.5 2z" /></svg>
-        <a href="/how-it-works#live-translation" class="text-[10px] text-text-muted hover:text-purple transition-colors duration-200">{t.poweredBy} &middot; How it works</a>
+        <a href="/how-it-works#live-translation" class="text-[10px] text-text-muted hover:text-purple transition-colors duration-200">{tr.poweredBy} &middot; How it works</a>
       </div>
     </div>
   </div>
@@ -97,7 +104,7 @@ const languages = [
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3" />
     </svg>
     <span id="translate-banner-text" class="text-sm text-text-secondary">Translated!</span>
-    <button id="translate-banner-reset" class="text-xs text-cyan hover:text-purple transition-colors duration-200 cursor-pointer font-medium">{t.resetButton}</button>
+    <button id="translate-banner-reset" class="text-xs text-cyan hover:text-purple transition-colors duration-200 cursor-pointer font-medium">{tr.resetButton}</button>
   </div>
 </div>
 

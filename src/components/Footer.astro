@@ -1,7 +1,22 @@
 ---
-import { siteConfig } from "../config/site";
-const emailEncoded = btoa(siteConfig.contact.email);
-const phoneEncoded = btoa(siteConfig.contact.phone);
+import { t, type Locale } from "../config/site";
+import { localePath } from "../utils/i18n";
+
+interface Props {
+  locale?: Locale;
+}
+
+const locale = Astro.props.locale || (Astro.currentLocale as Locale) || 'en';
+const config = t(locale);
+const emailEncoded = btoa(config.contact.email);
+const phoneEncoded = btoa(config.contact.phone);
+
+const navLabel = locale === 'de' ? 'Navigation' : 'Navigation';
+const servicesLabel = locale === 'de' ? 'Dienstleistungen' : 'Services';
+const contactLabel = locale === 'de' ? 'Kontakt' : 'Contact';
+const legalLabel = locale === 'de' ? 'Impressum' : 'Legal Notice';
+const privacyLabel = locale === 'de' ? 'Datenschutz' : 'Privacy Policy';
+const rightsLabel = locale === 'de' ? 'Alle Rechte vorbehalten.' : 'All rights reserved.';
 ---
 
 <footer class="relative bg-navy border-t border-white/5">
@@ -10,12 +25,12 @@ const phoneEncoded = btoa(siteConfig.contact.phone);
       <!-- Brand Column -->
       <div class="lg:col-span-5">
         <div class="max-w-sm">
-          <a href="/" class="flex justify-center mb-6">
+          <a href={localePath('/', locale)} class="flex justify-center mb-6">
             <picture>
               <source srcset="/logo-dark.webp" type="image/webp" />
               <img
                 src="/logo-dark.png"
-                alt={siteConfig.name}
+                alt={config.name}
                 width="1457"
                 height="988"
                 loading="lazy"
@@ -26,13 +41,13 @@ const phoneEncoded = btoa(siteConfig.contact.phone);
           </a>
         </div>
         <p class="text-text-muted text-sm leading-relaxed max-w-sm mb-8">
-          {siteConfig.description}
+          {config.description}
         </p>
 
         <!-- Social Links -->
         <div class="flex items-center gap-3">
           <a
-            href={siteConfig.social.linkedin}
+            href={config.social.linkedin}
             target="_blank"
             rel="noopener noreferrer"
             class="w-10 h-10 rounded-lg bg-navy-light border border-white/5 flex items-center justify-center text-text-muted hover:text-cyan hover:border-cyan/30 transition-all duration-300"
@@ -43,7 +58,7 @@ const phoneEncoded = btoa(siteConfig.contact.phone);
             </svg>
           </a>
           <a
-            href={siteConfig.social.twitter}
+            href={config.social.twitter}
             target="_blank"
             rel="noopener noreferrer"
             class="w-10 h-10 rounded-lg bg-navy-light border border-white/5 flex items-center justify-center text-text-muted hover:text-cyan hover:border-cyan/30 transition-all duration-300"
@@ -54,7 +69,7 @@ const phoneEncoded = btoa(siteConfig.contact.phone);
             </svg>
           </a>
           <a
-            href={siteConfig.social.github}
+            href={config.social.github}
             target="_blank"
             rel="noopener noreferrer"
             class="w-10 h-10 rounded-lg bg-navy-light border border-white/5 flex items-center justify-center text-text-muted hover:text-cyan hover:border-cyan/30 transition-all duration-300"
@@ -69,9 +84,9 @@ const phoneEncoded = btoa(siteConfig.contact.phone);
 
       <!-- Navigation -->
       <div class="lg:col-span-2">
-        <h4 class="label text-text-secondary mb-6">Navigation</h4>
+        <h4 class="label text-text-secondary mb-6">{navLabel}</h4>
         <ul class="space-y-3">
-          {siteConfig.navigation.map((item) => (
+          {config.navigation.map((item) => (
             <li>
               <a
                 href={item.href}
@@ -86,12 +101,12 @@ const phoneEncoded = btoa(siteConfig.contact.phone);
 
       <!-- Services -->
       <div class="lg:col-span-2">
-        <h4 class="label text-text-secondary mb-6">Services</h4>
+        <h4 class="label text-text-secondary mb-6">{servicesLabel}</h4>
         <ul class="space-y-3">
-          {siteConfig.services.map((service) => (
+          {config.services.map((service) => (
             <li>
               <a
-                href={`/services#${service.title.toLowerCase().replace(/[\s-]+/g, '-').replace(/[^a-z0-9-]/g, '')}`}
+                href={`${localePath('/services', locale)}#${service.title.toLowerCase().replace(/[\s-]+/g, '-').replace(/[^a-z0-9-]/g, '')}`}
                 class="text-text-muted hover:text-off-white transition-colors duration-200 text-sm"
               >
                 {service.title}
@@ -103,7 +118,7 @@ const phoneEncoded = btoa(siteConfig.contact.phone);
 
       <!-- Contact -->
       <div class="lg:col-span-3">
-        <h4 class="label text-text-secondary mb-6">Contact</h4>
+        <h4 class="label text-text-secondary mb-6">{contactLabel}</h4>
         <ul class="space-y-4">
           <li>
             <a
@@ -134,7 +149,7 @@ const phoneEncoded = btoa(siteConfig.contact.phone);
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
-            {siteConfig.contact.address}
+            {config.contact.address}
           </li>
         </ul>
       </div>
@@ -144,13 +159,13 @@ const phoneEncoded = btoa(siteConfig.contact.phone);
     <div class="mt-16 pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
       <div class="flex items-center gap-4">
         <p class="text-text-muted text-sm">
-          &copy; {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
+          &copy; {new Date().getFullYear()} {config.name}. {rightsLabel}
         </p>
-        <a href="/legal" class="text-text-muted hover:text-off-white transition-colors duration-200 text-sm">Legal Notice</a>
-        <a href="/privacy" class="text-text-muted hover:text-off-white transition-colors duration-200 text-sm">Privacy Policy</a>
+        <a href={locale === 'de' ? '/legal/de' : '/legal'} class="text-text-muted hover:text-off-white transition-colors duration-200 text-sm">{legalLabel}</a>
+        <a href={locale === 'de' ? '/privacy/de' : '/privacy'} class="text-text-muted hover:text-off-white transition-colors duration-200 text-sm">{privacyLabel}</a>
       </div>
       <p class="text-sm font-medium">
-        <span class="gradient-text">{siteConfig.tagline}</span>
+        <span class="gradient-text">{config.tagline}</span>
       </p>
     </div>
   </div>

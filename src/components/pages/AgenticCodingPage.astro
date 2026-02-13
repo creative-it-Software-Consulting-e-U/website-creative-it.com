@@ -1,0 +1,477 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { t, type Locale } from "../../config/site";
+const locale = (Astro.currentLocale || 'en') as Locale;
+const config = t(locale);
+const p = config.pages.agenticCoding;
+---
+
+<Layout title={p.meta.title} description={p.meta.description} hideStatsBanner>
+  <!-- Hero -->
+  <section class="relative py-20 lg:py-32 overflow-hidden">
+    <div class="absolute inset-0">
+      <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[250px] md:w-[800px] md:h-[500px] bg-[radial-gradient(ellipse,rgba(161,99,241,0.08)_0%,rgba(99,99,241,0.05)_40%,transparent_70%)]"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl">
+        <div class="chip mb-4 animate-fade-in-up opacity-0" style="animation-delay: 0.1s; animation-fill-mode: forwards;">
+          <span class="w-1.5 h-1.5 rounded-full bg-purple animate-pulse"></span>
+          <span>{p.hero.chip}</span>
+        </div>
+        <h1 class="heading-xl text-5xl lg:text-6xl xl:text-7xl text-off-white mb-6 animate-fade-in-up opacity-0" style="animation-delay: 0.2s; animation-fill-mode: forwards;">
+          {p.hero.headline.before}<span class="gradient-text">{p.hero.headline.gradient}</span>{p.hero.headline.after}
+        </h1>
+        <p class="text-lg lg:text-xl text-text-secondary leading-relaxed animate-fade-in-up opacity-0" style="animation-delay: 0.3s; animation-fill-mode: forwards;">
+          {p.hero.description}
+        </p>
+        <a href="/how-it-works#agentic-coding" class="inline-flex items-center gap-1.5 text-sm text-text-muted hover:text-purple transition-colors duration-200 mt-4 animate-fade-in-up opacity-0" style="animation-delay: 0.4s; animation-fill-mode: forwards;">
+          How it works
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live GitHub Stats -->
+  <section class="pb-24 lg:pb-32 relative">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div id="agentic-stats" class="grid grid-cols-2 lg:grid-cols-4 gap-6 reveal">
+        <div class="text-center p-8 card">
+          <div class="heading-lg text-4xl lg:text-5xl gradient-text mb-2" id="ac-commits-24h">—</div>
+          <div class="text-sm text-text-muted">Commits (24h)</div>
+        </div>
+        <div class="text-center p-8 card">
+          <div class="heading-lg text-4xl lg:text-5xl gradient-text mb-2" id="ac-lines-24h">—</div>
+          <div class="text-sm text-text-muted">Lines Changed (24h)</div>
+        </div>
+        <div class="text-center p-8 card">
+          <div class="heading-lg text-4xl lg:text-5xl gradient-text mb-2" id="ac-commits-7d">—</div>
+          <div class="text-sm text-text-muted">Commits (7d)</div>
+        </div>
+        <div class="text-center p-8 card">
+          <div class="heading-lg text-4xl lg:text-5xl gradient-text mb-2" id="ac-lines-7d">—</div>
+          <div class="text-sm text-text-muted">Lines Changed (7d)</div>
+        </div>
+      </div>
+      <p class="text-center text-text-muted text-xs mt-4 reveal" style="transition-delay: 100ms">Live data from our GitHub organization — updated in real time</p>
+
+      <!-- 7-Day Activity Chart -->
+      <div id="ac-chart-wrapper" class="mt-12 card p-6 lg:p-8 reveal" style="transition-delay: 200ms; display: none">
+        <h3 class="heading-md text-lg text-off-white mb-6">7-Day Activity</h3>
+        <div class="relative w-full" style="height: 280px">
+          <canvas id="ac-chart" class="w-full h-full"></canvas>
+        </div>
+        <div class="flex justify-center gap-8 mt-4">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full" style="background: #A163F1"></span>
+            <span class="text-xs text-text-muted">Commits</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full" style="background: #23F0C3"></span>
+            <span class="text-xs text-text-muted">Lines Changed</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI Story -->
+  <section class="pb-24 lg:pb-32 relative">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="reveal" style="transition-delay: 300ms">
+        <div class="chip mb-4">
+          <span class="w-1.5 h-1.5 rounded-full bg-cyan animate-pulse"></span>
+          <span>{p.storySection.chip}</span>
+        </div>
+        <h3 class="heading-md text-2xl text-off-white mb-2">{p.storySection.headline}</h3>
+        <p class="text-sm text-text-muted mb-6">{p.storySection.description}</p>
+
+        <div class="card-elevated p-8 lg:p-10 relative">
+          <!-- Quote decoration -->
+          <svg class="absolute top-6 left-6 w-8 h-8 text-purple/20" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10H14.017zM0 21v-7.391C0 7.905 3.748 4.039 9 3l.996 2.151C7.563 6.068 6 8.789 6 11h4v10H0z"/>
+          </svg>
+
+          <!-- Story content -->
+          <div id="story-content" class="pl-12">
+            <!-- Loading skeleton -->
+            <div id="story-skeleton" class="space-y-3">
+              <div class="h-4 bg-white/[0.06] rounded-lg w-full animate-pulse"></div>
+              <div class="h-4 bg-white/[0.06] rounded-lg w-4/5 animate-pulse"></div>
+              <div class="h-4 bg-white/[0.06] rounded-lg w-3/5 animate-pulse"></div>
+            </div>
+            <!-- Story text (hidden initially) -->
+            <p id="story-text" class="hidden text-text-secondary text-lg leading-relaxed italic"></p>
+            <!-- Fallback text (hidden initially) -->
+            <p id="story-fallback" class="hidden text-text-secondary text-lg leading-relaxed italic">{p.storySection.fallback}</p>
+          </div>
+
+          <!-- Refresh button -->
+          <div class="mt-6 pl-12 flex items-center gap-4">
+            <button id="story-refresh" class="text-sm text-purple hover:text-cyan border border-purple/20 hover:border-cyan/30 rounded-lg px-4 py-2 transition-colors duration-200 cursor-pointer flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+              <span>{p.storySection.refreshButton}</span>
+            </button>
+            <span id="story-loading-text" class="hidden text-xs text-text-muted">{p.storySection.loadingText}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What Is Agentic Coding -->
+  <section class="py-24 lg:py-32 bg-surface relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-purple/3 to-transparent"></div>
+
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="max-w-2xl mb-16 reveal">
+        <div class="chip mb-4">
+          <span>{p.whatSection.chip}</span>
+        </div>
+        <h2 class="heading-lg text-4xl lg:text-5xl text-off-white mb-6">{p.whatSection.headline}</h2>
+        <p class="text-text-secondary text-lg leading-relaxed">{p.whatSection.description}</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        {p.whatSection.points.map((point, index) => (
+          <div class="card-elevated p-8 reveal" style={`transition-delay: ${index * 100}ms`}>
+            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple/20 to-indigo/10 border border-purple/20 flex items-center justify-center mb-6">
+              {index === 0 && (
+                <svg class="w-6 h-6 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+              )}
+              {index === 1 && (
+                <svg class="w-6 h-6 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+              )}
+              {index === 2 && (
+                <svg class="w-6 h-6 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+              )}
+            </div>
+            <h3 class="heading-md text-xl text-off-white mb-3">{point.title}</h3>
+            <p class="text-text-secondary leading-relaxed">{point.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- How We Use It -->
+  <section class="py-24 lg:py-32 relative">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="max-w-2xl mb-16 reveal">
+        <div class="chip mb-4">
+          <span>{p.howSection.chip}</span>
+        </div>
+        <h2 class="heading-lg text-4xl lg:text-5xl text-off-white mb-6">{p.howSection.headline}</h2>
+        <p class="text-text-secondary text-lg leading-relaxed">{p.howSection.description}</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        {p.howSection.steps.map((step, index) => (
+          <div class="group card p-8 reveal" style={`transition-delay: ${index * 100}ms`}>
+            <div class="flex items-start gap-5">
+              <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-purple/20 to-indigo/10 border border-purple/20 flex items-center justify-center">
+                <span class="heading-md text-purple text-sm">{step.step}</span>
+              </div>
+              <div>
+                <h3 class="heading-md text-xl text-off-white mb-2 group-hover:text-purple transition-colors duration-300">{step.title}</h3>
+                <p class="text-text-secondary leading-relaxed">{step.description}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Productivity Gains -->
+  <section class="py-24 lg:py-32 bg-surface relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-purple/3 via-transparent to-cyan/3"></div>
+
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="max-w-2xl mb-16 reveal">
+        <div class="chip mb-4">
+          <span>{p.benefitsSection.chip}</span>
+        </div>
+        <h2 class="heading-lg text-4xl lg:text-5xl text-off-white mb-6">
+          {p.benefitsSection.headline.before}<span class="gradient-text">{p.benefitsSection.headline.gradient}</span>{p.benefitsSection.headline.after}
+        </h2>
+        <p class="text-text-secondary text-lg leading-relaxed">{p.benefitsSection.description}</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        {p.benefitsSection.benefits.map((benefit, index) => (
+          <div class="card-elevated p-8 lg:p-10 reveal" style={`transition-delay: ${index * 100}ms`}>
+            <div class="heading-lg text-3xl lg:text-4xl gradient-text mb-2">{benefit.value}</div>
+            <h3 class="heading-md text-xl text-off-white mb-3">{benefit.label}</h3>
+            <p class="text-text-secondary leading-relaxed">{benefit.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-24 lg:py-32 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="relative rounded-3xl overflow-hidden reveal">
+        <div class="absolute inset-0 bg-gradient-to-br from-purple via-indigo to-indigo"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(35,240,195,0.15),transparent_60%)]"></div>
+
+        <div class="relative px-8 py-16 lg:px-16 lg:py-24 text-center">
+          <h2 class="heading-xl text-4xl lg:text-5xl xl:text-6xl text-white mb-6">{p.cta.headline}</h2>
+          <p class="text-white/70 text-lg max-w-2xl mx-auto mb-10">{p.cta.description}</p>
+          <a href="/contact" class="btn-primary">{p.cta.button}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  function formatNumber(n: number): string {
+    if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace(/\.0$/, '')}M`;
+    if (n >= 1_000) return `${(n / 1_000).toFixed(1).replace(/\.0$/, '')}k`;
+    return n.toString();
+  }
+
+  interface HistoryPoint { ts: string; commits: number; lines: number }
+  interface Bucket { label: string; time: number; commits: number; lines: number }
+
+  function aggregateTo12h(history: HistoryPoint[]): Bucket[] {
+    const bucketMap = new Map<string, Bucket>();
+
+    for (const pt of history) {
+      const d = new Date(pt.ts);
+      // Format in Europe/Vienna to get the local hour
+      const parts = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Europe/Vienna',
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', hour12: false,
+      }).formatToParts(d);
+
+      const year = parts.find(p => p.type === 'year')!.value;
+      const month = parts.find(p => p.type === 'month')!.value;
+      const day = parts.find(p => p.type === 'day')!.value;
+      const hour = parseInt(parts.find(p => p.type === 'hour')!.value, 10);
+      const bucket = hour < 12 ? '00' : '12';
+      const key = `${year}-${month}-${day}T${bucket}`;
+
+      if (!bucketMap.has(key)) {
+        // Create a Date for sorting — approximate with UTC
+        const bucketDate = new Date(`${year}-${month}-${day}T${bucket}:00:00`);
+        const label = `${day}.${month}. ${bucket}:00`;
+        bucketMap.set(key, { label, time: bucketDate.getTime(), commits: 0, lines: 0 });
+      }
+
+      const b = bucketMap.get(key)!;
+      b.commits += pt.commits;
+      b.lines += pt.lines;
+    }
+
+    return Array.from(bucketMap.values()).sort((a, b) => a.time - b.time);
+  }
+
+  function drawChart(canvas: HTMLCanvasElement, buckets: Bucket[]) {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    const ctx = canvas.getContext('2d')!;
+    ctx.scale(dpr, dpr);
+
+    const W = rect.width;
+    const H = rect.height;
+    const pad = { top: 20, right: 52, bottom: 44, left: 52 };
+    const plotW = W - pad.left - pad.right;
+    const plotH = H - pad.top - pad.bottom;
+
+    if (buckets.length < 2) return;
+
+    const maxCommits = Math.max(...buckets.map(b => b.commits), 1);
+    const maxLines = Math.max(...buckets.map(b => b.lines), 1);
+
+    function niceMax(v: number): number {
+      if (v <= 5) return Math.max(v, 1);
+      const mag = Math.pow(10, Math.floor(Math.log10(v)));
+      const norm = v / mag;
+      if (norm <= 1.5) return Math.ceil(1.5 * mag);
+      if (norm <= 2.5) return Math.ceil(2.5 * mag);
+      if (norm <= 5) return Math.ceil(5 * mag);
+      return Math.ceil(10 * mag);
+    }
+
+    const yMaxCommits = niceMax(maxCommits);
+    const yMaxLines = niceMax(maxLines);
+
+    // Grid lines
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    ctx.lineWidth = 1;
+    const gridSteps = 4;
+    for (let i = 0; i <= gridSteps; i++) {
+      const y = pad.top + plotH - (i / gridSteps) * plotH;
+      ctx.beginPath();
+      ctx.moveTo(pad.left, y);
+      ctx.lineTo(pad.left + plotW, y);
+      ctx.stroke();
+    }
+
+    // Y-axis labels (left = commits)
+    ctx.fillStyle = '#A163F1';
+    ctx.font = '10px Inter, system-ui, sans-serif';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (let i = 0; i <= gridSteps; i++) {
+      const y = pad.top + plotH - (i / gridSteps) * plotH;
+      const val = (i / gridSteps) * yMaxCommits;
+      ctx.fillText(formatNumber(Math.round(val)), pad.left - 8, y);
+    }
+
+    // Y-axis labels (right = lines)
+    ctx.fillStyle = '#23F0C3';
+    ctx.textAlign = 'left';
+    for (let i = 0; i <= gridSteps; i++) {
+      const y = pad.top + plotH - (i / gridSteps) * plotH;
+      const val = (i / gridSteps) * yMaxLines;
+      ctx.fillText(formatNumber(Math.round(val)), pad.left + plotW + 4, y);
+    }
+
+    // X-axis labels
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    // Show every other label to avoid crowding, but always first and last
+    const step = buckets.length > 10 ? 2 : 1;
+    for (let i = 0; i < buckets.length; i += step) {
+      const x = pad.left + (i / (buckets.length - 1)) * plotW;
+      const y = pad.top + plotH + 8;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(-Math.PI / 6);
+      ctx.fillText(buckets[i].label, 0, 0);
+      ctx.restore();
+    }
+
+    // Draw line helper
+    function drawLine(values: number[], yMax: number, color: string) {
+      if (values.length < 2) return;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      for (let i = 0; i < values.length; i++) {
+        const x = pad.left + (i / (values.length - 1)) * plotW;
+        const y = pad.top + plotH - (values[i] / yMax) * plotH;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      // Area fill
+      ctx.globalAlpha = 0.08;
+      ctx.fillStyle = color;
+      ctx.lineTo(pad.left + plotW, pad.top + plotH);
+      ctx.lineTo(pad.left, pad.top + plotH);
+      ctx.closePath();
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      // Dots
+      for (let i = 0; i < values.length; i++) {
+        const x = pad.left + (i / (values.length - 1)) * plotW;
+        const y = pad.top + plotH - (values[i] / yMax) * plotH;
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(x, y, 3, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    drawLine(buckets.map(b => b.commits), yMaxCommits, '#A163F1');
+    drawLine(buckets.map(b => b.lines), yMaxLines, '#23F0C3');
+  }
+
+  (async () => {
+    try {
+      const res = await fetch(`${import.meta.env.PUBLIC_API_URL}/github-stats`, { cache: 'no-store' });
+      if (!res.ok) return;
+
+      const data = await res.json();
+
+      const ids = [
+        ['ac-commits-24h', formatNumber(data.commits_24h)],
+        ['ac-lines-24h', formatNumber(data.lines_24h)],
+        ['ac-commits-7d', formatNumber(data.commits_7d)],
+        ['ac-lines-7d', formatNumber(data.lines_7d)],
+      ] as const;
+
+      for (const [id, value] of ids) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+      }
+
+      // Render chart
+      const history: HistoryPoint[] = data.history ?? [];
+      if (history.length > 0) {
+        const wrapper = document.getElementById('ac-chart-wrapper');
+        const canvas = document.getElementById('ac-chart') as HTMLCanvasElement | null;
+        if (wrapper && canvas) {
+          const buckets = aggregateTo12h(history);
+          if (buckets.length >= 2) {
+            wrapper.style.display = '';
+            // Wait for layout recalculation before drawing
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                drawChart(canvas, buckets);
+              });
+            });
+            // Redraw on resize
+            let resizeTimer: ReturnType<typeof setTimeout>;
+            window.addEventListener('resize', () => {
+              clearTimeout(resizeTimer);
+              resizeTimer = setTimeout(() => drawChart(canvas, buckets), 150);
+            });
+          }
+        }
+      }
+    } catch {
+      // Stats show dashes on error
+    }
+  })();
+
+  // AI Story
+  const storyText = document.getElementById('story-text')!;
+  const storySkeleton = document.getElementById('story-skeleton')!;
+  const storyFallback = document.getElementById('story-fallback')!;
+  const storyRefresh = document.getElementById('story-refresh') as HTMLButtonElement;
+  const storyLoadingText = document.getElementById('story-loading-text')!;
+  const STORY_API = `${import.meta.env.PUBLIC_API_URL}/commit-story`;
+
+  async function fetchStory() {
+    storySkeleton.classList.remove('hidden');
+    storyText.classList.add('hidden');
+    storyFallback.classList.add('hidden');
+    storyRefresh.disabled = true;
+    storyLoadingText.classList.remove('hidden');
+
+    try {
+      const res = await fetch(STORY_API, { cache: 'no-store' });
+      if (!res.ok) throw new Error('Failed');
+
+      const data = await res.json();
+      storyText.textContent = data.story;
+      storySkeleton.classList.add('hidden');
+      storyText.classList.remove('hidden');
+    } catch {
+      storySkeleton.classList.add('hidden');
+      storyFallback.classList.remove('hidden');
+    } finally {
+      storyRefresh.disabled = false;
+      storyLoadingText.classList.add('hidden');
+    }
+  }
+
+  storyRefresh.addEventListener('click', fetchStory);
+  fetchStory();
+</script>

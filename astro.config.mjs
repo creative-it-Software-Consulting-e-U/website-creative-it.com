@@ -9,6 +9,14 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://creative-it.com',
 
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en', 'de'],
+    routing: {
+      prefixDefaultLocale: false,
+    },
+  },
+
   vite: {
     plugins: [tailwindcss()]
   },

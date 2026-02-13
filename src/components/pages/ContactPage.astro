@@ -1,0 +1,255 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../Breadcrumbs.astro";
+import { t, type Locale } from "../../config/site";
+const locale = (Astro.currentLocale || 'en') as Locale;
+const config = t(locale);
+const p = config.pages.contact;
+const f = p.form;
+const emailEncoded = btoa(config.contact.email);
+const phoneEncoded = btoa(config.contact.phone);
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: config.faq.map((item) => ({
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: item.answer,
+    },
+  })),
+};
+---
+
+<Layout title={p.meta.title} description={p.meta.description}>
+  <Breadcrumbs items={[{ name: "Contact" }]} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <!-- Hero -->
+  <section class="relative py-20 lg:py-32 overflow-hidden">
+    <div class="absolute inset-0">
+      <div class="absolute top-0 left-1/4 w-[250px] h-[200px] md:w-[500px] md:h-[400px] bg-[radial-gradient(circle,rgba(99,99,241,0.05)_0%,transparent_70%)]"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl">
+        <div class="chip mb-4 animate-fade-in-up opacity-0" style="animation-delay: 0.1s; animation-fill-mode: forwards;">
+          <span>{p.hero.chip}</span>
+        </div>
+        <h1 class="heading-xl text-5xl lg:text-6xl xl:text-7xl text-off-white mb-6 animate-fade-in-up opacity-0" style="animation-delay: 0.2s; animation-fill-mode: forwards;">
+          {p.hero.headline.before}<span class="gradient-text">{p.hero.headline.gradient}</span>{p.hero.headline.after}
+        </h1>
+        <p class="text-lg text-text-secondary leading-relaxed animate-fade-in-up opacity-0" style="animation-delay: 0.3s; animation-fill-mode: forwards;">
+          {p.hero.description}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Content -->
+  <section class="py-12 lg:py-20">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="grid lg:grid-cols-12 gap-12 lg:gap-20">
+        <!-- Contact Info -->
+        <div class="lg:col-span-5 reveal">
+          <h2 class="heading-lg text-2xl text-off-white mb-8">{p.infoHeadline}</h2>
+
+          <div class="space-y-6 mb-12">
+            <a data-ct={emailEncoded} data-ct-type="email" class="group flex items-start gap-4 p-4 -m-4 rounded-xl hover:bg-white/3 transition-colors duration-300 cursor-pointer">
+              <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple/20 to-indigo/10 border border-purple/20 flex items-center justify-center flex-shrink-0 group-hover:border-purple/40 transition-colors duration-300">
+                <svg class="w-5 h-5 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+              </div>
+              <div>
+                <div class="label text-text-muted text-xs mb-1">Email</div>
+                <div class="text-off-white group-hover:text-purple transition-colors duration-300" data-ct-text>...</div>
+              </div>
+            </a>
+
+            <a data-ct={phoneEncoded} data-ct-type="phone" class="group flex items-start gap-4 p-4 -m-4 rounded-xl hover:bg-white/3 transition-colors duration-300 cursor-pointer">
+              <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple/20 to-indigo/10 border border-purple/20 flex items-center justify-center flex-shrink-0 group-hover:border-purple/40 transition-colors duration-300">
+                <svg class="w-5 h-5 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+              </div>
+              <div>
+                <div class="label text-text-muted text-xs mb-1">Phone</div>
+                <div class="text-off-white group-hover:text-purple transition-colors duration-300" data-ct-text>...</div>
+              </div>
+            </a>
+
+            <div class="flex items-start gap-4 p-4 -m-4">
+              <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple/20 to-indigo/10 border border-purple/20 flex items-center justify-center flex-shrink-0">
+                <svg class="w-5 h-5 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </div>
+              <div>
+                <div class="label text-text-muted text-xs mb-1">Address</div>
+                <div class="text-off-white">{config.contact.address}</div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="label text-text-muted text-xs mb-4">{p.socialLabel}</h3>
+            <div class="flex gap-3">
+              <a href={config.social.linkedin} target="_blank" rel="noopener noreferrer" class="w-11 h-11 rounded-lg bg-navy-light border border-white/5 flex items-center justify-center text-text-muted hover:text-cyan hover:border-cyan/30 transition-all duration-300" aria-label="LinkedIn">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+              </a>
+              <a href={config.social.twitter} target="_blank" rel="noopener noreferrer" class="w-11 h-11 rounded-lg bg-navy-light border border-white/5 flex items-center justify-center text-text-muted hover:text-cyan hover:border-cyan/30 transition-all duration-300" aria-label="Twitter">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              </a>
+              <a href={config.social.github} target="_blank" rel="noopener noreferrer" class="w-11 h-11 rounded-lg bg-navy-light border border-white/5 flex items-center justify-center text-text-muted hover:text-cyan hover:border-cyan/30 transition-all duration-300" aria-label="GitHub">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="lg:col-span-7 reveal" style="transition-delay: 200ms">
+          <div class="card-elevated p-8 lg:p-12">
+            <h2 class="heading-lg text-2xl text-off-white mb-2">{f.headline}</h2>
+            <p class="text-text-muted mb-8">{f.description}</p>
+
+            <form class="space-y-6" id="contact-form" data-success-message={f.successMessage}>
+              <div class="grid sm:grid-cols-2 gap-6">
+                <div>
+                  <label for="name" class="block text-sm font-medium text-text-secondary mb-2">{f.nameLabel}</label>
+                  <input type="text" id="name" name="name" required class="w-full px-4 py-3 bg-navy border border-white/10 rounded-xl text-off-white placeholder-text-muted focus:border-indigo focus:ring-1 focus:ring-indigo transition-all duration-300" placeholder={f.namePlaceholder} />
+                </div>
+                <div>
+                  <label for="email" class="block text-sm font-medium text-text-secondary mb-2">{f.emailLabel}</label>
+                  <input type="email" id="email" name="email" required class="w-full px-4 py-3 bg-navy border border-white/10 rounded-xl text-off-white placeholder-text-muted focus:border-indigo focus:ring-1 focus:ring-indigo transition-all duration-300" placeholder={f.emailPlaceholder} />
+                </div>
+              </div>
+
+              <div>
+                <label for="company" class="block text-sm font-medium text-text-secondary mb-2">{f.companyLabel} <span class="text-text-muted">{f.companyOptional}</span></label>
+                <input type="text" id="company" name="company" class="w-full px-4 py-3 bg-navy border border-white/10 rounded-xl text-off-white placeholder-text-muted focus:border-indigo focus:ring-1 focus:ring-indigo transition-all duration-300" placeholder={f.companyPlaceholder} />
+              </div>
+
+              <div>
+                <label for="subject" class="block text-sm font-medium text-text-secondary mb-2">{f.subjectLabel}</label>
+                <select id="subject" name="subject" required class="w-full px-4 py-3 bg-navy border border-white/10 rounded-xl text-off-white focus:border-indigo focus:ring-1 focus:ring-indigo transition-all duration-300">
+                  <option value="" class="text-text-muted">{f.subjectPlaceholder}</option>
+                  {f.subjectOptions.map((opt) => (
+                    <option value={opt.value}>{opt.label}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label for="message" class="block text-sm font-medium text-text-secondary mb-2">{f.messageLabel}</label>
+                <textarea id="message" name="message" rows="5" required class="w-full px-4 py-3 bg-navy border border-white/10 rounded-xl text-off-white placeholder-text-muted focus:border-indigo focus:ring-1 focus:ring-indigo transition-all duration-300 resize-none" placeholder={f.messagePlaceholder}></textarea>
+              </div>
+
+              <button type="submit" class="btn-glow w-full sm:w-auto" id="submit-btn">{f.submitButton}</button>
+
+              <div id="form-status" class="hidden mt-4 px-4 py-3 rounded-xl text-sm" aria-live="polite"></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="py-24 lg:py-32 bg-surface">
+    <div class="max-w-4xl mx-auto px-6 lg:px-8">
+      <div class="text-center mb-16 reveal">
+        <div class="chip mb-4 inline-flex">
+          <span>{p.faqSection.chip}</span>
+        </div>
+        <h2 class="heading-lg text-4xl lg:text-5xl text-off-white">{p.faqSection.headline}</h2>
+      </div>
+
+      <div class="space-y-3 reveal">
+        {config.faq.map((item, index) => (
+          <div class="group card overflow-hidden" style={`transition-delay: ${index * 50}ms`}>
+            <button class="faq-trigger w-full flex items-center justify-between p-6 text-left" aria-expanded="false">
+              <span class="heading-md text-base text-off-white group-hover:text-purple transition-colors duration-300">{item.question}</span>
+              <svg class="faq-icon w-5 h-5 text-indigo flex-shrink-0 ml-4 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <div class="faq-content hidden px-6 pb-6">
+              <p class="text-text-secondary leading-relaxed">{item.answer}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  document.querySelectorAll('.faq-trigger').forEach(button => {
+    button.addEventListener('click', () => {
+      const content = button.nextElementSibling as HTMLElement;
+      const icon = button.querySelector('.faq-icon') as HTMLElement;
+      const isExpanded = button.getAttribute('aria-expanded') === 'true';
+
+      document.querySelectorAll('.faq-trigger').forEach(otherButton => {
+        if (otherButton !== button) {
+          otherButton.setAttribute('aria-expanded', 'false');
+          const otherContent = otherButton.nextElementSibling as HTMLElement;
+          const otherIcon = otherButton.querySelector('.faq-icon') as HTMLElement;
+          otherContent?.classList.add('hidden');
+          otherIcon?.classList.remove('rotate-180');
+        }
+      });
+
+      button.setAttribute('aria-expanded', (!isExpanded).toString());
+      content?.classList.toggle('hidden');
+      icon?.classList.toggle('rotate-180');
+    });
+  });
+
+  document.getElementById('contact-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const form = e.target as HTMLFormElement;
+    const btn = document.getElementById('submit-btn') as HTMLButtonElement;
+    const status = document.getElementById('form-status') as HTMLElement;
+    const originalText = btn.textContent;
+
+    // Loading state
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    btn.style.opacity = '0.6';
+    status.classList.add('hidden');
+
+    const data = {
+      name: (form.querySelector('#name') as HTMLInputElement).value,
+      email: (form.querySelector('#email') as HTMLInputElement).value,
+      company: (form.querySelector('#company') as HTMLInputElement).value,
+      subject: (form.querySelector('#subject') as HTMLSelectElement).value,
+      message: (form.querySelector('#message') as HTMLTextAreaElement).value,
+    };
+
+    try {
+      const res = await fetch(`${import.meta.env.PUBLIC_API_URL}/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      const result = await res.json();
+
+      if (res.ok) {
+        status.textContent = form.dataset.successMessage || 'Message sent successfully!';
+        status.className = 'mt-4 px-4 py-3 rounded-xl text-sm bg-cyan/10 border border-cyan/20 text-cyan';
+        form.reset();
+      } else {
+        status.textContent = result.error || 'Something went wrong. Please try again.';
+        status.className = 'mt-4 px-4 py-3 rounded-xl text-sm bg-red-500/10 border border-red-500/20 text-red-400';
+      }
+    } catch {
+      status.textContent = 'Network error. Please check your connection and try again.';
+      status.className = 'mt-4 px-4 py-3 rounded-xl text-sm bg-red-500/10 border border-red-500/20 text-red-400';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = originalText;
+      btn.style.opacity = '1';
+    }
+  });
+</script>

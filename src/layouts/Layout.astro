@@ -1,39 +1,40 @@
 ---
 import "../styles/global.css";
-import { siteConfig } from "../config/site";
+import { t, type Locale } from "../config/site";
+import { getHreflangAlternates } from "../utils/i18n";
 import Navigation from "../components/Navigation.astro";
 import Footer from "../components/Footer.astro";
 import ChatWidget from "../components/ChatWidget.astro";
 import RemixToggle from "../components/RemixToggle.astro";
 import TranslationToggle from "../components/TranslationToggle.astro";
 
-interface AlternateLang {
-  href: string;
-  hreflang: string;
-}
-
 interface Props {
   title?: string;
   description?: string;
   hideStatsBanner?: boolean;
-  alternateLang?: AlternateLang[];
 }
 
-const { title, description, hideStatsBanner = false, alternateLang } = Astro.props;
-const pageTitle = title ? `${title} | ${siteConfig.name}` : `${siteConfig.name} — ${siteConfig.tagline}`;
-const pageDescription = description || siteConfig.description;
+const locale = (Astro.currentLocale || 'en') as Locale;
+const config = t(locale);
+
+const { title, description, hideStatsBanner = false } = Astro.props;
+const pageTitle = title ? `${title} | ${config.name}` : `${config.name} — ${config.tagline}`;
+const pageDescription = description || config.description;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://creative-it.com').href;
+
+const hreflangAlternates = getHreflangAlternates(Astro.url.pathname);
+const ogLocale = locale === 'de' ? 'de_AT' : 'en_US';
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
   "@id": "https://creative-it.com/#organization",
   name: "creative-it Software Consulting e.U.",
-  description: siteConfig.description,
+  description: config.description,
   url: "https://creative-it.com",
   logo: "https://creative-it.com/favicon.png",
-  telephone: siteConfig.contact.phone,
-  email: siteConfig.contact.email,
+  telephone: config.contact.phone,
+  email: config.contact.email,
   address: {
     "@type": "PostalAddress",
     streetAddress: "Am Gassl 25",
@@ -42,15 +43,15 @@ const jsonLd = {
     addressCountry: "AT",
   },
   sameAs: [
-    siteConfig.social.linkedin,
-    siteConfig.social.twitter,
-    siteConfig.social.github,
+    config.social.linkedin,
+    config.social.twitter,
+    config.social.github,
   ],
 };
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={locale}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -78,7 +79,7 @@ const jsonLd = {
     <meta name="robots" content="index, follow" />
     <meta name="generator" content={Astro.generator} />
 
-    {alternateLang && alternateLang.map((alt) => (
+    {hreflangAlternates.map((alt) => (
       <link rel="alternate" hreflang={alt.hreflang} href={new URL(alt.href, Astro.site || 'https://creative-it.com').href} />
     ))}
 
@@ -88,8 +89,8 @@ const jsonLd = {
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:image" content={new URL('/og-image.png', Astro.site || 'https://creative-it.com').href} />
-    <meta property="og:locale" content="en_US" />
-    <meta property="og:site_name" content={siteConfig.name} />
+    <meta property="og:locale" content={ogLocale} />
+    <meta property="og:site_name" content={config.name} />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -112,14 +113,14 @@ const jsonLd = {
       <div class="absolute bottom-0 left-0 w-[200px] h-[200px] md:w-[400px] md:h-[400px] bg-[radial-gradient(circle,rgba(35,240,195,0.03)_0%,transparent_70%)]"></div>
     </div>
 
-    <Navigation />
+    <Navigation locale={locale} />
     <main id="main-content" class="flex-1 relative z-10">
       <slot />
     </main>
-    <Footer />
-    <ChatWidget />
-    <RemixToggle />
-    <TranslationToggle />
+    <Footer locale={locale} />
+    <ChatWidget locale={locale} />
+    <RemixToggle locale={locale} />
+    <TranslationToggle locale={locale} />
 
     <!-- Pulse ring — positioned as a sibling BEHIND the button (z-40 < z-50)
          so animated transform:scale(2) cannot block iOS Safari touch events -->
@@ -149,13 +150,13 @@ const jsonLd = {
 
     <!-- Labels that appear next to sub-buttons (base position matches main toggle; JS translates them) -->
     <span id="ai-label-chat" class="fixed left-6 z-50 text-xs text-text-muted bg-surface/90 border border-white/[0.06] rounded-lg px-2.5 py-1 shadow-lg backdrop-blur-sm opacity-0 pointer-events-none transition-[transform,opacity] duration-300" style="bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px))">
-      AI Chat
+      {config.chatWidget.buttonLabel}
     </span>
     <span id="ai-label-remix" class="fixed left-6 z-50 text-xs text-text-muted bg-surface/90 border border-white/[0.06] rounded-lg px-2.5 py-1 shadow-lg backdrop-blur-sm opacity-0 pointer-events-none transition-[transform,opacity] duration-300" style="bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px))">
-      Theme Remix
+      {config.remix.buttonLabel}
     </span>
     <span id="ai-label-translate" class="fixed left-6 z-50 text-xs text-text-muted bg-surface/90 border border-white/[0.06] rounded-lg px-2.5 py-1 shadow-lg backdrop-blur-sm opacity-0 pointer-events-none transition-[transform,opacity] duration-300" style="bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px))">
-      Translate
+      {config.translation.buttonLabel}
     </span>
 
     <script>

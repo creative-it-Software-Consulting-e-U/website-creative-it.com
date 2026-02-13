@@ -1,12 +1,17 @@
 ---
+import type { Locale } from "../config/site";
+import { localePath } from "../utils/i18n";
+
 interface Props {
   items: { name: string; href?: string }[];
+  locale?: Locale;
 }
 
-const { items } = Astro.props;
+const { items, locale = 'en' } = Astro.props;
+const homeName = locale === 'de' ? 'Startseite' : 'Home';
 
 const breadcrumbItems = [
-  { name: "Home", href: "/" },
+  { name: homeName, href: localePath('/', locale) },
   ...items,
 ];
 

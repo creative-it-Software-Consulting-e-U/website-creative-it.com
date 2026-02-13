@@ -1,6 +1,13 @@
 ---
-import { siteConfig } from "../config/site";
-const c = siteConfig.chatWidget;
+import { t, type Locale } from "../config/site";
+
+interface Props {
+  locale?: Locale;
+}
+
+const locale = Astro.props.locale || (Astro.currentLocale as Locale) || 'en';
+const config = t(locale);
+const c = config.chatWidget;
 ---
 
 <!-- Chat Widget Toggle Button (controlled by AI Tools menu) -->

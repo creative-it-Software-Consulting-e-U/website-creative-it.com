@@ -1,19 +1,34 @@
 ---
-import { siteConfig } from "../config/site";
+import { t, type Locale } from "../config/site";
+import { localePath, getAlternateLocale } from "../utils/i18n";
 
+interface Props {
+  locale?: Locale;
+}
+
+const locale = Astro.props.locale || (Astro.currentLocale as Locale) || 'en';
+const config = t(locale);
 const currentPath = Astro.url.pathname;
+const altLocale = getAlternateLocale(locale);
+
+// Build the alternate path for the language switcher
+const basePath = currentPath.startsWith('/de/') ? currentPath.slice(3) : currentPath === '/de' ? '/' : currentPath;
+const switchPath = localePath(basePath, altLocale);
+const switchLabel = locale === 'en' ? 'DE' : 'EN';
+const contactPath = localePath('/contact', locale);
+const ctaLabel = locale === 'de' ? 'Kontakt' : 'Get in Touch';
 ---
 
 <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-transparent" id="nav-header">
   <nav class="max-w-7xl mx-auto px-6 lg:px-8">
     <div class="flex justify-between items-center h-16 lg:h-20">
       <!-- Logo -->
-      <a href="/" class="relative z-10 flex items-center gap-3 group">
+      <a href={localePath('/', locale)} class="relative z-10 flex items-center gap-3 group">
         <picture>
           <source srcset="/logo-dark.webp" type="image/webp" />
           <img
             src="/logo-dark.png"
-            alt={siteConfig.name}
+            alt={config.name}
             width="1457"
             height="988"
             fetchpriority="high"
@@ -23,13 +38,13 @@ const currentPath = Astro.url.pathname;
       </a>
 
       <!-- Desktop Navigation -->
-      <ul class="hidden lg:flex items-center gap-8">
-        {siteConfig.navigation.map((item) => (
+      <ul class="hidden lg:flex items-center gap-3 xl:gap-5">
+        {config.navigation.map((item) => (
           <li>
             <a
               href={item.href}
               class:list={[
-                "relative text-sm font-medium transition-colors duration-200",
+                "relative text-xs xl:text-sm font-medium transition-colors duration-200 whitespace-nowrap",
                 currentPath === item.href
                   ? "text-off-white"
                   : "text-text-muted hover:text-off-white",
@@ -44,10 +59,20 @@ const currentPath = Astro.url.pathname;
         ))}
       </ul>
 
-      <!-- CTA Button (Desktop) -->
-      <a href="/contact" class="hidden lg:block btn-glow text-sm">
-        Get in Touch
-      </a>
+      <!-- Language Switcher + CTA (Desktop) -->
+      <div class="hidden lg:flex items-center gap-4">
+        <a
+          href={switchPath}
+          class="lang-switch flex items-center gap-1.5 text-sm font-medium text-text-muted hover:text-off-white transition-colors duration-200"
+          title={altLocale === 'de' ? 'Auf Deutsch wechseln' : 'Switch to English'}
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3" /></svg>
+          {switchLabel}
+        </a>
+        <a href={contactPath} class="btn-glow text-sm">
+          {ctaLabel}
+        </a>
+      </div>
 
       <!-- Mobile Menu Button -->
       <button
@@ -70,7 +95,7 @@ const currentPath = Astro.url.pathname;
   >
     <nav class="text-center">
       <ul class="space-y-8">
-        {siteConfig.navigation.map((item, index) => (
+        {config.navigation.map((item, index) => (
           <li
             class="mobile-nav-item opacity-0 translate-y-4"
             style={`transition-delay: ${index * 100}ms`}
@@ -90,9 +115,19 @@ const currentPath = Astro.url.pathname;
         ))}
       </ul>
 
-      <div class="mt-12 mobile-nav-item opacity-0 translate-y-4" style="transition-delay: 400ms">
-        <a href="/contact" class="btn-glow">
-          Get in Touch
+      <div class="mt-8 mobile-nav-item opacity-0 translate-y-4" style={`transition-delay: ${config.navigation.length * 100}ms`}>
+        <a
+          href={switchPath}
+          class="lang-switch inline-flex items-center gap-2 text-lg text-text-muted hover:text-off-white transition-colors duration-200"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3" /></svg>
+          {altLocale === 'de' ? 'Deutsch' : 'English'}
+        </a>
+      </div>
+
+      <div class="mt-6 mobile-nav-item opacity-0 translate-y-4" style={`transition-delay: ${(config.navigation.length + 1) * 100}ms`}>
+        <a href={contactPath} class="btn-glow">
+          {ctaLabel}
         </a>
       </div>
     </nav>
@@ -166,6 +201,15 @@ const currentPath = Astro.url.pathname;
       if (isOpen) {
         button?.click();
       }
+    });
+  });
+
+  // Set locale cookie when language switcher is clicked
+  document.querySelectorAll('.lang-switch').forEach(link => {
+    link.addEventListener('click', () => {
+      const href = link.getAttribute('href') || '/';
+      const targetLocale = href.startsWith('/de') ? 'de' : 'en';
+      document.cookie = `locale=${targetLocale}; path=/; max-age=31536000; SameSite=Lax`;
     });
   });
 

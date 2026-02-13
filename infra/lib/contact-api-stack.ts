@@ -910,6 +910,45 @@ export class ContactApiStack extends cdk.Stack {
       ),
     });
 
+    // ── Webhook Relay (Hashnode → GitHub Actions) ────────────────────
+    const webhookRelayHandler = new lambdaNode.NodejsFunction(
+      this,
+      "WebhookRelayHandler",
+      {
+        runtime: lambda.Runtime.NODEJS_22_X,
+        architecture: lambda.Architecture.ARM_64,
+        memorySize: 128,
+        timeout: cdk.Duration.seconds(10),
+        entry: path.join(
+          __dirname,
+          "..",
+          "lambda",
+          "webhook-relay",
+          "index.ts"
+        ),
+        handler: "handler",
+        bundling: {
+          format: lambdaNode.OutputFormat.ESM,
+          mainFields: ["module", "main"],
+        },
+        environment: {
+          GITHUB_TOKEN: process.env.GITHUB_TOKEN ?? "",
+          GITHUB_REPO:
+            "creative-it-Software-Consulting-e-U/website-creative-it.com",
+          WEBHOOK_SECRET: process.env.WEBHOOK_SECRET ?? "changeme",
+        },
+      }
+    );
+
+    httpApi.addRoutes({
+      path: "/webhook/hashnode",
+      methods: [apigwv2.HttpMethod.POST],
+      integration: new apigwv2Integrations.HttpLambdaIntegration(
+        "WebhookRelayIntegration",
+        webhookRelayHandler
+      ),
+    });
+
     // Throttle settings on the default stage
     const defaultStage = httpApi.defaultStage?.node
       .defaultChild as apigwv2.CfnStage;

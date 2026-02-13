@@ -108,68 +108,93 @@ async function fetchPostBySlug(slug: string): Promise<HashnodePost | null> {
   }
 }
 
-// Load known slugs from both the live site and local file, merge them
-async function loadKnownSlugs(): Promise<string[]> {
-  const allSlugs = new Set<string>();
+// Cache format: { slug: coverImageUrl | null }
+interface BlogCache {
+  [slug: string]: string | null;
+}
+
+// Load cached data from both the live site and local file, merge them
+async function loadBlogCache(): Promise<BlogCache> {
+  const cache: BlogCache = {};
+
+  async function mergeSource(data: unknown) {
+    if (data && typeof data === "object" && !Array.isArray(data)) {
+      // New format: { slug: coverUrl }
+      Object.assign(cache, data);
+    } else if (Array.isArray(data)) {
+      // Legacy format: ["slug1", "slug2"] — migrate
+      for (const s of data) if (typeof s === "string") cache[s] = null;
+    }
+  }
 
   // 1. Try live site (from previous deployment)
   try {
     const res = await fetch(`${LIVE_SITE}/blog-slugs.json`);
-    if (res.ok) {
-      const slugs = await res.json();
-      if (Array.isArray(slugs)) slugs.forEach((s: string) => allSlugs.add(s));
-    }
+    if (res.ok) await mergeSource(await res.json());
   } catch {}
 
   // 2. Try local file (seeded in repo or from previous local build)
   try {
     const { readFileSync } = await import("node:fs");
     const { join } = await import("node:path");
-    const local = JSON.parse(readFileSync(join(process.cwd(), "public", "blog-slugs.json"), "utf-8"));
-    if (Array.isArray(local)) local.forEach((s: string) => allSlugs.add(s));
+    await mergeSource(JSON.parse(readFileSync(join(process.cwd(), "public", "blog-slugs.json"), "utf-8")));
   } catch {}
 
-  return [...allSlugs];
+  return cache;
 }
 
-// ── Fetch with fallback for missing articles ────────────────────────────────
+// ── Fetch with fallback for missing articles & cover images ─────────────────
 let posts: HashnodePost[] = [];
 
 try {
-  const [listingPosts, knownSlugs] = await Promise.all([
+  const [listingPosts, cache] = await Promise.all([
     fetchPostsFromListing(),
-    loadKnownSlugs(),
+    loadBlogCache(),
   ]);
 
   const listingSlugs = new Set(listingPosts.map((p) => p.slug));
+  const knownSlugs = Object.keys(cache);
   const missingSlugs = knownSlugs.filter((s) => !listingSlugs.has(s));
 
-  console.log(`[blog] Listing returned ${listingPosts.length} articles`);
+  console.log(`[blog] Listing returned ${listingPosts.length} articles, cache has ${knownSlugs.length} known slugs`);
+
+  // Recover articles missing from listing
   if (missingSlugs.length > 0) {
     console.log(`[blog] ${missingSlugs.length} known articles missing from listing, fetching individually: ${missingSlugs.join(", ")}`);
+    const recovered = await Promise.all(missingSlugs.map(fetchPostBySlug));
+    const recoveredPosts = recovered.filter((p): p is HashnodePost => p !== null);
+    if (recoveredPosts.length > 0) {
+      console.log(`[blog] Recovered ${recoveredPosts.length} articles via individual slug queries`);
+    }
+    posts = [...listingPosts, ...recoveredPosts];
+  } else {
+    posts = listingPosts;
   }
 
-  // Fetch missing articles individually by slug
-  const recovered = await Promise.all(missingSlugs.map(fetchPostBySlug));
-  const recoveredPosts = recovered.filter((p): p is HashnodePost => p !== null);
-
-  if (recoveredPosts.length > 0) {
-    console.log(`[blog] Recovered ${recoveredPosts.length} articles via individual slug queries`);
+  // Restore missing cover images from cache (Hashnode sometimes returns null)
+  for (const post of posts) {
+    if (!post.coverImage?.url && cache[post.slug]) {
+      console.log(`[blog] Restored cached cover image for: ${post.slug}`);
+      post.coverImage = { url: cache[post.slug]! };
+    }
   }
 
-  posts = [...listingPosts, ...recoveredPosts];
   console.log(`[blog] Total: ${posts.length} articles for build`);
 } catch (e) {
   console.error("Failed to fetch Hashnode posts:", e);
 }
 
-// Write current slugs so the next build can recover missing articles
+// Save cache: slug → coverImage URL (for recovery in future builds)
 if (posts.length > 0) {
   const { writeFileSync } = await import("node:fs");
   const { join } = await import("node:path");
   const slugsPath = join(process.cwd(), "public", "blog-slugs.json");
-  writeFileSync(slugsPath, JSON.stringify(posts.map((p) => p.slug), null, 2));
-  console.log(`[blog] Saved ${posts.length} slugs to public/blog-slugs.json`);
+  const newCache: Record<string, string | null> = {};
+  for (const post of posts) {
+    newCache[post.slug] = post.coverImage?.url ?? null;
+  }
+  writeFileSync(slugsPath, JSON.stringify(newCache, null, 2));
+  console.log(`[blog] Saved cache with ${posts.length} articles to public/blog-slugs.json`);
 }
 
 posts.sort(

@@ -15,8 +15,8 @@ on:
           - preview
 
 concurrency:
-  group: rebuild-content
-  cancel-in-progress: true
+  group: deploy-refs/heads/main
+  cancel-in-progress: false
 
 jobs:
   deploy-vercel:

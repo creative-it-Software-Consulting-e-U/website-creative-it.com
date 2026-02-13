@@ -26,6 +26,10 @@ jobs:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
     steps:
+      - name: Wait for Hashnode API propagation
+        if: github.event_name == 'repository_dispatch'
+        run: sleep 30
+
       - uses: actions/checkout@v4
         with:
           ref: main

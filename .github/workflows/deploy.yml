@@ -18,6 +18,7 @@ jobs:
       agent_visualizer_url: ${{ steps.cdk-deploy.outputs.agent_visualizer_url }}
       website_remix_url: ${{ steps.cdk-deploy.outputs.website_remix_url }}
       live_translation_url: ${{ steps.cdk-deploy.outputs.live_translation_url }}
+      blog_table_name: ${{ steps.cdk-deploy.outputs.blog_table_name }}
     steps:
       - uses: actions/checkout@v4
 
@@ -48,6 +49,7 @@ jobs:
           echo "agent_visualizer_url=$(jq -r '.ContactApiStack.AgentVisualizerUrl // empty' cdk-outputs.json)" >> "$GITHUB_OUTPUT"
           echo "website_remix_url=$(jq -r '.ContactApiStack.WebsiteRemixUrl // empty' cdk-outputs.json)" >> "$GITHUB_OUTPUT"
           echo "live_translation_url=$(jq -r '.ContactApiStack.LiveTranslationUrl // empty' cdk-outputs.json)" >> "$GITHUB_OUTPUT"
+          echo "blog_table_name=$(jq -r '.ContactApiStack.BlogTableName // empty' cdk-outputs.json)" >> "$GITHUB_OUTPUT"
         working-directory: infra
 
   deploy-vercel:
@@ -70,6 +72,34 @@ jobs:
 
       - name: Install Vercel CLI
         run: npm install -g vercel
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ github.ref == 'refs/heads/main' && secrets.AWS_ACCESS_KEY_ID_PROD || secrets.AWS_ACCESS_KEY_ID_GW }}
+          aws-secret-access-key: ${{ github.ref == 'refs/heads/main' && secrets.AWS_SECRET_ACCESS_KEY_PROD || secrets.AWS_SECRET_ACCESS_KEY_GW }}
+          aws-region: eu-central-1
+
+      - name: Fetch blog articles from DynamoDB
+        if: needs.deploy-cdk.outputs.blog_table_name != ''
+        run: |
+          aws dynamodb scan \
+            --table-name "${{ needs.deploy-cdk.outputs.blog_table_name }}" \
+            --projection-expression "slug, title, brief, publishedAt, #u, coverImage, readTimeInMinutes, tags" \
+            --expression-attribute-names '{"#u":"url"}' \
+            --output json \
+          | jq '[.Items[] | {
+              slug: .slug.S,
+              title: .title.S,
+              brief: .brief.S,
+              publishedAt: .publishedAt.S,
+              url: .url.S,
+              coverImage: (.coverImage.S // .coverImage.NULL // null | if . == true then null else . end),
+              readTimeInMinutes: (.readTimeInMinutes.N | tonumber),
+              tags: [.tags.L[]?.S // empty]
+            }]' > public/blog-slugs.json
+          echo "Blog articles written to public/blog-slugs.json:"
+          cat public/blog-slugs.json | jq length
 
       - name: Pull Vercel environment
         run: vercel pull --yes --token=$VERCEL_TOKEN

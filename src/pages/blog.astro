@@ -1,200 +1,35 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Breadcrumbs from "../components/Breadcrumbs.astro";
-import { siteConfig } from "../config/site";
+import { t, type Locale } from "../config/site";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 
-const p = siteConfig.pages.blog;
+const locale = (Astro.currentLocale || 'en') as Locale;
+const config = t(locale);
+const p = config.pages.blog;
 
-// ── Fetch articles from Hashnode at build time ─────────────────────────────
+// ── Read articles from local JSON (populated by DynamoDB scan in CI) ────────
 
-interface HashnodePost {
-  title: string;
+interface BlogArticle {
   slug: string;
+  title: string;
   brief: string;
-  tags: { name: string }[];
   publishedAt: string;
   url: string;
-  coverImage: { url: string } | null;
+  coverImage: string | null;
   readTimeInMinutes: number;
+  tags: string[];
 }
 
-interface HashnodeResponse {
-  data: {
-    publication: {
-      posts: {
-        edges: { node: HashnodePost }[];
-        pageInfo: { hasNextPage: boolean; endCursor: string | null };
-      };
-    };
-  };
-}
-
-const HASHNODE_HOST = "buildgrowmatter.hashnode.dev";
-const HASHNODE_GQL = "https://gql.hashnode.com";
-const LIVE_SITE = "https://creative-it.com";
-
-const postFields = `
-  title
-  slug
-  brief
-  tags { name }
-  publishedAt
-  url
-  coverImage { url }
-  readTimeInMinutes
-`;
-
-const listingQuery = `
-  query Posts($host: String!, $first: Int!, $after: String) {
-    publication(host: $host) {
-      posts(first: $first, after: $after) {
-        edges { node { ${postFields} } }
-        pageInfo { hasNextPage endCursor }
-      }
-    }
-  }
-`;
-
-const singlePostQuery = `
-  query Post($host: String!, $slug: String!) {
-    publication(host: $host) {
-      post(slug: $slug) { ${postFields} }
-    }
-  }
-`;
-
-// Fetch all posts from the listing endpoint (can be incomplete due to Hashnode bugs)
-async function fetchPostsFromListing(): Promise<HashnodePost[]> {
-  const result: HashnodePost[] = [];
-  let after: string | null = null;
-
-  do {
-    const res = await fetch(HASHNODE_GQL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        query: listingQuery,
-        variables: { host: HASHNODE_HOST, first: 20, after },
-      }),
-    });
-
-    if (!res.ok) break;
-
-    const json = (await res.json()) as HashnodeResponse;
-    const { edges, pageInfo } = json.data.publication.posts;
-    for (const edge of edges) result.push(edge.node);
-    after = pageInfo.hasNextPage ? pageInfo.endCursor : null;
-  } while (after);
-
-  return result;
-}
-
-// Fetch a single post by slug (reliable even when listing is broken)
-async function fetchPostBySlug(slug: string): Promise<HashnodePost | null> {
-  try {
-    const res = await fetch(HASHNODE_GQL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        query: singlePostQuery,
-        variables: { host: HASHNODE_HOST, slug },
-      }),
-    });
-    if (!res.ok) return null;
-    const json = await res.json();
-    return json.data?.publication?.post ?? null;
-  } catch {
-    return null;
-  }
-}
-
-// Cache format: { slug: coverImageUrl | null }
-interface BlogCache {
-  [slug: string]: string | null;
-}
-
-// Load cached data from both the live site and local file, merge them
-async function loadBlogCache(): Promise<BlogCache> {
-  const cache: BlogCache = {};
-
-  async function mergeSource(data: unknown) {
-    if (data && typeof data === "object" && !Array.isArray(data)) {
-      // New format: { slug: coverUrl }
-      Object.assign(cache, data);
-    } else if (Array.isArray(data)) {
-      // Legacy format: ["slug1", "slug2"] — migrate
-      for (const s of data) if (typeof s === "string") cache[s] = null;
-    }
-  }
-
-  // 1. Try live site (from previous deployment)
-  try {
-    const res = await fetch(`${LIVE_SITE}/blog-slugs.json`);
-    if (res.ok) await mergeSource(await res.json());
-  } catch {}
-
-  // 2. Try local file (seeded in repo or from previous local build)
-  try {
-    const { readFileSync } = await import("node:fs");
-    const { join } = await import("node:path");
-    await mergeSource(JSON.parse(readFileSync(join(process.cwd(), "public", "blog-slugs.json"), "utf-8")));
-  } catch {}
-
-  return cache;
-}
-
-// ── Fetch with fallback for missing articles & cover images ─────────────────
-let posts: HashnodePost[] = [];
-
+let posts: BlogArticle[] = [];
 try {
-  const [listingPosts, cache] = await Promise.all([
-    fetchPostsFromListing(),
-    loadBlogCache(),
-  ]);
-
-  const listingSlugs = new Set(listingPosts.map((p) => p.slug));
-  const knownSlugs = Object.keys(cache);
-  const missingSlugs = knownSlugs.filter((s) => !listingSlugs.has(s));
-
-  console.log(`[blog] Listing returned ${listingPosts.length} articles, cache has ${knownSlugs.length} known slugs`);
-
-  // Recover articles missing from listing
-  if (missingSlugs.length > 0) {
-    console.log(`[blog] ${missingSlugs.length} known articles missing from listing, fetching individually: ${missingSlugs.join(", ")}`);
-    const recovered = await Promise.all(missingSlugs.map(fetchPostBySlug));
-    const recoveredPosts = recovered.filter((p): p is HashnodePost => p !== null);
-    if (recoveredPosts.length > 0) {
-      console.log(`[blog] Recovered ${recoveredPosts.length} articles via individual slug queries`);
-    }
-    posts = [...listingPosts, ...recoveredPosts];
-  } else {
-    posts = listingPosts;
-  }
-
-  // Restore missing cover images from cache (Hashnode sometimes returns null)
-  for (const post of posts) {
-    if (!post.coverImage?.url && cache[post.slug]) {
-      console.log(`[blog] Restored cached cover image for: ${post.slug}`);
-      post.coverImage = { url: cache[post.slug]! };
-    }
-  }
-
-  console.log(`[blog] Total: ${posts.length} articles for build`);
+  posts = JSON.parse(
+    readFileSync(join(process.cwd(), "public", "blog-slugs.json"), "utf-8")
+  );
+  console.log(`[blog] Loaded ${posts.length} articles from blog-slugs.json`);
 } catch (e) {
-  console.error("Failed to fetch Hashnode posts:", e);
-}
-
-// Save cache: slug → coverImage URL (for recovery in future builds)
-if (posts.length > 0) {
-  const { writeFileSync } = await import("node:fs");
-  const { join } = await import("node:path");
-  const slugsPath = join(process.cwd(), "public", "blog-slugs.json");
-  const newCache: Record<string, string | null> = {};
-  for (const post of posts) {
-    newCache[post.slug] = post.coverImage?.url ?? null;
-  }
-  writeFileSync(slugsPath, JSON.stringify(newCache, null, 2));
-  console.log(`[blog] Saved cache with ${posts.length} articles to public/blog-slugs.json`);
+  console.error("[blog] Failed to read blog-slugs.json:", e);
 }
 
 posts.sort(
@@ -213,12 +48,12 @@ function formatDate(dateStr: string): string {
 const blogSchema = {
   "@context": "https://schema.org",
   "@type": "Blog",
-  name: `${siteConfig.name} Blog`,
+  name: `${config.name} Blog`,
   description: p.meta.description,
   url: "https://creative-it.com/blog",
   publisher: {
     "@type": "Organization",
-    name: siteConfig.name,
+    name: config.name,
     url: "https://creative-it.com",
   },
   blogPost: posts.map((post) => ({
@@ -227,10 +62,10 @@ const blogSchema = {
     description: post.brief,
     url: post.url,
     datePublished: post.publishedAt,
-    ...(post.coverImage?.url && { image: post.coverImage.url }),
+    ...(post.coverImage && { image: post.coverImage }),
     author: {
       "@type": "Organization",
-      name: siteConfig.name,
+      name: config.name,
     },
   })),
 };
@@ -277,10 +112,10 @@ const blogSchema = {
               style={`transition-delay: ${(index % 6) * 100}ms`}
             >
               <article class="card-elevated h-full flex flex-col overflow-hidden transition-transform duration-300 group-hover:-translate-y-1">
-                {post.coverImage?.url ? (
+                {post.coverImage ? (
                   <div class="aspect-[16/9] overflow-hidden">
                     <img
-                      src={post.coverImage.url}
+                      src={post.coverImage}
                       alt={post.title}
                       loading="lazy"
                       decoding="async"
@@ -318,7 +153,7 @@ const blogSchema = {
                     <div class="flex flex-wrap gap-2 mt-auto">
                       {post.tags.slice(0, 3).map((tag) => (
                         <span class="text-xs px-2 py-1 rounded-full bg-purple/10 text-purple/80 border border-purple/20">
-                          {tag.name}
+                          {tag}
                         </span>
                       ))}
                     </div>

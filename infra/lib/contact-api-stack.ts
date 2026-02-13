@@ -63,6 +63,13 @@ export class ContactApiStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.RETAIN,
     });
 
+    // ── DynamoDB Table for Blog Articles ─────────────────────────────────
+    const blogTable = new dynamodb.Table(this, "BlogTable", {
+      partitionKey: { name: "slug", type: dynamodb.AttributeType.STRING },
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
+    });
+
     // ── Contact Lambda ─────────────────────────────────────────────────
     const contactHandler = new lambdaNode.NodejsFunction(
       this,
@@ -608,10 +615,10 @@ export class ContactApiStack extends cdk.Stack {
       kbSync.node.addDependency(kbDocsDeploy);
     }
 
-    // ── Hashnode Sync Lambda (fetches blog articles → S3 → KB re-index) ──
-    const hashnodeSyncHandler = new lambdaNode.NodejsFunction(
+    // ── Article Sync Lambda (webhook + scheduled → DynamoDB + S3 + KB) ──
+    const articleSyncHandler = new lambdaNode.NodejsFunction(
       this,
-      "HashnodeSyncHandler",
+      "ArticleSyncHandler",
       {
         runtime: lambda.Runtime.NODEJS_22_X,
         architecture: lambda.Architecture.ARM_64,
@@ -621,7 +628,7 @@ export class ContactApiStack extends cdk.Stack {
           __dirname,
           "..",
           "lambda",
-          "hashnode-sync",
+          "article-sync",
           "index.ts"
         ),
         handler: "handler",
@@ -631,23 +638,33 @@ export class ContactApiStack extends cdk.Stack {
           externalModules: ["@aws-sdk/*"],
         },
         environment: {
+          TABLE_NAME: blogTable.tableName,
           BUCKET_NAME: knowledgeBucket.bucketName,
           KNOWLEDGE_BASE_ID: kb?.knowledgeBaseId ?? "",
           DATA_SOURCE_ID: kb?.dataSourceId ?? "",
           HASHNODE_HOST: "buildgrowmatter.hashnode.dev",
+          WEBHOOK_SECRET: process.env.WEBHOOK_SECRET ?? "changeme",
+          GITHUB_TOKEN: process.env.GITHUB_TOKEN ?? "",
+          GITHUB_REPO:
+            "creative-it-Software-Consulting-e-U/website-creative-it.com",
         },
       }
     );
 
-    hashnodeSyncHandler.addToRolePolicy(
+    blogTable.grantReadWriteData(articleSyncHandler);
+
+    articleSyncHandler.addToRolePolicy(
       new iam.PolicyStatement({
-        actions: ["s3:PutObject", "s3:DeleteObject"],
-        resources: [`${knowledgeBucket.bucketArn}/hashnode/*`],
+        actions: ["s3:PutObject", "s3:DeleteObject", "s3:ListBucket"],
+        resources: [
+          `${knowledgeBucket.bucketArn}/hashnode/*`,
+          knowledgeBucket.bucketArn,
+        ],
       })
     );
 
     if (kb?.knowledgeBaseId) {
-      hashnodeSyncHandler.addToRolePolicy(
+      articleSyncHandler.addToRolePolicy(
         new iam.PolicyStatement({
           actions: ["bedrock:StartIngestionJob"],
           resources: [
@@ -657,24 +674,24 @@ export class ContactApiStack extends cdk.Stack {
       );
     }
 
-    const hashnodeSyncSchedulerRole = new iam.Role(
+    const articleSyncSchedulerRole = new iam.Role(
       this,
-      "HashnodeSyncSchedulerRole",
+      "ArticleSyncSchedulerRole",
       {
         assumedBy: new iam.ServicePrincipal("scheduler.amazonaws.com"),
       }
     );
 
-    hashnodeSyncHandler.grantInvoke(hashnodeSyncSchedulerRole);
+    articleSyncHandler.grantInvoke(articleSyncSchedulerRole);
 
-    new scheduler.CfnSchedule(this, "HashnodeSyncSchedule", {
-      name: `hashnode-sync-daily-${config.envName}`,
+    new scheduler.CfnSchedule(this, "ArticleSyncSchedule", {
+      name: `article-sync-daily-${config.envName}`,
       scheduleExpression: "cron(0 6 * * ? *)",
       scheduleExpressionTimezone: "UTC",
       flexibleTimeWindow: { mode: "OFF" },
       target: {
-        arn: hashnodeSyncHandler.functionArn,
-        roleArn: hashnodeSyncSchedulerRole.roleArn,
+        arn: articleSyncHandler.functionArn,
+        roleArn: articleSyncSchedulerRole.roleArn,
       },
       state: "ENABLED",
     });
@@ -910,43 +927,13 @@ export class ContactApiStack extends cdk.Stack {
       ),
     });
 
-    // ── Webhook Relay (Hashnode → GitHub Actions) ────────────────────
-    const webhookRelayHandler = new lambdaNode.NodejsFunction(
-      this,
-      "WebhookRelayHandler",
-      {
-        runtime: lambda.Runtime.NODEJS_22_X,
-        architecture: lambda.Architecture.ARM_64,
-        memorySize: 128,
-        timeout: cdk.Duration.minutes(6),
-        entry: path.join(
-          __dirname,
-          "..",
-          "lambda",
-          "webhook-relay",
-          "index.ts"
-        ),
-        handler: "handler",
-        bundling: {
-          format: lambdaNode.OutputFormat.ESM,
-          mainFields: ["module", "main"],
-        },
-        environment: {
-          GITHUB_TOKEN: process.env.GITHUB_TOKEN ?? "",
-          GITHUB_REPO:
-            "creative-it-Software-Consulting-e-U/website-creative-it.com",
-          WEBHOOK_SECRET: process.env.WEBHOOK_SECRET ?? "changeme",
-          HASHNODE_HOST: "buildgrowmatter.hashnode.dev",
-        },
-      }
-    );
-
+    // ── Webhook Route (Hashnode → Article Sync) ────────────────────
     httpApi.addRoutes({
       path: "/webhook/hashnode",
       methods: [apigwv2.HttpMethod.POST],
       integration: new apigwv2Integrations.HttpLambdaIntegration(
-        "WebhookRelayIntegration",
-        webhookRelayHandler
+        "ArticleSyncWebhookIntegration",
+        articleSyncHandler
       ),
     });
 
@@ -1036,6 +1023,11 @@ export class ContactApiStack extends cdk.Stack {
     new cdk.CfnOutput(this, "KnowledgeBucketName", {
       value: knowledgeBucket.bucketName,
       description: "Knowledge Base S3 bucket",
+    });
+
+    new cdk.CfnOutput(this, "BlogTableName", {
+      value: blogTable.tableName,
+      description: "Blog articles DynamoDB table",
     });
   }
 }

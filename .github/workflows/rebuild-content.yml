@@ -16,7 +16,7 @@ on:
 
 concurrency:
   group: deploy-refs/heads/main
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   deploy-vercel:
@@ -58,6 +58,27 @@ jobs:
           echo "agent_visualizer_url=$(echo $OUTPUTS | jq -r '.[] | select(.OutputKey=="AgentVisualizerUrl") | .OutputValue')" >> "$GITHUB_OUTPUT"
           echo "website_remix_url=$(echo $OUTPUTS | jq -r '.[] | select(.OutputKey=="WebsiteRemixUrl") | .OutputValue')" >> "$GITHUB_OUTPUT"
           echo "live_translation_url=$(echo $OUTPUTS | jq -r '.[] | select(.OutputKey=="LiveTranslationUrl") | .OutputValue')" >> "$GITHUB_OUTPUT"
+          echo "blog_table_name=$(echo $OUTPUTS | jq -r '.[] | select(.OutputKey=="BlogTableName") | .OutputValue')" >> "$GITHUB_OUTPUT"
+
+      - name: Fetch blog articles from DynamoDB
+        run: |
+          aws dynamodb scan \
+            --table-name "${{ steps.cdk-urls.outputs.blog_table_name }}" \
+            --projection-expression "slug, title, brief, publishedAt, #u, coverImage, readTimeInMinutes, tags" \
+            --expression-attribute-names '{"#u":"url"}' \
+            --output json \
+          | jq '[.Items[] | {
+              slug: .slug.S,
+              title: .title.S,
+              brief: .brief.S,
+              publishedAt: .publishedAt.S,
+              url: .url.S,
+              coverImage: (.coverImage.S // .coverImage.NULL // null | if . == true then null else . end),
+              readTimeInMinutes: (.readTimeInMinutes.N | tonumber),
+              tags: [.tags.L[]?.S // empty]
+            }]' > public/blog-slugs.json
+          echo "Blog articles written to public/blog-slugs.json:"
+          cat public/blog-slugs.json | jq length
 
       - name: Pull Vercel environment
         run: vercel pull --yes --environment=production --token=$VERCEL_TOKEN

@@ -1,3 +1,5 @@
+import { createHmac } from "node:crypto";
+
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN!;
 const GITHUB_REPO = process.env.GITHUB_REPO!;
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET!;
@@ -8,14 +10,36 @@ interface ApiGatewayEvent {
   isBase64Encoded?: boolean;
 }
 
-export async function handler(event: ApiGatewayEvent) {
-  // Verify Hashnode's pre-assigned webhook secret
-  const secret =
-    event.headers?.["x-hashnode-webhook-secret"] ??
-    event.headers?.["X-Hashnode-Webhook-Secret"];
+function verifySignature(body: string, signatureHeader: string): boolean {
+  // Format: t=<timestamp>,v1=<hmac_sha256_hex>
+  const parts = Object.fromEntries(
+    signatureHeader.split(",").map((p) => {
+      const [k, ...v] = p.split("=");
+      return [k, v.join("=")];
+    })
+  );
 
-  if (secret !== WEBHOOK_SECRET) {
-    console.warn("Unauthorized webhook attempt");
+  const timestamp = parts["t"];
+  const expectedSig = parts["v1"];
+  if (!timestamp || !expectedSig) return false;
+
+  const payload = `${timestamp}.${body}`;
+  const computed = createHmac("sha256", WEBHOOK_SECRET)
+    .update(payload)
+    .digest("hex");
+
+  return computed === expectedSig;
+}
+
+export async function handler(event: ApiGatewayEvent) {
+  const signature =
+    event.headers?.["x-hashnode-signature"] ??
+    event.headers?.["X-Hashnode-Signature"];
+
+  const body = event.body ?? "";
+
+  if (!signature || !verifySignature(body, signature)) {
+    console.warn("Invalid or missing webhook signature");
     return { statusCode: 401, body: "Unauthorized" };
   }
 

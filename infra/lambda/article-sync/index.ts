@@ -301,7 +301,7 @@ function buildIndexMarkdown(articles: BlogArticle[]): string {
   const lines = [
     "# creative-it Blog — Article Index",
     "",
-    `The creative-it blog is available at https://buildgrowmatter.hashnode.dev`,
+    `The creative-it blog is available at https://blog.creative-it.com`,
     "",
     `There are currently ${sorted.length} published articles:`,
     "",

@@ -642,7 +642,7 @@ export class ContactApiStack extends cdk.Stack {
           BUCKET_NAME: knowledgeBucket.bucketName,
           KNOWLEDGE_BASE_ID: kb?.knowledgeBaseId ?? "",
           DATA_SOURCE_ID: kb?.dataSourceId ?? "",
-          HASHNODE_HOST: "buildgrowmatter.hashnode.dev",
+          HASHNODE_HOST: "blog.creative-it.com",
           WEBHOOK_SECRET: process.env.WEBHOOK_SECRET ?? "changeme",
           GITHUB_TOKEN: process.env.GITHUB_TOKEN ?? "",
           GITHUB_REPO:

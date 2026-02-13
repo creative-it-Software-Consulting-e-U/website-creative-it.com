@@ -26,9 +26,29 @@ jobs:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
     steps:
-      - name: Wait for Hashnode API propagation
+      - name: Wait for Hashnode API to stabilize
         if: github.event_name == 'repository_dispatch'
-        run: sleep 30
+        run: |
+          # Get current article count from live site
+          LIVE_COUNT=$(curl -sL "https://creative-it.com/blog" | grep -c '<article' || echo 0)
+          echo "Live site has $LIVE_COUNT articles"
+
+          # Poll Hashnode API until article count >= live count (max 5 min)
+          for i in $(seq 1 20); do
+            API_COUNT=$(curl -s https://gql.hashnode.com \
+              -H "Content-Type: application/json" \
+              -d '{"query":"query { publication(host: \"buildgrowmatter.hashnode.dev\") { posts(first: 50) { totalDocuments } } }"}' \
+              | jq '.data.publication.posts.totalDocuments // 0')
+            echo "Attempt $i: Hashnode API reports $API_COUNT articles"
+
+            if [ "$API_COUNT" -ge "$LIVE_COUNT" ]; then
+              echo "API has enough articles, proceeding with build"
+              break
+            fi
+
+            echo "API has fewer articles than live site, waiting 15s..."
+            sleep 15
+          done
 
       - uses: actions/checkout@v4
         with:

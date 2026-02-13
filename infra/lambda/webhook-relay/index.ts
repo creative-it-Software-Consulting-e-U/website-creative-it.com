@@ -9,10 +9,10 @@ interface ApiGatewayEvent {
 }
 
 export async function handler(event: ApiGatewayEvent) {
-  // Verify shared secret (passed as query param or header by Hashnode)
+  // Verify Hashnode's pre-assigned webhook secret
   const secret =
-    event.headers?.["x-webhook-secret"] ??
-    event.headers?.["X-Webhook-Secret"];
+    event.headers?.["x-hashnode-webhook-secret"] ??
+    event.headers?.["X-Hashnode-Webhook-Secret"];
 
   if (secret !== WEBHOOK_SECRET) {
     console.warn("Unauthorized webhook attempt");

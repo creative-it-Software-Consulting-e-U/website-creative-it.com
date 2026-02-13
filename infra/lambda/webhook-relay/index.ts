@@ -36,10 +36,17 @@ export async function handler(event: ApiGatewayEvent) {
     event.headers?.["x-hashnode-signature"] ??
     event.headers?.["X-Hashnode-Signature"];
 
-  const body = event.body ?? "";
+  const rawBody = event.body ?? "";
+  const body = event.isBase64Encoded
+    ? Buffer.from(rawBody, "base64").toString("utf-8")
+    : rawBody;
 
   if (!signature || !verifySignature(body, signature)) {
-    console.warn("Invalid or missing webhook signature");
+    console.warn("Invalid or missing webhook signature", {
+      hasSignature: !!signature,
+      bodyLength: body.length,
+      secretLength: WEBHOOK_SECRET.length,
+    });
     return { statusCode: 401, body: "Unauthorized" };
   }
 

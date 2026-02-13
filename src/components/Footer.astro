@@ -23,23 +23,21 @@ const rightsLabel = locale === 'de' ? 'Alle Rechte vorbehalten.' : 'All rights r
   <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8">
       <!-- Brand Column -->
-      <div class="lg:col-span-5">
-        <div class="max-w-sm">
-          <a href={localePath('/', locale)} class="flex justify-center mb-6">
-            <picture>
-              <source srcset="/logo-dark.webp" type="image/webp" />
-              <img
-                src="/logo-dark.png"
-                alt={config.name}
-                width="1457"
-                height="988"
-                loading="lazy"
-                decoding="async"
-                class="h-40 w-auto"
-              />
-            </picture>
-          </a>
-        </div>
+      <div class="lg:col-span-5 flex flex-col items-center text-center">
+        <a href={localePath('/', locale)} class="mb-6">
+          <picture>
+            <source srcset="/logo-dark.webp" type="image/webp" />
+            <img
+              src="/logo-dark.png"
+              alt={config.name}
+              width="1457"
+              height="988"
+              loading="lazy"
+              decoding="async"
+              class="h-40 w-auto"
+            />
+          </picture>
+        </a>
         <p class="text-text-muted text-sm leading-relaxed max-w-sm mb-8">
           {config.description}
         </p>

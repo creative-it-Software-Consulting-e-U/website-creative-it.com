@@ -30,42 +30,50 @@ interface HashnodeResponse {
 }
 
 const HASHNODE_HOST = "buildgrowmatter.hashnode.dev";
+const HASHNODE_GQL = "https://gql.hashnode.com";
+const LIVE_SITE = "https://creative-it.com";
 
-const query = `
+const postFields = `
+  title
+  slug
+  brief
+  tags { name }
+  publishedAt
+  url
+  coverImage { url }
+  readTimeInMinutes
+`;
+
+const listingQuery = `
   query Posts($host: String!, $first: Int!, $after: String) {
     publication(host: $host) {
       posts(first: $first, after: $after) {
-        edges {
-          node {
-            title
-            slug
-            brief
-            tags { name }
-            publishedAt
-            url
-            coverImage { url }
-            readTimeInMinutes
-          }
-        }
-        pageInfo {
-          hasNextPage
-          endCursor
-        }
+        edges { node { ${postFields} } }
+        pageInfo { hasNextPage endCursor }
       }
     }
   }
 `;
 
-let posts: HashnodePost[] = [];
-let after: string | null = null;
+const singlePostQuery = `
+  query Post($host: String!, $slug: String!) {
+    publication(host: $host) {
+      post(slug: $slug) { ${postFields} }
+    }
+  }
+`;
 
-try {
+// Fetch all posts from the listing endpoint (can be incomplete due to Hashnode bugs)
+async function fetchPostsFromListing(): Promise<HashnodePost[]> {
+  const result: HashnodePost[] = [];
+  let after: string | null = null;
+
   do {
-    const res = await fetch("https://gql.hashnode.com", {
+    const res = await fetch(HASHNODE_GQL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        query,
+        query: listingQuery,
         variables: { host: HASHNODE_HOST, first: 20, after },
       }),
     });
@@ -74,18 +82,95 @@ try {
 
     const json = (await res.json()) as HashnodeResponse;
     const { edges, pageInfo } = json.data.publication.posts;
-
-    for (const edge of edges) {
-      posts.push(edge.node);
-    }
-
+    for (const edge of edges) result.push(edge.node);
     after = pageInfo.hasNextPage ? pageInfo.endCursor : null;
   } while (after);
+
+  return result;
+}
+
+// Fetch a single post by slug (reliable even when listing is broken)
+async function fetchPostBySlug(slug: string): Promise<HashnodePost | null> {
+  try {
+    const res = await fetch(HASHNODE_GQL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        query: singlePostQuery,
+        variables: { host: HASHNODE_HOST, slug },
+      }),
+    });
+    if (!res.ok) return null;
+    const json = await res.json();
+    return json.data?.publication?.post ?? null;
+  } catch {
+    return null;
+  }
+}
+
+// Load known slugs from both the live site and local file, merge them
+async function loadKnownSlugs(): Promise<string[]> {
+  const allSlugs = new Set<string>();
+
+  // 1. Try live site (from previous deployment)
+  try {
+    const res = await fetch(`${LIVE_SITE}/blog-slugs.json`);
+    if (res.ok) {
+      const slugs = await res.json();
+      if (Array.isArray(slugs)) slugs.forEach((s: string) => allSlugs.add(s));
+    }
+  } catch {}
+
+  // 2. Try local file (seeded in repo or from previous local build)
+  try {
+    const { readFileSync } = await import("node:fs");
+    const { join } = await import("node:path");
+    const local = JSON.parse(readFileSync(join(process.cwd(), "public", "blog-slugs.json"), "utf-8"));
+    if (Array.isArray(local)) local.forEach((s: string) => allSlugs.add(s));
+  } catch {}
+
+  return [...allSlugs];
+}
+
+// ── Fetch with fallback for missing articles ────────────────────────────────
+let posts: HashnodePost[] = [];
+
+try {
+  const [listingPosts, knownSlugs] = await Promise.all([
+    fetchPostsFromListing(),
+    loadKnownSlugs(),
+  ]);
+
+  const listingSlugs = new Set(listingPosts.map((p) => p.slug));
+  const missingSlugs = knownSlugs.filter((s) => !listingSlugs.has(s));
+
+  console.log(`[blog] Listing returned ${listingPosts.length} articles`);
+  if (missingSlugs.length > 0) {
+    console.log(`[blog] ${missingSlugs.length} known articles missing from listing, fetching individually: ${missingSlugs.join(", ")}`);
+  }
+
+  // Fetch missing articles individually by slug
+  const recovered = await Promise.all(missingSlugs.map(fetchPostBySlug));
+  const recoveredPosts = recovered.filter((p): p is HashnodePost => p !== null);
+
+  if (recoveredPosts.length > 0) {
+    console.log(`[blog] Recovered ${recoveredPosts.length} articles via individual slug queries`);
+  }
+
+  posts = [...listingPosts, ...recoveredPosts];
+  console.log(`[blog] Total: ${posts.length} articles for build`);
 } catch (e) {
   console.error("Failed to fetch Hashnode posts:", e);
 }
 
-console.log(`[blog] Fetched ${posts.length} articles from Hashnode:`, posts.map(p => p.title));
+// Write current slugs so the next build can recover missing articles
+if (posts.length > 0) {
+  const { writeFileSync } = await import("node:fs");
+  const { join } = await import("node:path");
+  const slugsPath = join(process.cwd(), "public", "blog-slugs.json");
+  writeFileSync(slugsPath, JSON.stringify(posts.map((p) => p.slug), null, 2));
+  console.log(`[blog] Saved ${posts.length} slugs to public/blog-slugs.json`);
+}
 
 posts.sort(
   (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()

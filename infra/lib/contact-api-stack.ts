@@ -918,7 +918,7 @@ export class ContactApiStack extends cdk.Stack {
         runtime: lambda.Runtime.NODEJS_22_X,
         architecture: lambda.Architecture.ARM_64,
         memorySize: 128,
-        timeout: cdk.Duration.seconds(10),
+        timeout: cdk.Duration.minutes(6),
         entry: path.join(
           __dirname,
           "..",
@@ -936,6 +936,7 @@ export class ContactApiStack extends cdk.Stack {
           GITHUB_REPO:
             "creative-it-Software-Consulting-e-U/website-creative-it.com",
           WEBHOOK_SECRET: process.env.WEBHOOK_SECRET ?? "changeme",
+          HASHNODE_HOST: "buildgrowmatter.hashnode.dev",
         },
       }
     );

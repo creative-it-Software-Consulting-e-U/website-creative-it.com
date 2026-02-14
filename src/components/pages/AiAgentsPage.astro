@@ -263,7 +263,6 @@ const p = config.pages.aiAgents;
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-amz-content-sha256': await (window as any).sha256Hex(body),
         },
         body,
       });

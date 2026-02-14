@@ -189,7 +189,6 @@ const remixHowItWorksPath = localePath('/how-it-works#website-remix', locale);
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-amz-content-sha256': await (window as any).sha256Hex(body),
         },
         body,
       });

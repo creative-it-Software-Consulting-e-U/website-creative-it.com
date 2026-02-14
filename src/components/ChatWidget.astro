@@ -295,7 +295,6 @@ const chatContactPath = localePath('/contact', locale);
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-amz-content-sha256': await (window as any).sha256Hex(body),
         },
         body,
       });

@@ -216,16 +216,16 @@ export class ContactApiStack extends cdk.Stack {
       }
     );
 
-    // Function URL with response streaming
-    // CORS on Function URL handles preflight (OPTIONS) automatically.
-    // Lambda must NOT set Access-Control-Allow-Origin to avoid duplicates.
+    // Function URL with response streaming.
+    // AuthType NONE: security is handled by CloudFront (sole entry point),
+    // in-Lambda rate limiting (DynamoDB), CORS origin validation, and WAF.
     const aiPlaygroundUrl = aiPlaygroundHandler.addFunctionUrl({
-      authType: lambda.FunctionUrlAuthType.AWS_IAM,
+      authType: lambda.FunctionUrlAuthType.NONE,
       invokeMode: lambda.InvokeMode.RESPONSE_STREAM,
       cors: {
         allowedOrigins: config.allowedOrigins,
         allowedMethods: [lambda.HttpMethod.POST],
-        allowedHeaders: ["Content-Type", "x-amz-content-sha256"],
+        allowedHeaders: ["Content-Type"],
         exposedHeaders: ["X-Remaining-Requests"],
         maxAge: cdk.Duration.hours(1),
       },
@@ -340,12 +340,12 @@ export class ContactApiStack extends cdk.Stack {
     );
 
     const techAdvisorUrl = techAdvisorHandler.addFunctionUrl({
-      authType: lambda.FunctionUrlAuthType.AWS_IAM,
+      authType: lambda.FunctionUrlAuthType.NONE,
       invokeMode: lambda.InvokeMode.RESPONSE_STREAM,
       cors: {
         allowedOrigins: config.allowedOrigins,
         allowedMethods: [lambda.HttpMethod.POST],
-        allowedHeaders: ["Content-Type", "x-amz-content-sha256"],
+        allowedHeaders: ["Content-Type"],
         exposedHeaders: ["X-Remaining-Requests"],
         maxAge: cdk.Duration.hours(1),
       },
@@ -406,12 +406,12 @@ export class ContactApiStack extends cdk.Stack {
     );
 
     const websiteRemixUrl = websiteRemixHandler.addFunctionUrl({
-      authType: lambda.FunctionUrlAuthType.AWS_IAM,
+      authType: lambda.FunctionUrlAuthType.NONE,
       invokeMode: lambda.InvokeMode.RESPONSE_STREAM,
       cors: {
         allowedOrigins: config.allowedOrigins,
         allowedMethods: [lambda.HttpMethod.POST],
-        allowedHeaders: ["Content-Type", "x-amz-content-sha256"],
+        allowedHeaders: ["Content-Type"],
         exposedHeaders: ["X-Remaining-Requests"],
         maxAge: cdk.Duration.hours(1),
       },
@@ -472,12 +472,12 @@ export class ContactApiStack extends cdk.Stack {
     );
 
     const liveTranslationUrl = liveTranslationHandler.addFunctionUrl({
-      authType: lambda.FunctionUrlAuthType.AWS_IAM,
+      authType: lambda.FunctionUrlAuthType.NONE,
       invokeMode: lambda.InvokeMode.RESPONSE_STREAM,
       cors: {
         allowedOrigins: config.allowedOrigins,
         allowedMethods: [lambda.HttpMethod.POST],
-        allowedHeaders: ["Content-Type", "x-amz-content-sha256"],
+        allowedHeaders: ["Content-Type"],
         exposedHeaders: ["X-Remaining-Requests"],
         maxAge: cdk.Duration.hours(1),
       },
@@ -538,12 +538,12 @@ export class ContactApiStack extends cdk.Stack {
     );
 
     const agentVisualizerUrl = agentVisualizerHandler.addFunctionUrl({
-      authType: lambda.FunctionUrlAuthType.AWS_IAM,
+      authType: lambda.FunctionUrlAuthType.NONE,
       invokeMode: lambda.InvokeMode.RESPONSE_STREAM,
       cors: {
         allowedOrigins: config.allowedOrigins,
         allowedMethods: [lambda.HttpMethod.POST],
-        allowedHeaders: ["Content-Type", "x-amz-content-sha256"],
+        allowedHeaders: ["Content-Type"],
         exposedHeaders: ["X-Remaining-Requests"],
         maxAge: cdk.Duration.hours(1),
       },
@@ -860,12 +860,12 @@ export class ContactApiStack extends cdk.Stack {
     );
 
     const knowledgeBotUrl = knowledgeBotHandler.addFunctionUrl({
-      authType: lambda.FunctionUrlAuthType.AWS_IAM,
+      authType: lambda.FunctionUrlAuthType.NONE,
       invokeMode: lambda.InvokeMode.RESPONSE_STREAM,
       cors: {
         allowedOrigins: config.allowedOrigins,
         allowedMethods: [lambda.HttpMethod.POST],
-        allowedHeaders: ["Content-Type", "x-amz-content-sha256"],
+        allowedHeaders: ["Content-Type"],
         exposedHeaders: ["X-Remaining-Requests", "X-Session-Id"],
         maxAge: cdk.Duration.hours(1),
       },
@@ -993,17 +993,6 @@ export class ContactApiStack extends cdk.Stack {
       }
     );
 
-    // Origin Access Control for Lambda Function URLs (L2 construct).
-    // Name is auto-generated to avoid conflicts during CloudFormation
-    // replacement of the old CfnOriginAccessControl resource.
-    const lambdaOac = new cloudfront.FunctionUrlOriginAccessControl(
-      this,
-      "LambdaFunctionUrlOac",
-      {
-        signing: cloudfront.Signing.SIGV4_ALWAYS,
-      }
-    );
-
     // CloudFront Function (viewer-request): intercept OPTIONS preflight
     // and return 204 with CORS headers directly at the edge.
     // Lambda Function URLs with IAM auth (OAC) return 403
@@ -1028,7 +1017,7 @@ function handler(event) {
       headers: {
         'access-control-allow-origin': { value: allowOrigin },
         'access-control-allow-methods': { value: 'POST,OPTIONS' },
-        'access-control-allow-headers': { value: 'content-type,x-amz-content-sha256' },
+        'access-control-allow-headers': { value: 'content-type' },
         'access-control-expose-headers': { value: 'x-remaining-requests,x-session-id' },
         'access-control-max-age': { value: '3600' },
         'vary': { value: 'Origin' },
@@ -1091,11 +1080,10 @@ function handler(event) {
       ],
     };
 
-    // Helper: wrap a Function URL in an OAC-signed origin
-    const oacOrigin = (url: lambda.IFunctionUrl) =>
-      origins.FunctionUrlOrigin.withOriginAccessControl(url, {
-        originAccessControl: lambdaOac,
-      });
+    // Helper: wrap a Function URL in a CloudFront origin (no OAC needed
+    // since Function URLs use AuthType NONE).
+    const fnOrigin = (url: lambda.IFunctionUrl) =>
+      new origins.FunctionUrlOrigin(url);
 
     // CloudFront Distribution with path-based routing to each Lambda
     const aiDistribution = new cloudfront.Distribution(
@@ -1106,50 +1094,33 @@ function handler(event) {
         certificate: cfCertificate,
         webAclId: config.webAclArn,
         defaultBehavior: {
-          origin: oacOrigin(aiPlaygroundUrl),
+          origin: fnOrigin(aiPlaygroundUrl),
           ...aiBehaviorDefaults,
         },
         additionalBehaviors: {
           "/tech-advisor": {
-            origin: oacOrigin(techAdvisorUrl),
+            origin: fnOrigin(techAdvisorUrl),
             ...aiBehaviorDefaults,
           },
           "/knowledge-bot": {
-            origin: oacOrigin(knowledgeBotUrl),
+            origin: fnOrigin(knowledgeBotUrl),
             ...aiBehaviorDefaults,
           },
           "/agent-visualizer": {
-            origin: oacOrigin(agentVisualizerUrl),
+            origin: fnOrigin(agentVisualizerUrl),
             ...aiBehaviorDefaults,
           },
           "/website-remix": {
-            origin: oacOrigin(websiteRemixUrl),
+            origin: fnOrigin(websiteRemixUrl),
             ...aiBehaviorDefaults,
           },
           "/live-translation": {
-            origin: oacOrigin(liveTranslationUrl),
+            origin: fnOrigin(liveTranslationUrl),
             ...aiBehaviorDefaults,
           },
         },
       }
     );
-
-    // Grant CloudFront permission to invoke all Lambda Function URLs
-    const cfDistArn = `arn:aws:cloudfront::${this.account}:distribution/${aiDistribution.distributionId}`;
-    for (const fn of [
-      aiPlaygroundHandler,
-      techAdvisorHandler,
-      knowledgeBotHandler,
-      agentVisualizerHandler,
-      websiteRemixHandler,
-      liveTranslationHandler,
-    ]) {
-      fn.addPermission("AllowCloudFrontInvoke", {
-        principal: new iam.ServicePrincipal("cloudfront.amazonaws.com"),
-        action: "lambda:InvokeFunctionUrl",
-        sourceArn: cfDistArn,
-      });
-    }
 
     // Route53 A record for ai.<domain> → CloudFront
     new route53.ARecord(this, "AiARecord", {

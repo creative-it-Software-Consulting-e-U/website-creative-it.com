@@ -1026,12 +1026,55 @@ export class ContactApiStack extends cdk.Stack {
       }
     );
 
+    // CloudFront Function to handle CORS preflight (OPTIONS) at the edge.
+    // Lambda Function URLs with IAM auth (OAC) return 403
+    // AccessDeniedException for OPTIONS because the OAC-signed preflight
+    // bypasses Lambda's built-in CORS handler.  Intercepting OPTIONS here
+    // avoids the round-trip to Lambda entirely.
+    const corsPreflightFunction = new cloudfront.Function(
+      this,
+      "CorsPreflightFunction",
+      {
+        functionName: `${config.envName}-cors-preflight`,
+        runtime: cloudfront.FunctionRuntime.JS_2_0,
+        code: cloudfront.FunctionCode.fromInline(`
+function handler(event) {
+  var request = event.request;
+  if (request.method === 'OPTIONS') {
+    var allowedOrigins = ${JSON.stringify(config.allowedOrigins)};
+    var origin = request.headers.origin ? request.headers.origin.value : '';
+    var allowOrigin = allowedOrigins.indexOf(origin) >= 0 ? origin : '';
+    return {
+      statusCode: 204,
+      statusDescription: 'No Content',
+      headers: {
+        'access-control-allow-origin': { value: allowOrigin },
+        'access-control-allow-methods': { value: 'POST,OPTIONS' },
+        'access-control-allow-headers': { value: 'content-type' },
+        'access-control-expose-headers': { value: 'x-remaining-requests,x-session-id' },
+        'access-control-max-age': { value: '3600' },
+        'vary': { value: 'Origin' },
+      },
+    };
+  }
+  return request;
+}
+        `),
+      }
+    );
+
     // Shared behavior config for all AI tool origins.
     const aiBehaviorDefaults = {
       allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
       cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
       viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.HTTPS_ONLY,
       originRequestPolicy: corsOriginRequestPolicy,
+      functionAssociations: [
+        {
+          function: corsPreflightFunction,
+          eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,
+        },
+      ],
     };
 
     // CloudFront Distribution with path-based routing to each Lambda

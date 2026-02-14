@@ -999,17 +999,12 @@ export class ContactApiStack extends cdk.Stack {
       }
     );
 
-    // Managed origin request policy: forwards all viewer headers (incl.
-    // Content-Type, X-Forwarded-For) except Host.
-    // Must use managed policy — custom policies are not allowed on flat-rate plans.
-    const aiOriginRequestPolicy =
-      cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER;
-
-    // Shared behavior config for all AI tool origins
+    // Shared behavior config for all AI tool origins.
+    // No origin request policy — OAC (SigV4) signing breaks when extra
+    // headers are forwarded (InvalidSignatureException).
     const aiBehaviorDefaults = {
       allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
       cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
-      originRequestPolicy: aiOriginRequestPolicy,
       viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.HTTPS_ONLY,
     };
 

@@ -223,7 +223,7 @@ export class ContactApiStack extends cdk.Stack {
       invokeMode: lambda.InvokeMode.RESPONSE_STREAM,
       cors: {
         allowedOrigins: config.allowedOrigins,
-        allowedMethods: [lambda.HttpMethod.POST],
+        allowedMethods: [lambda.HttpMethod.POST, lambda.HttpMethod.OPTIONS],
         allowedHeaders: ["Content-Type"],
         exposedHeaders: ["X-Remaining-Requests"],
         maxAge: cdk.Duration.hours(1),
@@ -342,7 +342,7 @@ export class ContactApiStack extends cdk.Stack {
       invokeMode: lambda.InvokeMode.RESPONSE_STREAM,
       cors: {
         allowedOrigins: config.allowedOrigins,
-        allowedMethods: [lambda.HttpMethod.POST],
+        allowedMethods: [lambda.HttpMethod.POST, lambda.HttpMethod.OPTIONS],
         allowedHeaders: ["Content-Type"],
         exposedHeaders: ["X-Remaining-Requests"],
         maxAge: cdk.Duration.hours(1),
@@ -407,7 +407,7 @@ export class ContactApiStack extends cdk.Stack {
       invokeMode: lambda.InvokeMode.RESPONSE_STREAM,
       cors: {
         allowedOrigins: config.allowedOrigins,
-        allowedMethods: [lambda.HttpMethod.POST],
+        allowedMethods: [lambda.HttpMethod.POST, lambda.HttpMethod.OPTIONS],
         allowedHeaders: ["Content-Type"],
         exposedHeaders: ["X-Remaining-Requests"],
         maxAge: cdk.Duration.hours(1),
@@ -472,7 +472,7 @@ export class ContactApiStack extends cdk.Stack {
       invokeMode: lambda.InvokeMode.RESPONSE_STREAM,
       cors: {
         allowedOrigins: config.allowedOrigins,
-        allowedMethods: [lambda.HttpMethod.POST],
+        allowedMethods: [lambda.HttpMethod.POST, lambda.HttpMethod.OPTIONS],
         allowedHeaders: ["Content-Type"],
         exposedHeaders: ["X-Remaining-Requests"],
         maxAge: cdk.Duration.hours(1),
@@ -537,7 +537,7 @@ export class ContactApiStack extends cdk.Stack {
       invokeMode: lambda.InvokeMode.RESPONSE_STREAM,
       cors: {
         allowedOrigins: config.allowedOrigins,
-        allowedMethods: [lambda.HttpMethod.POST],
+        allowedMethods: [lambda.HttpMethod.POST, lambda.HttpMethod.OPTIONS],
         allowedHeaders: ["Content-Type"],
         exposedHeaders: ["X-Remaining-Requests"],
         maxAge: cdk.Duration.hours(1),
@@ -858,7 +858,7 @@ export class ContactApiStack extends cdk.Stack {
       invokeMode: lambda.InvokeMode.RESPONSE_STREAM,
       cors: {
         allowedOrigins: config.allowedOrigins,
-        allowedMethods: [lambda.HttpMethod.POST],
+        allowedMethods: [lambda.HttpMethod.POST, lambda.HttpMethod.OPTIONS],
         allowedHeaders: ["Content-Type"],
         exposedHeaders: ["X-Remaining-Requests", "X-Session-Id"],
         maxAge: cdk.Duration.hours(1),

@@ -529,5 +529,15 @@ const jsonLd = {
         })();
       </script>
     )}
+    <script is:inline>
+      // Utility for CloudFront OAC: Lambda Function URLs require the client
+      // to provide x-amz-content-sha256 for POST requests because CloudFront
+      // does not sign the request body.
+      window.sha256Hex = async function(message) {
+        var data = new TextEncoder().encode(message);
+        var buf = await crypto.subtle.digest('SHA-256', data);
+        return Array.from(new Uint8Array(buf)).map(function(b) { return b.toString(16).padStart(2, '0'); }).join('');
+      };
+    </script>
   </body>
 </html>

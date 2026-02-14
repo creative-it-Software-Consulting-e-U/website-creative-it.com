@@ -258,10 +258,14 @@ const p = config.pages.aiAgents;
     });
 
     try {
+      const body = JSON.stringify({ scenario });
       const res = await fetch(API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ scenario }),
+        headers: {
+          'Content-Type': 'application/json',
+          'x-amz-content-sha256': await (window as any).sha256Hex(body),
+        },
+        body,
       });
 
       const remaining = res.headers.get('X-Remaining-Requests');

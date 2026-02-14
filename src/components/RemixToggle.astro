@@ -184,10 +184,14 @@ const remixHowItWorksPath = localePath('/how-it-works#website-remix', locale);
     remixStatus.textContent = 'Generating theme...';
 
     try {
+      const body = JSON.stringify({ prompt });
       const res = await fetch(REMIX_API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt }),
+        headers: {
+          'Content-Type': 'application/json',
+          'x-amz-content-sha256': await (window as any).sha256Hex(body),
+        },
+        body,
       });
 
       if (!res.ok) {

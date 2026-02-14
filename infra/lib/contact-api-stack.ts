@@ -225,7 +225,7 @@ export class ContactApiStack extends cdk.Stack {
       cors: {
         allowedOrigins: config.allowedOrigins,
         allowedMethods: [lambda.HttpMethod.POST],
-        allowedHeaders: ["Content-Type"],
+        allowedHeaders: ["Content-Type", "x-amz-content-sha256"],
         exposedHeaders: ["X-Remaining-Requests"],
         maxAge: cdk.Duration.hours(1),
       },
@@ -345,7 +345,7 @@ export class ContactApiStack extends cdk.Stack {
       cors: {
         allowedOrigins: config.allowedOrigins,
         allowedMethods: [lambda.HttpMethod.POST],
-        allowedHeaders: ["Content-Type"],
+        allowedHeaders: ["Content-Type", "x-amz-content-sha256"],
         exposedHeaders: ["X-Remaining-Requests"],
         maxAge: cdk.Duration.hours(1),
       },
@@ -411,7 +411,7 @@ export class ContactApiStack extends cdk.Stack {
       cors: {
         allowedOrigins: config.allowedOrigins,
         allowedMethods: [lambda.HttpMethod.POST],
-        allowedHeaders: ["Content-Type"],
+        allowedHeaders: ["Content-Type", "x-amz-content-sha256"],
         exposedHeaders: ["X-Remaining-Requests"],
         maxAge: cdk.Duration.hours(1),
       },
@@ -477,7 +477,7 @@ export class ContactApiStack extends cdk.Stack {
       cors: {
         allowedOrigins: config.allowedOrigins,
         allowedMethods: [lambda.HttpMethod.POST],
-        allowedHeaders: ["Content-Type"],
+        allowedHeaders: ["Content-Type", "x-amz-content-sha256"],
         exposedHeaders: ["X-Remaining-Requests"],
         maxAge: cdk.Duration.hours(1),
       },
@@ -543,7 +543,7 @@ export class ContactApiStack extends cdk.Stack {
       cors: {
         allowedOrigins: config.allowedOrigins,
         allowedMethods: [lambda.HttpMethod.POST],
-        allowedHeaders: ["Content-Type"],
+        allowedHeaders: ["Content-Type", "x-amz-content-sha256"],
         exposedHeaders: ["X-Remaining-Requests"],
         maxAge: cdk.Duration.hours(1),
       },
@@ -865,7 +865,7 @@ export class ContactApiStack extends cdk.Stack {
       cors: {
         allowedOrigins: config.allowedOrigins,
         allowedMethods: [lambda.HttpMethod.POST],
-        allowedHeaders: ["Content-Type"],
+        allowedHeaders: ["Content-Type", "x-amz-content-sha256"],
         exposedHeaders: ["X-Remaining-Requests", "X-Session-Id"],
         maxAge: cdk.Duration.hours(1),
       },
@@ -1028,7 +1028,7 @@ function handler(event) {
       headers: {
         'access-control-allow-origin': { value: allowOrigin },
         'access-control-allow-methods': { value: 'POST,OPTIONS' },
-        'access-control-allow-headers': { value: 'content-type' },
+        'access-control-allow-headers': { value: 'content-type,x-amz-content-sha256' },
         'access-control-expose-headers': { value: 'x-remaining-requests,x-session-id' },
         'access-control-max-age': { value: '3600' },
         'vary': { value: 'Origin' },
@@ -1061,7 +1061,7 @@ function handler(event) {
   if (allowedOrigins.indexOf(origin) >= 0) {
     response.headers['access-control-allow-origin'] = { value: origin };
     response.headers['access-control-allow-methods'] = { value: 'POST,OPTIONS' };
-    response.headers['access-control-allow-headers'] = { value: 'content-type' };
+    response.headers['access-control-allow-headers'] = { value: 'content-type,x-amz-content-sha256' };
     response.headers['access-control-expose-headers'] = { value: 'x-remaining-requests,x-session-id' };
     response.headers['vary'] = { value: 'Origin' };
   }

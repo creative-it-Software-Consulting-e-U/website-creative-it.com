@@ -134,25 +134,6 @@ const LISTING_QUERY = `
   }
 `;
 
-const SINGLE_POST_QUERY = `
-  query Post($host: String!, $slug: String!) {
-    publication(host: $host) {
-      post(slug: $slug) {
-        id
-        title
-        slug
-        brief
-        content { markdown }
-        tags { name }
-        publishedAt
-        url
-        coverImage { url }
-        readTimeInMinutes
-      }
-    }
-  }
-`;
-
 const POST_BY_ID_QUERY = `
   query PostById($id: ID!) {
     post(id: $id) {
@@ -201,24 +182,6 @@ async function fetchPostsFromListing(): Promise<HashnodePost[]> {
   } while (after);
 
   return allPosts;
-}
-
-async function fetchPostBySlug(slug: string): Promise<HashnodePost | null> {
-  try {
-    const res = await fetch("https://gql.hashnode.com", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        query: SINGLE_POST_QUERY,
-        variables: { host: HASHNODE_HOST, slug },
-      }),
-    });
-    if (!res.ok) return null;
-    const json = await res.json();
-    return json.data?.publication?.post ?? null;
-  } catch {
-    return null;
-  }
 }
 
 async function fetchPostById(id: string): Promise<HashnodePost | null> {
@@ -524,28 +487,32 @@ async function handleScheduledSync() {
 
   const listingSlugs = new Set(listingPosts.map((p) => p.slug));
 
-  // Find articles in DynamoDB but not in listing → try slug recovery
-  const missingSlugs = knownArticles
-    .filter((a) => !listingSlugs.has(a.slug))
-    .map((a) => a.slug);
+  // Find articles in DynamoDB but not in listing.
+  // The listing API can be stale (CDN cache), so only delete an article
+  // when both the listing AND a direct ID query confirm it's gone.
+  const missingArticles = knownArticles.filter(
+    (a) => !listingSlugs.has(a.slug)
+  );
 
-  if (missingSlugs.length > 0) {
+  if (missingArticles.length > 0) {
     console.log(
-      `${missingSlugs.length} known articles missing from listing, recovering: ${missingSlugs.join(", ")}`
+      `${missingArticles.length} known articles missing from listing, verifying by ID: ${missingArticles.map((a) => a.slug).join(", ")}`
     );
-    const recovered = await Promise.all(missingSlugs.map(fetchPostBySlug));
-    for (let i = 0; i < missingSlugs.length; i++) {
-      if (recovered[i]) {
-        console.log(`Recovered: ${missingSlugs[i]}`);
-        listingPosts.push(recovered[i]!);
+    const verified = await Promise.all(
+      missingArticles.map((a) => fetchPostById(a.hashnodeId))
+    );
+    for (let i = 0; i < missingArticles.length; i++) {
+      if (verified[i]) {
+        console.log(`Still exists (listing stale): ${missingArticles[i].slug}`);
+        listingPosts.push(verified[i]!);
       } else {
-        // Truly deleted from Hashnode
-        console.log(`Truly deleted: ${missingSlugs[i]}`);
+        // Both listing and ID query confirm deletion
+        console.log(`Confirmed deleted: ${missingArticles[i].slug}`);
         await Promise.all([
-          deleteArticle(missingSlugs[i]),
-          deleteArticleFromS3(missingSlugs[i]),
+          deleteArticle(missingArticles[i].slug),
+          deleteArticleFromS3(missingArticles[i].slug),
         ]);
-        knownBySlug.delete(missingSlugs[i]);
+        knownBySlug.delete(missingArticles[i].slug);
       }
     }
   }

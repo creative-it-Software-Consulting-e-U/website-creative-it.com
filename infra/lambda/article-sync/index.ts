@@ -153,6 +153,23 @@ const SINGLE_POST_QUERY = `
   }
 `;
 
+const POST_BY_ID_QUERY = `
+  query PostById($id: ID!) {
+    post(id: $id) {
+      id
+      title
+      slug
+      brief
+      content { markdown }
+      tags { name }
+      publishedAt
+      url
+      coverImage { url }
+      readTimeInMinutes
+    }
+  }
+`;
+
 async function fetchPostsFromListing(): Promise<HashnodePost[]> {
   const allPosts: HashnodePost[] = [];
   let after: string | null = null;
@@ -199,6 +216,24 @@ async function fetchPostBySlug(slug: string): Promise<HashnodePost | null> {
     if (!res.ok) return null;
     const json = await res.json();
     return json.data?.publication?.post ?? null;
+  } catch {
+    return null;
+  }
+}
+
+async function fetchPostById(id: string): Promise<HashnodePost | null> {
+  try {
+    const res = await fetch("https://gql.hashnode.com", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        query: POST_BY_ID_QUERY,
+        variables: { id },
+      }),
+    });
+    if (!res.ok) return null;
+    const json = await res.json();
+    return json.data?.post ?? null;
   } catch {
     return null;
   }
@@ -443,42 +478,21 @@ async function handleWebhook(event: ApiGatewayEvent) {
     }
   } else {
     // ── Publish / Update ──
-    let slug: string | null = null;
+    // Fetch post directly by ID (avoids race condition where the
+    // listing API hasn't indexed the new article yet).
+    console.log(`Fetching post by ID: ${postId}`);
+    const post = await fetchPostById(postId);
 
-    // Check if we already know this article
-    const existing = await findArticleByHashnodeId(postId);
-    if (existing) {
-      slug = existing.slug;
-      console.log(`Known article, slug: ${slug}`);
-    } else {
-      // New article: fetch listing to find the ID → slug mapping
-      console.log("New article, fetching listing to find slug...");
-      const posts = await fetchPostsFromListing();
-      const match = posts.find((p) => p.id === postId);
-      if (match) {
-        slug = match.slug;
-        console.log(`Found new article in listing: ${slug}`);
-      }
-    }
-
-    if (!slug) {
-      console.warn(`Could not resolve slug for postId ${postId}`);
-      // Still trigger rebuild in case listing catches up
-      await triggerGitHubDispatch(eventType ?? "unknown", postId);
-      return { statusCode: 200, body: "Slug not found, rebuild triggered" };
-    }
-
-    // Fetch full article by slug (reliable)
-    const post = await fetchPostBySlug(slug);
     if (!post) {
-      console.error(`Failed to fetch article by slug: ${slug}`);
+      console.error(`Failed to fetch post by ID: ${postId}`);
       await triggerGitHubDispatch(eventType ?? "unknown", postId);
-      return { statusCode: 200, body: "Fetch failed, rebuild triggered" };
+      return { statusCode: 200, body: "Post not found, rebuild triggered" };
     }
 
+    console.log(`Fetched article: ${post.slug}`);
     const article = hashnodePostToArticle(post);
     await Promise.all([putArticle(article), writeArticleToS3(article)]);
-    console.log(`Saved article: ${slug}`);
+    console.log(`Saved article: ${post.slug}`);
   }
 
   // Regenerate index in S3

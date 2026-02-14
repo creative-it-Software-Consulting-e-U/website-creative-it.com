@@ -999,21 +999,15 @@ export class ContactApiStack extends cdk.Stack {
       }
     );
 
-    // Origin request policy: forward Content-Type + viewer IP
-    const aiOriginRequestPolicy = new cloudfront.OriginRequestPolicy(
-      this,
-      "AiOriginRequestPolicy",
-      {
-        originRequestPolicyName: `ai-origin-policy-${config.envName}`,
-        headerBehavior: cloudfront.OriginRequestHeaderBehavior.allowList(
-          "Content-Type",
-          "CloudFront-Viewer-Address"
-        ),
-        queryStringBehavior:
-          cloudfront.OriginRequestQueryStringBehavior.none(),
-        cookieBehavior: cloudfront.OriginRequestCookieBehavior.none(),
-      }
-    );
+    // Managed origin request policy: forwards all viewer headers + CloudFront
+    // headers (incl. CloudFront-Viewer-Address for rate limiting).
+    // Must use managed policy — custom policies are not allowed on flat-rate plans.
+    const aiOriginRequestPolicy =
+      cloudfront.OriginRequestPolicy.fromOriginRequestPolicyId(
+        this,
+        "AllViewerAndCfHeaders",
+        "33f36d7e-f396-46d9-986e-6a808f70ae6f" // AllViewerAndCloudFrontHeaders-2022-06
+      );
 
     // Shared behavior config for all AI tool origins
     const aiBehaviorDefaults = {

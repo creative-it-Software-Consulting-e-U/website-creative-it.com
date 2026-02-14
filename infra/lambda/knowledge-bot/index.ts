@@ -173,6 +173,11 @@ export const handler = awslambda.streamifyResponse(
           knowledgeBaseConfiguration: {
             knowledgeBaseId: KNOWLEDGE_BASE_ID,
             modelArn: MODEL_ARN,
+            retrievalConfiguration: {
+              vectorSearchConfiguration: {
+                numberOfResults: 10,
+              },
+            },
             generationConfiguration: {
               promptTemplate: {
                 textPromptTemplate: `You are a helpful AI assistant for creative-it, a software consulting company based in Austria. Answer questions about the company using the provided context.

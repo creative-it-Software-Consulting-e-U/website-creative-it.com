@@ -212,6 +212,7 @@ async function getAllArticles(): Promise<BlogArticle[]> {
     const result = await ddb.send(
       new DocScanCommand({
         TableName: TABLE_NAME,
+        ConsistentRead: true,
         ExclusiveStartKey: lastKey,
       })
     );
@@ -458,8 +459,16 @@ async function handleWebhook(event: ApiGatewayEvent) {
     console.log(`Saved article: ${post.slug}`);
   }
 
-  // Regenerate index in S3
+  // Regenerate index in S3 (use consistent read + merge to guard against
+  // eventual-consistency lag after the PutCommand above)
   const allArticles = await getAllArticles();
+  if (eventType !== "post_deleted" && postId) {
+    const justWritten = allArticles.find((a) => a.hashnodeId === postId);
+    if (!justWritten) {
+      const post = await fetchPostById(postId);
+      if (post) allArticles.push(hashnodePostToArticle(post));
+    }
+  }
   await writeIndexToS3(allArticles);
 
   // Trigger KB ingestion and GitHub dispatch

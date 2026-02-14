@@ -1007,25 +1007,6 @@ export class ContactApiStack extends cdk.Stack {
       }
     );
 
-    // Custom origin request policy that forwards only the three CORS
-    // preflight headers.  The managed ALL_VIEWER_EXCEPT_HOST_HEADER policy
-    // caused InvalidSignatureException with OAC because it forwarded too
-    // many viewer headers.  Forwarding only these keeps SigV4 intact while
-    // letting the Lambda Function URL CORS handler see the Origin.
-    const corsOriginRequestPolicy = new cloudfront.OriginRequestPolicy(
-      this,
-      "CorsOriginRequestPolicy",
-      {
-        originRequestPolicyName: `${config.envName}-cors-headers-only`,
-        headerBehavior:
-          cloudfront.OriginRequestHeaderBehavior.allowList(
-            "Origin",
-            "Access-Control-Request-Method",
-            "Access-Control-Request-Headers"
-          ),
-      }
-    );
-
     // CloudFront Function to handle CORS preflight (OPTIONS) at the edge.
     // Lambda Function URLs with IAM auth (OAC) return 403
     // AccessDeniedException for OPTIONS because the OAC-signed preflight
@@ -1063,12 +1044,40 @@ function handler(event) {
       }
     );
 
+    // Response headers policy to add CORS headers to POST responses.
+    // We cannot use a custom origin request policy to forward the Origin
+    // header because the CloudFront Pro pricing plan forbids custom origin
+    // request policies.  Instead, CloudFront adds CORS headers itself,
+    // based on the viewer's Origin header, overriding whatever Lambda
+    // (or its Function URL CORS config) returns.
+    const corsResponseHeadersPolicy = new cloudfront.ResponseHeadersPolicy(
+      this,
+      "CorsResponseHeadersPolicy",
+      {
+        responseHeadersPolicyName: `${config.envName}-ai-cors`,
+        corsBehavior: {
+          accessControlAllowOrigins: config.allowedOrigins,
+          accessControlAllowMethods: ["POST", "OPTIONS"],
+          accessControlAllowHeaders: ["Content-Type"],
+          accessControlExposeHeaders: [
+            "X-Remaining-Requests",
+            "X-Session-Id",
+          ],
+          accessControlMaxAge: cdk.Duration.hours(1),
+          accessControlAllowCredentials: false,
+          originOverride: true,
+        },
+      }
+    );
+
     // Shared behavior config for all AI tool origins.
+    // No origin request policy — the Pro pricing plan forbids custom ones,
+    // and managed ones (ALL_VIEWER_EXCEPT_HOST_HEADER) break OAC SigV4.
     const aiBehaviorDefaults = {
       allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
       cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
       viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.HTTPS_ONLY,
-      originRequestPolicy: corsOriginRequestPolicy,
+      responseHeadersPolicy: corsResponseHeadersPolicy,
       functionAssociations: [
         {
           function: corsPreflightFunction,

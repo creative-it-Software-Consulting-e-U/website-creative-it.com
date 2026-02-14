@@ -999,15 +999,11 @@ export class ContactApiStack extends cdk.Stack {
       }
     );
 
-    // Managed origin request policy: forwards all viewer headers + CloudFront
-    // headers (incl. CloudFront-Viewer-Address for rate limiting).
+    // Managed origin request policy: forwards all viewer headers (incl.
+    // Content-Type, X-Forwarded-For) except Host.
     // Must use managed policy — custom policies are not allowed on flat-rate plans.
     const aiOriginRequestPolicy =
-      cloudfront.OriginRequestPolicy.fromOriginRequestPolicyId(
-        this,
-        "AllViewerAndCfHeaders",
-        "33f36d7e-f396-46d9-986e-6a808f70ae6f" // AllViewerAndCloudFrontHeaders-2022-06
-      );
+      cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER;
 
     // Shared behavior config for all AI tool origins
     const aiBehaviorDefaults = {

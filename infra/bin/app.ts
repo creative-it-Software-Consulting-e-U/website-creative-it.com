@@ -29,6 +29,8 @@ const ENV_CONFIGS: Record<string, EnvConfig> = {
       "https://hp.gw.dev.creative-it.com",
       "http://localhost:4321",
     ],
+    webAclArn:
+      "arn:aws:wafv2:us-east-1:734830471883:global/webacl/CreatedByCloudFront-a4566b12/238a99ed-2993-47b7-b6d0-7e44626d1944",
   },
 };
 

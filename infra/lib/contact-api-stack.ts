@@ -27,6 +27,8 @@ export interface EnvConfig {
   senderEmail: string;
   recipientEmail: string;
   allowedOrigins: string[];
+  /** WAF Web ACL ARN created by CloudFront pricing plan (us-east-1, scope CLOUDFRONT) */
+  webAclArn?: string;
 }
 
 interface ContactApiStackProps extends cdk.StackProps {
@@ -1015,6 +1017,7 @@ export class ContactApiStack extends cdk.Stack {
       {
         domainNames: [aiDomainName],
         certificate: cfCertificate,
+        webAclId: config.webAclArn,
         defaultBehavior: {
           origin: new origins.FunctionUrlOrigin(aiPlaygroundUrl),
           ...aiBehaviorDefaults,

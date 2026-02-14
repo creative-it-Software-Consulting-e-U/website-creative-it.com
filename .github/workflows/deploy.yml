@@ -42,7 +42,7 @@ jobs:
       - name: CDK deploy
         id: cdk-deploy
         run: |
-          GITHUB_TOKEN=${{ secrets.GH_PAT_SCHEDULER }} WEBHOOK_SECRET=${{ secrets.WEBHOOK_SECRET }} npx cdk deploy -c env=${{ github.ref == 'refs/heads/main' && 'prod' || 'gw' }} --require-approval never --outputs-file cdk-outputs.json
+          GITHUB_TOKEN=${{ secrets.GH_PAT_SCHEDULER }} WEBHOOK_SECRET=${{ github.ref == 'refs/heads/main' && secrets.WEBHOOK_SECRET_PROD || secrets.WEBHOOK_SECRET_GW }} npx cdk deploy -c env=${{ github.ref == 'refs/heads/main' && 'prod' || 'gw' }} --require-approval never --outputs-file cdk-outputs.json
           echo "ai_playground_url=$(jq -r '.ContactApiStack.AiPlaygroundUrl // empty' cdk-outputs.json)" >> "$GITHUB_OUTPUT"
           echo "tech_advisor_url=$(jq -r '.ContactApiStack.TechAdvisorUrl // empty' cdk-outputs.json)" >> "$GITHUB_OUTPUT"
           echo "knowledge_bot_url=$(jq -r '.ContactApiStack.KnowledgeBotUrl // empty' cdk-outputs.json)" >> "$GITHUB_OUTPUT"

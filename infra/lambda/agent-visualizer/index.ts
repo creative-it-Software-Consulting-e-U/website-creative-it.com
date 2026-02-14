@@ -10,6 +10,10 @@ const bedrock = new BedrockRuntimeClient({});
 const ddb = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
 const TABLE_NAME = process.env.TABLE_NAME!;
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS ?? "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 const MODEL_ID = "eu.anthropic.claude-sonnet-4-20250514-v1:0";
 const RATE_LIMIT = 10;
 
@@ -19,6 +23,22 @@ function hashIp(ip: string): string {
 
 function getDateKey(): string {
   return `DATE#${new Date().toISOString().slice(0, 10)}`;
+}
+
+function buildCorsHeaders(requestOrigin?: string): Record<string, string> {
+  const allowedOrigin = requestOrigin && ALLOWED_ORIGINS.includes(requestOrigin)
+    ? requestOrigin
+    : ALLOWED_ORIGINS[0];
+
+  return allowedOrigin
+    ? {
+        "Access-Control-Allow-Origin": allowedOrigin,
+        "Access-Control-Allow-Methods": "POST,OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Expose-Headers": "X-Remaining-Requests,X-Session-Id",
+        Vary: "Origin",
+      }
+    : {};
 }
 
 async function checkRateLimit(ip: string): Promise<{ allowed: boolean; remaining: number }> {
@@ -129,11 +149,24 @@ export const handler = awslambda.streamifyResponse(
     responseStream: NodeJS.WritableStream
   ) => {
     const method = event.requestContext.http.method;
+    const origin = event.headers?.origin ?? event.headers?.Origin;
+    const corsHeaders = buildCorsHeaders(origin);
 
     const baseHeaders: Record<string, string> = {
+      ...corsHeaders,
       "Content-Type": "text/plain; charset=utf-8",
       "Cache-Control": "no-cache",
     };
+
+    if (method === "OPTIONS") {
+      // @ts-expect-error — awslambda HttpResponseStream type
+      responseStream = awslambda.HttpResponseStream.from(responseStream, {
+        statusCode: 204,
+        headers: corsHeaders,
+      });
+      responseStream.end();
+      return;
+    }
 
     if (method !== "POST") {
       // @ts-expect-error — awslambda HttpResponseStream type

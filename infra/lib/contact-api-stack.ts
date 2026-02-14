@@ -1007,11 +1007,11 @@ export class ContactApiStack extends cdk.Stack {
       }
     );
 
-    // CloudFront Function to handle CORS preflight (OPTIONS) at the edge.
+    // CloudFront Function (viewer-request): intercept OPTIONS preflight
+    // and return 204 with CORS headers directly at the edge.
     // Lambda Function URLs with IAM auth (OAC) return 403
-    // AccessDeniedException for OPTIONS because the OAC-signed preflight
-    // bypasses Lambda's built-in CORS handler.  Intercepting OPTIONS here
-    // avoids the round-trip to Lambda entirely.
+    // AccessDeniedException for OPTIONS because OAC-signed preflights
+    // bypass Lambda's built-in CORS handler.
     const corsPreflightFunction = new cloudfront.Function(
       this,
       "CorsPreflightFunction",
@@ -1044,44 +1044,52 @@ function handler(event) {
       }
     );
 
-    // Response headers policy to add CORS headers to POST responses.
-    // We cannot use a custom origin request policy to forward the Origin
-    // header because the CloudFront Pro pricing plan forbids custom origin
-    // request policies.  Instead, CloudFront adds CORS headers itself,
-    // based on the viewer's Origin header, overriding whatever Lambda
-    // (or its Function URL CORS config) returns.
-    const corsResponseHeadersPolicy = new cloudfront.ResponseHeadersPolicy(
+    // CloudFront Function (viewer-response): add CORS headers to every
+    // response from Lambda (POST, errors, etc.).  We cannot use custom
+    // origin request policies or custom response headers policies because
+    // the CloudFront Pro pricing plan forbids both.  CF Functions are the
+    // only way to handle CORS end-to-end on this plan.
+    const corsResponseFunction = new cloudfront.Function(
       this,
-      "CorsResponseHeadersPolicy",
+      "CorsResponseFunction",
       {
-        responseHeadersPolicyName: `${config.envName}-ai-cors`,
-        corsBehavior: {
-          accessControlAllowOrigins: config.allowedOrigins,
-          accessControlAllowMethods: ["POST", "OPTIONS"],
-          accessControlAllowHeaders: ["Content-Type"],
-          accessControlExposeHeaders: [
-            "X-Remaining-Requests",
-            "X-Session-Id",
-          ],
-          accessControlMaxAge: cdk.Duration.hours(1),
-          accessControlAllowCredentials: false,
-          originOverride: true,
-        },
+        functionName: `${config.envName}-cors-response`,
+        runtime: cloudfront.FunctionRuntime.JS_2_0,
+        code: cloudfront.FunctionCode.fromInline(`
+function handler(event) {
+  var request = event.request;
+  var response = event.response;
+  var allowedOrigins = ${JSON.stringify(config.allowedOrigins)};
+  var origin = request.headers.origin ? request.headers.origin.value : '';
+  if (allowedOrigins.indexOf(origin) >= 0) {
+    response.headers['access-control-allow-origin'] = { value: origin };
+    response.headers['access-control-allow-methods'] = { value: 'POST,OPTIONS' };
+    response.headers['access-control-allow-headers'] = { value: 'content-type' };
+    response.headers['access-control-expose-headers'] = { value: 'x-remaining-requests,x-session-id' };
+    response.headers['vary'] = { value: 'Origin' };
+  }
+  return response;
+}
+        `),
       }
     );
 
     // Shared behavior config for all AI tool origins.
-    // No origin request policy — the Pro pricing plan forbids custom ones,
-    // and managed ones (ALL_VIEWER_EXCEPT_HOST_HEADER) break OAC SigV4.
+    // CORS is handled entirely by CloudFront Functions because the Pro
+    // pricing plan forbids both custom origin request policies and custom
+    // response headers policies.
     const aiBehaviorDefaults = {
       allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
       cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
       viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.HTTPS_ONLY,
-      responseHeadersPolicy: corsResponseHeadersPolicy,
       functionAssociations: [
         {
           function: corsPreflightFunction,
           eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,
+        },
+        {
+          function: corsResponseFunction,
+          eventType: cloudfront.FunctionEventType.VIEWER_RESPONSE,
         },
       ],
     };

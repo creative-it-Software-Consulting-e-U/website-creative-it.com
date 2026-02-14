@@ -993,12 +993,13 @@ export class ContactApiStack extends cdk.Stack {
       }
     );
 
-    // Origin Access Control for Lambda Function URLs (L2 construct)
+    // Origin Access Control for Lambda Function URLs (L2 construct).
+    // Name is auto-generated to avoid conflicts during CloudFormation
+    // replacement of the old CfnOriginAccessControl resource.
     const lambdaOac = new cloudfront.FunctionUrlOriginAccessControl(
       this,
       "LambdaFunctionUrlOac",
       {
-        originAccessControlName: `ai-lambda-oac-${config.envName}`,
         signing: cloudfront.Signing.SIGV4_ALWAYS,
       }
     );

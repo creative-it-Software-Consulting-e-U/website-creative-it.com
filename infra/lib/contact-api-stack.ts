@@ -211,6 +211,7 @@ export class ContactApiStack extends cdk.Stack {
         },
         environment: {
           TABLE_NAME: githubStatsTable.tableName,
+          ALLOWED_ORIGINS: config.allowedOrigins.join(","),
         },
       }
     );
@@ -333,6 +334,7 @@ export class ContactApiStack extends cdk.Stack {
         },
         environment: {
           TABLE_NAME: githubStatsTable.tableName,
+          ALLOWED_ORIGINS: config.allowedOrigins.join(","),
         },
       }
     );
@@ -398,6 +400,7 @@ export class ContactApiStack extends cdk.Stack {
         },
         environment: {
           TABLE_NAME: githubStatsTable.tableName,
+          ALLOWED_ORIGINS: config.allowedOrigins.join(","),
         },
       }
     );
@@ -463,6 +466,7 @@ export class ContactApiStack extends cdk.Stack {
         },
         environment: {
           TABLE_NAME: githubStatsTable.tableName,
+          ALLOWED_ORIGINS: config.allowedOrigins.join(","),
         },
       }
     );
@@ -528,6 +532,7 @@ export class ContactApiStack extends cdk.Stack {
         },
         environment: {
           TABLE_NAME: githubStatsTable.tableName,
+          ALLOWED_ORIGINS: config.allowedOrigins.join(","),
         },
       }
     );
@@ -849,6 +854,7 @@ export class ContactApiStack extends cdk.Stack {
           TABLE_NAME: githubStatsTable.tableName,
           KNOWLEDGE_BASE_ID: kb?.knowledgeBaseId ?? "",
           MODEL_ARN: `arn:aws:bedrock:eu-central-1:${config.account}:inference-profile/eu.anthropic.claude-sonnet-4-20250514-v1:0`,
+          ALLOWED_ORIGINS: config.allowedOrigins.join(","),
         },
       }
     );

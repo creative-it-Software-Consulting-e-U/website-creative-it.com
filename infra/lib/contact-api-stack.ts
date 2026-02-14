@@ -993,17 +993,13 @@ export class ContactApiStack extends cdk.Stack {
       }
     );
 
-    // Origin Access Control for Lambda Function URLs
-    const lambdaOac = new cloudfront.CfnOriginAccessControl(
+    // Origin Access Control for Lambda Function URLs (L2 construct)
+    const lambdaOac = new cloudfront.FunctionUrlOriginAccessControl(
       this,
-      "LambdaOac",
+      "LambdaFunctionUrlOac",
       {
-        originAccessControlConfig: {
-          name: `ai-lambda-oac-${config.envName}`,
-          originAccessControlOriginType: "lambda",
-          signingBehavior: "always",
-          signingProtocol: "sigv4",
-        },
+        originAccessControlName: `ai-lambda-oac-${config.envName}`,
+        signing: cloudfront.Signing.SIGV4_ALWAYS,
       }
     );
 
@@ -1094,6 +1090,12 @@ function handler(event) {
       ],
     };
 
+    // Helper: wrap a Function URL in an OAC-signed origin
+    const oacOrigin = (url: lambda.IFunctionUrl) =>
+      origins.FunctionUrlOrigin.withOriginAccessControl(url, {
+        originAccessControl: lambdaOac,
+      });
+
     // CloudFront Distribution with path-based routing to each Lambda
     const aiDistribution = new cloudfront.Distribution(
       this,
@@ -1103,43 +1105,33 @@ function handler(event) {
         certificate: cfCertificate,
         webAclId: config.webAclArn,
         defaultBehavior: {
-          origin: new origins.FunctionUrlOrigin(aiPlaygroundUrl),
+          origin: oacOrigin(aiPlaygroundUrl),
           ...aiBehaviorDefaults,
         },
         additionalBehaviors: {
           "/tech-advisor": {
-            origin: new origins.FunctionUrlOrigin(techAdvisorUrl),
+            origin: oacOrigin(techAdvisorUrl),
             ...aiBehaviorDefaults,
           },
           "/knowledge-bot": {
-            origin: new origins.FunctionUrlOrigin(knowledgeBotUrl),
+            origin: oacOrigin(knowledgeBotUrl),
             ...aiBehaviorDefaults,
           },
           "/agent-visualizer": {
-            origin: new origins.FunctionUrlOrigin(agentVisualizerUrl),
+            origin: oacOrigin(agentVisualizerUrl),
             ...aiBehaviorDefaults,
           },
           "/website-remix": {
-            origin: new origins.FunctionUrlOrigin(websiteRemixUrl),
+            origin: oacOrigin(websiteRemixUrl),
             ...aiBehaviorDefaults,
           },
           "/live-translation": {
-            origin: new origins.FunctionUrlOrigin(liveTranslationUrl),
+            origin: oacOrigin(liveTranslationUrl),
             ...aiBehaviorDefaults,
           },
         },
       }
     );
-
-    // Apply OAC to all origins via escape hatch (L2 may not support Lambda OAC)
-    const cfnAiDist = aiDistribution.node
-      .defaultChild as cloudfront.CfnDistribution;
-    for (let i = 0; i < 6; i++) {
-      cfnAiDist.addPropertyOverride(
-        `DistributionConfig.Origins.${i}.OriginAccessControlId`,
-        lambdaOac.attrId
-      );
-    }
 
     // Grant CloudFront permission to invoke all Lambda Function URLs
     const cfDistArn = `arn:aws:cloudfront::${this.account}:distribution/${aiDistribution.distributionId}`;

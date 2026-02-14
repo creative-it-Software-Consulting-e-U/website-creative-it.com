@@ -12,8 +12,7 @@ const currentPath = Astro.url.pathname;
 const altLocale = getAlternateLocale(locale);
 
 // Build the alternate path for the language switcher
-const basePath = currentPath.startsWith('/de/') ? currentPath.slice(3) : currentPath === '/de' ? '/' : currentPath;
-const switchPath = localePath(basePath, altLocale);
+const switchPath = localePath(currentPath, altLocale);
 const switchLabel = locale === 'en' ? 'DE' : 'EN';
 const contactPath = localePath('/contact', locale);
 const ctaLabel = locale === 'de' ? 'Kontakt' : 'Get in Touch';

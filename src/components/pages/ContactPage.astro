@@ -24,7 +24,7 @@ const faqSchema = {
 ---
 
 <Layout title={p.meta.title} description={p.meta.description}>
-  <Breadcrumbs items={[{ name: "Contact" }]} />
+  <Breadcrumbs items={[{ name: p.meta.title }]} locale={locale} />
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   <!-- Hero -->
   <section class="relative py-20 lg:py-32 overflow-hidden">

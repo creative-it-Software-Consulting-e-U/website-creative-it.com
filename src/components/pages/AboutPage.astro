@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import Breadcrumbs from "../Breadcrumbs.astro";
 import { t, type Locale } from "../../config/site";
+import { localePath } from "../../utils/i18n";
 const locale = (Astro.currentLocale || 'en') as Locale;
 const config = t(locale);
 const p = config.pages.about;
@@ -9,7 +10,7 @@ const why = config.about.whyChooseUs;
 ---
 
 <Layout title={p.meta.title} description={p.meta.description}>
-  <Breadcrumbs items={[{ name: "About" }]} />
+  <Breadcrumbs items={[{ name: p.meta.title }]} locale={locale} />
   <!-- Hero -->
   <section class="relative py-20 lg:py-32 overflow-hidden">
     <div class="absolute inset-0">
@@ -188,7 +189,7 @@ const why = config.about.whyChooseUs;
         <div class="relative px-8 py-16 lg:px-16 lg:py-24 text-center">
           <h2 class="heading-xl text-4xl lg:text-5xl text-white mb-6">{p.cta.headline}</h2>
           <p class="text-white/70 text-lg max-w-2xl mx-auto mb-10">{p.cta.description}</p>
-          <a href="/contact" class="btn-primary">{p.cta.button}</a>
+          <a href={localePath("/contact", locale)} class="btn-primary">{p.cta.button}</a>
         </div>
       </div>
     </div>

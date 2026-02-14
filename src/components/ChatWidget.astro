@@ -1,5 +1,6 @@
 ---
 import { t, type Locale } from "../config/site";
+import { localePath } from "../utils/i18n";
 
 interface Props {
   locale?: Locale;
@@ -8,6 +9,8 @@ interface Props {
 const locale = Astro.props.locale || (Astro.currentLocale as Locale) || 'en';
 const config = t(locale);
 const c = config.chatWidget;
+const chatHowItWorksPath = localePath('/how-it-works#chat-widget', locale);
+const chatContactPath = localePath('/contact', locale);
 ---
 
 <!-- Chat Widget Toggle Button (controlled by AI Tools menu) -->
@@ -45,7 +48,7 @@ const c = config.chatWidget;
         </div>
         <div>
           <h3 class="text-sm font-semibold text-off-white">{c.headline}</h3>
-          <a href="/how-it-works#chat-widget" class="text-[10px] text-text-muted hover:text-purple transition-colors duration-200">{c.poweredBy} &middot; How it works</a>
+          <a href={chatHowItWorksPath} class="text-[10px] text-text-muted hover:text-purple transition-colors duration-200">{c.poweredBy} &middot; How it works</a>
         </div>
       </div>
       <button id="chat-close" class="text-text-muted hover:text-off-white transition-colors duration-200 cursor-pointer">
@@ -85,7 +88,7 @@ const c = config.chatWidget;
         </button>
       </div>
       <div class="flex items-center justify-between mt-2">
-        <a href="/contact" id="chat-human-btn" class="text-xs text-text-muted hover:text-purple transition-colors duration-200">{c.talkToHuman}</a>
+        <a href={chatContactPath} id="chat-human-btn" class="text-xs text-text-muted hover:text-purple transition-colors duration-200">{c.talkToHuman}</a>
         <span id="chat-remaining" class="text-[10px] text-text-muted"></span>
       </div>
     </div>

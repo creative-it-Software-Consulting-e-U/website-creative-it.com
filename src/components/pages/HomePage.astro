@@ -1,12 +1,18 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { t, type Locale } from "../../config/site";
-const locale = (Astro.currentLocale || 'en') as Locale;
+import { localePath } from "../../utils/i18n";
+
+interface Props {
+  locale?: Locale;
+}
+
+const locale = (Astro.props.locale || Astro.currentLocale || 'en') as Locale;
 const config = t(locale);
 const p = config.pages.home;
 ---
 
-<Layout>
+<Layout locale={locale}>
   <!-- Hero Section -->
   <section id="hero" class="relative min-h-[80vh] md:min-h-[90vh] flex items-start md:items-center overflow-hidden">
     <div class="absolute inset-0 overflow-hidden">
@@ -46,8 +52,8 @@ const p = config.pages.home;
           </p>
 
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="/contact" class="btn-glow">{p.ctaPrimary}</a>
-            <a href="/services" class="btn-secondary">{p.ctaSecondary}</a>
+            <a href={localePath("/contact", locale)} class="btn-glow">{p.ctaPrimary}</a>
+            <a href={localePath("/services", locale)} class="btn-secondary">{p.ctaSecondary}</a>
           </div>
         </div>
       </div>
@@ -90,7 +96,7 @@ const p = config.pages.home;
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         {config.services.map((service, index) => (
-          <a href="/services" class="group card-elevated p-8 lg:p-10 reveal" style={`transition-delay: ${index * 100}ms`}>
+          <a href={localePath("/services", locale)} class="group card-elevated p-8 lg:p-10 reveal" style={`transition-delay: ${index * 100}ms`}>
             <div class="relative">
               <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple/20 to-indigo/10 border border-purple/20 flex items-center justify-center mb-6 group-hover:border-purple/40 transition-colors duration-300">
                 {service.icon === "brain" && (
@@ -222,7 +228,7 @@ const p = config.pages.home;
             <span class="gradient-text">{p.philosophySection.headline.gradient}</span>{p.philosophySection.headline.after}
           </h2>
           <p class="text-text-secondary text-lg leading-relaxed mb-8">{config.about.story}</p>
-          <a href="/about" class="btn-secondary inline-flex items-center gap-2">
+          <a href={localePath("/about", locale)} class="btn-secondary inline-flex items-center gap-2">
             {p.philosophySection.linkText}
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
           </a>
@@ -257,7 +263,7 @@ const p = config.pages.home;
         <div class="relative px-8 py-16 lg:px-16 lg:py-24 text-center">
           <h2 class="heading-xl text-4xl lg:text-5xl xl:text-6xl text-white mb-6 whitespace-pre-line">{p.cta.headline}</h2>
           <p class="text-white/70 text-lg max-w-2xl mx-auto mb-10">{p.cta.description}</p>
-          <a href="/contact" class="btn-primary">{p.cta.button}</a>
+          <a href={localePath("/contact", locale)} class="btn-primary">{p.cta.button}</a>
         </div>
       </div>
     </div>

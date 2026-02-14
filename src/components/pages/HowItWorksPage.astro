@@ -1,6 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { t, type Locale } from "../../config/site";
+import { localePath } from "../../utils/i18n";
 const locale = (Astro.currentLocale || 'en') as Locale;
 const config = t(locale);
 const p = config.pages.howItWorks;
@@ -199,7 +200,7 @@ const p = config.pages.howItWorks;
         <div class="relative px-8 py-16 lg:px-16 lg:py-24 text-center">
           <h2 class="heading-xl text-4xl lg:text-5xl xl:text-6xl text-white mb-6">{p.cta.headline}</h2>
           <p class="text-white/70 text-lg max-w-2xl mx-auto mb-10">{p.cta.description}</p>
-          <a href="/contact" class="btn-primary">{p.cta.button}</a>
+          <a href={localePath("/contact", locale)} class="btn-primary">{p.cta.button}</a>
         </div>
       </div>
     </div>

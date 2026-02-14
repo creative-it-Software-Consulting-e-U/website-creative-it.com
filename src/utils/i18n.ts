@@ -1,5 +1,40 @@
 import type { Locale } from '../config/site';
 
+const SPECIAL_ROUTES = [
+  { en: '/legal', de: '/legal/de' },
+  { en: '/privacy', de: '/privacy/de' },
+] as const;
+
+function normalizePath(path: string): string {
+  const normalized = path.startsWith('/') ? path : `/${path}`;
+  const trimmed = normalized.length > 1 ? normalized.replace(/\/+$/, '') : normalized;
+  return trimmed || '/';
+}
+
+function splitPathAndSuffix(path: string): { base: string; suffix: string } {
+  const match = path.match(/^([^?#]*)(.*)$/);
+  const base = match?.[1] || '/';
+  const suffix = match?.[2] || '';
+  return { base, suffix };
+}
+
+function toEnglishRoute(path: string): string {
+  let normalized = normalizePath(path);
+
+  for (const route of SPECIAL_ROUTES) {
+    if (normalized === route.en || normalized === route.de) return route.en;
+  }
+
+  if (normalized === '/de') return '/';
+  if (normalized.startsWith('/de/')) normalized = normalized.slice(3);
+
+  for (const route of SPECIAL_ROUTES) {
+    if (normalized === route.en || normalized === route.de) return route.en;
+  }
+
+  return normalized || '/';
+}
+
 /** Return the other locale */
 export function getAlternateLocale(locale: Locale): Locale {
   return locale === 'en' ? 'de' : 'en';
@@ -10,12 +45,15 @@ export function getAlternateLocale(locale: Locale): Locale {
  * EN paths have no prefix; DE paths get /de prefix.
  */
 export function localePath(path: string, locale: Locale): string {
-  // Normalise: ensure path starts with /
-  const normalized = path.startsWith('/') ? path : `/${path}`;
+  const { base, suffix } = splitPathAndSuffix(path);
+  const englishRoute = toEnglishRoute(base);
 
-  if (locale === 'en') return normalized;
-  // For DE: /de + path (but /de/ for root)
-  return normalized === '/' ? '/de' : `/de${normalized}`;
+  if (locale === 'en') return `${englishRoute}${suffix}`;
+
+  const specialRoute = SPECIAL_ROUTES.find((route) => route.en === englishRoute);
+  if (specialRoute) return `${specialRoute.de}${suffix}`;
+
+  return `${englishRoute === '/' ? '/de' : `/de${englishRoute}`}${suffix}`;
 }
 
 /**
@@ -23,12 +61,12 @@ export function localePath(path: string, locale: Locale): string {
  * Returns entries for both locales + x-default (pointing to EN).
  */
 export function getHreflangAlternates(pathname: string) {
-  // Strip /de prefix if present to get the base path
-  const basePath = pathname.startsWith('/de/') ? pathname.slice(3) : pathname === '/de' ? '/' : pathname;
+  const enPath = localePath(pathname, 'en');
+  const dePath = localePath(pathname, 'de');
 
   return [
-    { hreflang: 'en', href: basePath },
-    { hreflang: 'de', href: localePath(basePath, 'de') },
-    { hreflang: 'x-default', href: basePath },
+    { hreflang: 'en', href: enPath },
+    { hreflang: 'de', href: dePath },
+    { hreflang: 'x-default', href: enPath },
   ];
 }

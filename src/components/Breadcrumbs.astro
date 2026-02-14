@@ -7,7 +7,8 @@ interface Props {
   locale?: Locale;
 }
 
-const { items, locale = 'en' } = Astro.props;
+const { items } = Astro.props;
+const locale = Astro.props.locale || (Astro.currentLocale as Locale) || 'en';
 const homeName = locale === 'de' ? 'Startseite' : 'Home';
 
 const breadcrumbItems = [

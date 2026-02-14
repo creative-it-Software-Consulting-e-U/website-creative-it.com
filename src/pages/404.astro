@@ -1,5 +1,10 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { type Locale } from "../config/site";
+import { localePath } from "../utils/i18n";
+
+const locale = (Astro.currentLocale || 'en') as Locale;
+const homePath = localePath('/', locale);
 ---
 
 <Layout title="Page Not Found" description="The page you're looking for doesn't exist." hideStatsBanner={true}>
@@ -20,7 +25,7 @@ import Layout from "../layouts/Layout.astro";
         The page you're looking for doesn't exist or has been moved.
       </p>
       <div class="animate-fade-in-up opacity-0" style="animation-delay: 0.4s; animation-fill-mode: forwards;">
-        <a href="/" class="btn-primary">Back to Home</a>
+        <a href={homePath} class="btn-primary">Back to Home</a>
       </div>
     </div>
   </section>

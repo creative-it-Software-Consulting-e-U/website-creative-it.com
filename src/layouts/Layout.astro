@@ -12,12 +12,12 @@ interface Props {
   title?: string;
   description?: string;
   hideStatsBanner?: boolean;
+  locale?: Locale;
 }
 
-const locale = (Astro.currentLocale || 'en') as Locale;
+const { title, description, hideStatsBanner = false, locale: propLocale } = Astro.props;
+const locale = (propLocale || Astro.currentLocale || 'en') as Locale;
 const config = t(locale);
-
-const { title, description, hideStatsBanner = false } = Astro.props;
 const pageTitle = title ? `${title} | ${config.name}` : `${config.name} — ${config.tagline}`;
 const pageDescription = description || config.description;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://creative-it.com').href;

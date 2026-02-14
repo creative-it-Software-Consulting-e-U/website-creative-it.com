@@ -1,6 +1,9 @@
 import { defineMiddleware } from 'astro:middleware';
 
 export const onRequest = defineMiddleware((context, next) => {
+  // Prerendered/static routes have no request headers at build time.
+  if (context.isPrerendered) return next();
+
   const { pathname } = context.url;
 
   // Only redirect on the root path

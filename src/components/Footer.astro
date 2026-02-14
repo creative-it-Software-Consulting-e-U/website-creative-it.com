@@ -159,8 +159,8 @@ const rightsLabel = locale === 'de' ? 'Alle Rechte vorbehalten.' : 'All rights r
         <p class="text-text-muted text-sm">
           &copy; {new Date().getFullYear()} {config.name}. {rightsLabel}
         </p>
-        <a href={locale === 'de' ? '/legal/de' : '/legal'} class="text-text-muted hover:text-off-white transition-colors duration-200 text-sm">{legalLabel}</a>
-        <a href={locale === 'de' ? '/privacy/de' : '/privacy'} class="text-text-muted hover:text-off-white transition-colors duration-200 text-sm">{privacyLabel}</a>
+        <a href={localePath('/legal', locale)} class="text-text-muted hover:text-off-white transition-colors duration-200 text-sm">{legalLabel}</a>
+        <a href={localePath('/privacy', locale)} class="text-text-muted hover:text-off-white transition-colors duration-200 text-sm">{privacyLabel}</a>
       </div>
       <p class="text-sm font-medium">
         <span class="gradient-text">{config.tagline}</span>

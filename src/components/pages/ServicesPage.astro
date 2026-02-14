@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import Breadcrumbs from "../Breadcrumbs.astro";
 import { t, type Locale } from "../../config/site";
+import { localePath } from "../../utils/i18n";
 const locale = (Astro.currentLocale || 'en') as Locale;
 const config = t(locale);
 const p = config.pages.services;
@@ -26,7 +27,7 @@ const serviceSchema = {
 ---
 
 <Layout title={p.meta.title} description={p.meta.description}>
-  <Breadcrumbs items={[{ name: "Services" }]} />
+  <Breadcrumbs items={[{ name: p.meta.title }]} locale={locale} />
   <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
   <!-- Hero -->
   <section class="relative py-20 lg:py-32 overflow-hidden">
@@ -126,7 +127,7 @@ const serviceSchema = {
                 ))}
               </div>
 
-              <a href="/contact" class="btn-secondary">{p.serviceButton}</a>
+              <a href={localePath("/contact", locale)} class="btn-secondary">{p.serviceButton}</a>
             </div>
           </div>
         ))}
@@ -175,7 +176,7 @@ const serviceSchema = {
         <div class="relative px-8 py-16 lg:px-16 lg:py-24 text-center">
           <h2 class="heading-xl text-4xl lg:text-5xl text-white mb-6">{p.cta.headline}</h2>
           <p class="text-white/70 text-lg max-w-2xl mx-auto mb-10">{p.cta.description}</p>
-          <a href="/contact" class="btn-primary">{p.cta.button}</a>
+          <a href={localePath("/contact", locale)} class="btn-primary">{p.cta.button}</a>
         </div>
       </div>
     </div>

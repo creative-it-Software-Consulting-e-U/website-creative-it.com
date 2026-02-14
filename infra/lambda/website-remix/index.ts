@@ -142,7 +142,8 @@ export const handler = awslambda.streamifyResponse(
       return;
     }
 
-    const ip = event.requestContext.http.sourceIp;
+    const ip = event.headers?.["cloudfront-viewer-address"]?.split(":")[0]
+      ?? event.requestContext.http.sourceIp;
     const { allowed, remaining } = await checkRateLimit(ip);
     baseHeaders["X-Remaining-Requests"] = String(remaining);
 

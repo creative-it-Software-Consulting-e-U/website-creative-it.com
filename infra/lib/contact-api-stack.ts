@@ -13,6 +13,8 @@ import * as scheduler from "aws-cdk-lib/aws-scheduler";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as s3deploy from "aws-cdk-lib/aws-s3-deployment";
 import * as opensearchserverless from "aws-cdk-lib/aws-opensearchserverless";
+import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
+import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
 import * as cr from "aws-cdk-lib/custom-resources";
 import { Construct } from "constructs";
 import * as path from "path";
@@ -215,10 +217,10 @@ export class ContactApiStack extends cdk.Stack {
     // CORS on Function URL handles preflight (OPTIONS) automatically.
     // Lambda must NOT set Access-Control-Allow-Origin to avoid duplicates.
     const aiPlaygroundUrl = aiPlaygroundHandler.addFunctionUrl({
-      authType: lambda.FunctionUrlAuthType.NONE,
+      authType: lambda.FunctionUrlAuthType.AWS_IAM,
       invokeMode: lambda.InvokeMode.RESPONSE_STREAM,
       cors: {
-        allowedOrigins: ["*"],
+        allowedOrigins: config.allowedOrigins,
         allowedMethods: [lambda.HttpMethod.POST],
         allowedHeaders: ["Content-Type"],
         exposedHeaders: ["X-Remaining-Requests"],
@@ -334,10 +336,10 @@ export class ContactApiStack extends cdk.Stack {
     );
 
     const techAdvisorUrl = techAdvisorHandler.addFunctionUrl({
-      authType: lambda.FunctionUrlAuthType.NONE,
+      authType: lambda.FunctionUrlAuthType.AWS_IAM,
       invokeMode: lambda.InvokeMode.RESPONSE_STREAM,
       cors: {
-        allowedOrigins: ["*"],
+        allowedOrigins: config.allowedOrigins,
         allowedMethods: [lambda.HttpMethod.POST],
         allowedHeaders: ["Content-Type"],
         exposedHeaders: ["X-Remaining-Requests"],
@@ -399,10 +401,10 @@ export class ContactApiStack extends cdk.Stack {
     );
 
     const websiteRemixUrl = websiteRemixHandler.addFunctionUrl({
-      authType: lambda.FunctionUrlAuthType.NONE,
+      authType: lambda.FunctionUrlAuthType.AWS_IAM,
       invokeMode: lambda.InvokeMode.RESPONSE_STREAM,
       cors: {
-        allowedOrigins: ["*"],
+        allowedOrigins: config.allowedOrigins,
         allowedMethods: [lambda.HttpMethod.POST],
         allowedHeaders: ["Content-Type"],
         exposedHeaders: ["X-Remaining-Requests"],
@@ -464,10 +466,10 @@ export class ContactApiStack extends cdk.Stack {
     );
 
     const liveTranslationUrl = liveTranslationHandler.addFunctionUrl({
-      authType: lambda.FunctionUrlAuthType.NONE,
+      authType: lambda.FunctionUrlAuthType.AWS_IAM,
       invokeMode: lambda.InvokeMode.RESPONSE_STREAM,
       cors: {
-        allowedOrigins: ["*"],
+        allowedOrigins: config.allowedOrigins,
         allowedMethods: [lambda.HttpMethod.POST],
         allowedHeaders: ["Content-Type"],
         exposedHeaders: ["X-Remaining-Requests"],
@@ -529,10 +531,10 @@ export class ContactApiStack extends cdk.Stack {
     );
 
     const agentVisualizerUrl = agentVisualizerHandler.addFunctionUrl({
-      authType: lambda.FunctionUrlAuthType.NONE,
+      authType: lambda.FunctionUrlAuthType.AWS_IAM,
       invokeMode: lambda.InvokeMode.RESPONSE_STREAM,
       cors: {
-        allowedOrigins: ["*"],
+        allowedOrigins: config.allowedOrigins,
         allowedMethods: [lambda.HttpMethod.POST],
         allowedHeaders: ["Content-Type"],
         exposedHeaders: ["X-Remaining-Requests"],
@@ -850,10 +852,10 @@ export class ContactApiStack extends cdk.Stack {
     );
 
     const knowledgeBotUrl = knowledgeBotHandler.addFunctionUrl({
-      authType: lambda.FunctionUrlAuthType.NONE,
+      authType: lambda.FunctionUrlAuthType.AWS_IAM,
       invokeMode: lambda.InvokeMode.RESPONSE_STREAM,
       cors: {
-        allowedOrigins: ["*"],
+        allowedOrigins: config.allowedOrigins,
         allowedMethods: [lambda.HttpMethod.POST],
         allowedHeaders: ["Content-Type"],
         exposedHeaders: ["X-Remaining-Requests", "X-Session-Id"],
@@ -890,7 +892,7 @@ export class ContactApiStack extends cdk.Stack {
     const httpApi = new apigwv2.HttpApi(this, "ContactApi", {
       apiName: "creative-it-contact-api",
       corsPreflight: {
-        allowOrigins: ["*"],
+        allowOrigins: config.allowedOrigins,
         allowMethods: [
           apigwv2.CorsHttpMethod.POST,
           apigwv2.CorsHttpMethod.GET,
@@ -969,6 +971,130 @@ export class ContactApiStack extends cdk.Stack {
       ),
     });
 
+    // ── CloudFront + OAC for AI Streaming Tools ─────────────────────────
+
+    // ACM Certificate for ai.<domain> in us-east-1 (required for CloudFront)
+    const aiDomainName = `ai.${config.domainName}`;
+    const cfCertificate = new acm.DnsValidatedCertificate(
+      this,
+      "AiCloudFrontCert",
+      {
+        domainName: aiDomainName,
+        hostedZone,
+        region: "us-east-1",
+      }
+    );
+
+    // Origin Access Control for Lambda Function URLs
+    const lambdaOac = new cloudfront.CfnOriginAccessControl(
+      this,
+      "LambdaOac",
+      {
+        originAccessControlConfig: {
+          name: `ai-lambda-oac-${config.envName}`,
+          originAccessControlOriginType: "lambda",
+          signingBehavior: "always",
+          signingProtocol: "sigv4",
+        },
+      }
+    );
+
+    // Origin request policy: forward Content-Type + viewer IP
+    const aiOriginRequestPolicy = new cloudfront.OriginRequestPolicy(
+      this,
+      "AiOriginRequestPolicy",
+      {
+        originRequestPolicyName: `ai-origin-policy-${config.envName}`,
+        headerBehavior: cloudfront.OriginRequestHeaderBehavior.allowList(
+          "Content-Type",
+          "CloudFront-Viewer-Address"
+        ),
+        queryStringBehavior:
+          cloudfront.OriginRequestQueryStringBehavior.none(),
+        cookieBehavior: cloudfront.OriginRequestCookieBehavior.none(),
+      }
+    );
+
+    // Shared behavior config for all AI tool origins
+    const aiBehaviorDefaults = {
+      allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
+      cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
+      originRequestPolicy: aiOriginRequestPolicy,
+      viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.HTTPS_ONLY,
+    };
+
+    // CloudFront Distribution with path-based routing to each Lambda
+    const aiDistribution = new cloudfront.Distribution(
+      this,
+      "AiDistribution",
+      {
+        domainNames: [aiDomainName],
+        certificate: cfCertificate,
+        defaultBehavior: {
+          origin: new origins.FunctionUrlOrigin(aiPlaygroundUrl),
+          ...aiBehaviorDefaults,
+        },
+        additionalBehaviors: {
+          "/tech-advisor": {
+            origin: new origins.FunctionUrlOrigin(techAdvisorUrl),
+            ...aiBehaviorDefaults,
+          },
+          "/knowledge-bot": {
+            origin: new origins.FunctionUrlOrigin(knowledgeBotUrl),
+            ...aiBehaviorDefaults,
+          },
+          "/agent-visualizer": {
+            origin: new origins.FunctionUrlOrigin(agentVisualizerUrl),
+            ...aiBehaviorDefaults,
+          },
+          "/website-remix": {
+            origin: new origins.FunctionUrlOrigin(websiteRemixUrl),
+            ...aiBehaviorDefaults,
+          },
+          "/live-translation": {
+            origin: new origins.FunctionUrlOrigin(liveTranslationUrl),
+            ...aiBehaviorDefaults,
+          },
+        },
+      }
+    );
+
+    // Apply OAC to all origins via escape hatch (L2 may not support Lambda OAC)
+    const cfnAiDist = aiDistribution.node
+      .defaultChild as cloudfront.CfnDistribution;
+    for (let i = 0; i < 6; i++) {
+      cfnAiDist.addPropertyOverride(
+        `DistributionConfig.Origins.${i}.OriginAccessControlId`,
+        lambdaOac.attrId
+      );
+    }
+
+    // Grant CloudFront permission to invoke all Lambda Function URLs
+    const cfDistArn = `arn:aws:cloudfront::${this.account}:distribution/${aiDistribution.distributionId}`;
+    for (const fn of [
+      aiPlaygroundHandler,
+      techAdvisorHandler,
+      knowledgeBotHandler,
+      agentVisualizerHandler,
+      websiteRemixHandler,
+      liveTranslationHandler,
+    ]) {
+      fn.addPermission("AllowCloudFrontInvoke", {
+        principal: new iam.ServicePrincipal("cloudfront.amazonaws.com"),
+        action: "lambda:InvokeFunctionUrl",
+        sourceArn: cfDistArn,
+      });
+    }
+
+    // Route53 A record for ai.<domain> → CloudFront
+    new route53.ARecord(this, "AiARecord", {
+      zone: hostedZone,
+      recordName: "ai",
+      target: route53.RecordTarget.fromAlias(
+        new route53Targets.CloudFrontTarget(aiDistribution)
+      ),
+    });
+
     // ── Outputs ────────────────────────────────────────────────────────
     new cdk.CfnOutput(this, "ApiUrl", {
       value: `https://${apiDomainName}/contact`,
@@ -986,8 +1112,8 @@ export class ContactApiStack extends cdk.Stack {
     });
 
     new cdk.CfnOutput(this, "AiPlaygroundUrl", {
-      value: aiPlaygroundUrl.url,
-      description: "AI Playground Function URL (streaming)",
+      value: `https://${aiDomainName}/playground`,
+      description: "AI Playground via CloudFront",
     });
 
     new cdk.CfnOutput(this, "CommitStoryUrl", {
@@ -996,28 +1122,33 @@ export class ContactApiStack extends cdk.Stack {
     });
 
     new cdk.CfnOutput(this, "TechAdvisorUrl", {
-      value: techAdvisorUrl.url,
-      description: "Tech Advisor Function URL (streaming)",
+      value: `https://${aiDomainName}/tech-advisor`,
+      description: "Tech Advisor via CloudFront",
     });
 
     new cdk.CfnOutput(this, "WebsiteRemixUrl", {
-      value: websiteRemixUrl.url,
-      description: "Website Remix Function URL (streaming)",
+      value: `https://${aiDomainName}/website-remix`,
+      description: "Website Remix via CloudFront",
     });
 
     new cdk.CfnOutput(this, "AgentVisualizerUrl", {
-      value: agentVisualizerUrl.url,
-      description: "Agent Visualizer Function URL (streaming)",
+      value: `https://${aiDomainName}/agent-visualizer`,
+      description: "Agent Visualizer via CloudFront",
     });
 
     new cdk.CfnOutput(this, "LiveTranslationUrl", {
-      value: liveTranslationUrl.url,
-      description: "Live Translation Function URL (streaming)",
+      value: `https://${aiDomainName}/live-translation`,
+      description: "Live Translation via CloudFront",
     });
 
     new cdk.CfnOutput(this, "KnowledgeBotUrl", {
-      value: knowledgeBotUrl.url,
-      description: "Knowledge Bot Function URL (streaming)",
+      value: `https://${aiDomainName}/knowledge-bot`,
+      description: "Knowledge Bot via CloudFront",
+    });
+
+    new cdk.CfnOutput(this, "AiDistributionDomain", {
+      value: aiDistribution.distributionDomainName,
+      description: "AI CloudFront distribution domain (for verification)",
     });
 
     new cdk.CfnOutput(this, "KnowledgeBucketName", {

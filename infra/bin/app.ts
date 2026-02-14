@@ -26,6 +26,7 @@ const ENV_CONFIGS: Record<string, EnvConfig> = {
     allowedOrigins: [
       "https://gw.dev.creative-it.com",
       "https://www.gw.dev.creative-it.com",
+      "http://localhost:4321",
     ],
   },
 };

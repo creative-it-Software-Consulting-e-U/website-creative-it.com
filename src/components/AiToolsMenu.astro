@@ -1,0 +1,9 @@
+---
+// AI Tools menu orchestration — extracted into its own component
+// to ensure Astro script hoisting includes it on all pages
+// (works around a hoisting issue in Layout.astro when hideStatsBanner is set)
+---
+
+<script>
+  import '../scripts/ai-tools-menu';
+</script>

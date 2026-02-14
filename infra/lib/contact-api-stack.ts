@@ -1001,13 +1001,31 @@ export class ContactApiStack extends cdk.Stack {
       }
     );
 
+    // Custom origin request policy that forwards only the three CORS
+    // preflight headers.  The managed ALL_VIEWER_EXCEPT_HOST_HEADER policy
+    // caused InvalidSignatureException with OAC because it forwarded too
+    // many viewer headers.  Forwarding only these keeps SigV4 intact while
+    // letting the Lambda Function URL CORS handler see the Origin.
+    const corsOriginRequestPolicy = new cloudfront.OriginRequestPolicy(
+      this,
+      "CorsOriginRequestPolicy",
+      {
+        originRequestPolicyName: `${config.envName}-cors-headers-only`,
+        headerBehavior:
+          cloudfront.OriginRequestHeaderBehavior.allowList(
+            "Origin",
+            "Access-Control-Request-Method",
+            "Access-Control-Request-Headers"
+          ),
+      }
+    );
+
     // Shared behavior config for all AI tool origins.
-    // No origin request policy — OAC (SigV4) signing breaks when extra
-    // headers are forwarded (InvalidSignatureException).
     const aiBehaviorDefaults = {
       allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
       cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
       viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.HTTPS_ONLY,
+      originRequestPolicy: corsOriginRequestPolicy,
     };
 
     // CloudFront Distribution with path-based routing to each Lambda

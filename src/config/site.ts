@@ -367,11 +367,17 @@ const content = {
   en: {
     tagline: "Build. Grow. Matter.",
     description:
-      "We build software, AI agents, teams, processes, and trust. Growth emerges — and with it, lasting impact.",
+      "We build intelligent, serverless solutions on AWS — from AI agents to cloud architecture. GDPR-compliant, production-ready, at any scale.",
 
     navigation: [
       { name: "Home", href: "/" },
-      { name: "Services", href: "/services" },
+      { name: "Services", href: "/services", children: [
+        { name: "Overview", href: "/services" },
+        { name: "AWS Serverless", href: "/services/aws-serverless" },
+        { name: "Agentic AI", href: "/services/agentic-ai" },
+        { name: "Fractional CTO", href: "/services/fractional-cto" },
+        { name: "Cloud Optimization", href: "/services/cloud-optimization" },
+      ]},
       { name: "About", href: "/about" },
       { name: "AI Lab", href: "#", children: [
         { name: "AI Playground", href: "/ai-playground" },
@@ -385,132 +391,189 @@ const content = {
 
     services: [
       {
-        title: "Agentic Coding",
+        slug: "aws-serverless",
+        title: "AWS Serverless Architecture",
         description:
-          "Bring the benefits of agentic coding to your team. Increase productivity massively.",
-        icon: "brain",
-        features: [
-          "Model selection",
-          "Workflows",
-          "Team setup",
-        ],
-      },
-      {
-        title: "AI-based Applications",
-        description:
-          "Customized AI agents and models to make your product more intelligent.",
-        icon: "robot",
-        features: [
-          "Agent development",
-          "Model optimization",
-          "GDPR compliance",
-        ],
-      },
-      {
-        title: "App Development",
-        description: "Custom mobile apps for your business. We build native apps for iOS and Android.",
-        icon: "mobile",
-        features: [
-          "iOS & Android development",
-          "Backend solutions",
-          "Native app design, same features",
-        ],
-      },
-      {
-        title: "Software Development",
-        description:
-          "Custom solutions built with precision and purpose. We transform complex requirements into elegant, scalable software.",
-        icon: "code",
-        features: [
-          "Full-stack development",
-          "API design & integration",
-          "Serverless Technologies",
-        ],
-      },
-      {
-        title: "Cloud Architecture",
-        description:
-          "Secure, scalable infrastructure designed for growth. We architect cloud solutions that perform under pressure.",
+          "Zero-ops infrastructure that scales automatically and costs only what you use. The serverless market is projected to grow from $28B to $92B — we help you capitalize on it.",
         icon: "cloud",
         features: [
-          "Cloud migration",
-          "Infrastructure as code",
-          "NoOps",
+          "Serverless Architecture",
+          "Infrastructure as Code",
+          "Event-driven microservices",
+          "Pay-per-use cost model",
+        ],
+        tagline: "Infrastructure that scales itself — so you can focus on building.",
+        longDescription: "Serverless architecture eliminates the need to provision, scale, or maintain servers. With core services like AWS Lambda, DynamoDB, and API Gateway, your applications respond to demand in real time — scaling from zero to millions of requests without manual intervention.\n\nWe design event-driven systems using Infrastructure as Code (AWS CDK), ensuring every deployment is reproducible, auditable, and version-controlled. From REST APIs to real-time data pipelines, our serverless architectures are built for production from day one.\n\nThe result: lower operational costs, faster time to market, and infrastructure that grows with your business — not against it.",
+        benefits: [
+          { title: "Zero Ops Overhead", description: "No servers to patch, scale, or monitor. AWS handles the infrastructure so your team focuses on features." },
+          { title: "Pay Only for Usage", description: "No idle compute costs. You pay per request and per millisecond of execution — nothing more." },
+          { title: "Infinite Scalability", description: "From zero to millions of requests automatically. No capacity planning, no bottlenecks." },
+        ],
+        useCases: [
+          "REST & GraphQL APIs with automatic scaling",
+          "Event-driven data processing pipelines",
+          "Real-time webhooks and integrations",
+          "Scheduled batch jobs and ETL workflows",
         ],
       },
       {
-        title: "Technical Consulting",
+        slug: "agentic-ai",
+        title: "Agentic AI & GDPR Compliance",
         description:
-          "Strategic guidance for technology decisions that matter. We help you navigate complexity with confidence.",
+          "Custom AI agents built on AWS Bedrock that automate workflows and augment your team. The agentic AI market is set to grow from $7.8B to $52B — we build solutions that are EU-compliant from day one.",
+        icon: "brain",
+        features: [
+          "AWS Bedrock agent development",
+          "RAG pipelines & knowledge bases",
+          "GDPR-compliant AI architecture",
+          "GDPR-compliant Agentic Coding",
+        ],
+        tagline: "AI agents that work for you — not against compliance.",
+        longDescription: "Agentic AI goes beyond simple chatbots. We build autonomous AI agents on AWS Bedrock that understand context, plan multi-step actions, and execute complex workflows — all while keeping your data within the EU.\n\nOur agents leverage Retrieval-Augmented Generation (RAG) to ground responses in your actual business data, reducing hallucinations and increasing accuracy. Combined with human-in-the-loop safeguards, you get AI that's powerful yet controllable.\n\nEvery solution is architected with GDPR compliance from the start: data residency in the EU (dedicated region like Frankfurt/eu-central-1, or across EU regions for cheaper and faster inference), no training on your data, full audit trails, and consent management built in.",
+        benefits: [
+          { title: "EU-Compliant by Design", description: "All data processed in AWS EU regions. No model training on your data. Full audit trails and consent management." },
+          { title: "Grounded in Your Data", description: "RAG pipelines ensure AI responses are based on your actual documents and knowledge — not generic training data." },
+          { title: "Human-in-the-Loop", description: "Critical decisions stay with humans. Agents handle the heavy lifting; your team keeps control." },
+        ],
+        useCases: [
+          "In-app AI assistants and chatbots",
+          "Document processing and extraction pipelines",
+          "Knowledge base Q&A systems",
+          "Automated workflow orchestration",
+        ],
+      },
+      {
+        slug: "fractional-cto",
+        title: "Fractional CTO",
+        description:
+          "C-level technology leadership at a fraction of the cost. Companies with strong tech leadership see up to 400% faster growth — get 80% of the value at 20% of the cost of a full-time CTO.",
         icon: "ruler",
         features: [
-          "Architecture review",
-          "Technology strategy",
-          "Team augmentation",
+          "Technology strategy & roadmap",
+          "Architecture review & decisions",
+          "Team mentoring & hiring guidance",
+          "Vendor evaluation & due diligence",
+        ],
+        tagline: "C-level tech leadership without the full-time overhead.",
+        longDescription: "Not every company needs a full-time CTO — but every company needs strategic technology leadership. As your Fractional CTO, I bring 30+ years of engineering experience to your leadership team on a flexible, part-time basis.\n\nFrom technology strategy and architecture decisions to team mentoring and vendor evaluation, I provide the guidance that turns technical investments into business outcomes. I've seen what works and what doesn't — across startups, scale-ups, and enterprise environments.\n\nThe engagement is tailored to your needs: a few days per month for ongoing advisory, or intensive sprints for critical decisions like technology migrations, team scaling, or product architecture.",
+        benefits: [
+          { title: "80/20 Value Proposition", description: "Get 80% of the value of a full-time CTO at 20% of the cost. Strategic leadership without the full-time salary." },
+          { title: "30+ Years Experience", description: "Deep expertise across cloud architecture, AI, mobile, and enterprise systems — battle-tested in production." },
+          { title: "Flexible Engagement", description: "Scale involvement up or down as your needs change. Advisory retainer or intensive project sprints." },
+        ],
+        useCases: [
+          "Technology strategy and roadmap planning",
+          "Architecture reviews and technical due diligence",
+          "Engineering team mentoring and hiring",
+          "Build-vs-buy decisions and vendor evaluation",
+        ],
+      },
+      {
+        slug: "cloud-optimization",
+        title: "Cost-Optimized Cloud & AI",
+        description:
+          "Reduce your cloud spend by up to 70% through right-sizing, reserved capacity, and FinOps practices. We turn bloated infrastructure into lean, cost-efficient systems.",
+        icon: "code",
+        features: [
+          "AWS cost analysis & optimization",
+          "FinOps implementation",
+          "Serverless migration for cost savings",
+          "AI workload cost management",
+        ],
+        tagline: "Cut cloud costs by up to 70% — without cutting capabilities.",
+        longDescription: "Most companies overspend on cloud by 30-50%. We perform deep cost analysis of your AWS infrastructure, identify waste, and implement FinOps practices that deliver measurable savings — without sacrificing performance or reliability.\n\nOur approach combines right-sizing, reserved capacity planning, spot instance strategies, and serverless migration to eliminate idle compute costs. For AI workloads, we optimize model selection, batching strategies, and caching to keep inference costs under control.\n\nEvery engagement starts with a detailed cost analysis and ends with a clear savings roadmap — so you know exactly what to expect before committing.",
+        benefits: [
+          { title: "40-70% Cost Reduction", description: "Most clients see dramatic savings through right-sizing, reserved capacity, and eliminating idle resources." },
+          { title: "FinOps Best Practices", description: "Implement cost visibility, accountability, and optimization as ongoing disciplines — not one-time fixes." },
+          { title: "AI Cost Control", description: "Optimize model selection, batching, and caching strategies to keep AI inference costs predictable." },
+        ],
+        useCases: [
+          "AWS cost audit and savings roadmap",
+          "Serverless migration for cost reduction",
+          "AI/ML workload cost optimization",
+          "FinOps culture and tooling implementation",
         ],
       },
     ],
 
     about: {
       mission:
-        "To empower businesses through technology that transforms, teams that thrive, and partnerships that last.",
-      story:
-        "Creative IT was founded on a simple belief: technology should enable growth, not constrain it. We've built our company around the philosophy of Build. Grow. Matter. — building software, building teams, building trust. From this foundation, we help our clients grow their capabilities, their reach, and their impact. Because ultimately, we believe that what we create together should matter — to your business, to your customers, and to the future you're building.",
+        "To help businesses harness the power of AWS serverless and agentic AI — with solutions that are GDPR-compliant, production-ready, and built to scale.",
+      essenz: [
+        'I\'m <strong>Günther Wieser</strong>, AWS Serverless &amp; Agentic AI Architect, and founder of creative-it.',
+        'I\'ve been building software for almost 35 years — from my first lines of code on an Intel 386DX to today, where AI agents ship entire features while <a href="/blog/the-rise-of-agentic-coding-moving-beyond-electron-and-react-native" class="text-cyan hover:text-cyan-bright transition-colors underline decoration-cyan/30 hover:decoration-cyan">I walk the dog</a>.',
+        'Two moments changed everything for me: discovering <strong>Serverless Architecture</strong> around 2016, which freed me from infrastructure constraints and let me build the right solution instead of the affordable one. And the rise of <strong>Agentic Coding</strong> in late 2025, which removed the time and budget limitations that held back even the best ideas.',
+        'creative-it is me — supported by a curated network of specialists who join on demand when a project needs it.',
+      ],
+      storyPrompt: "Read the full story below",
+      fullStory: [
+        'I reserved the domain "creative-it.com" in 1997, while I was studying in Graz, Austria. Just a few years before that, I started working with computers, and from the beginning I found that developing software means finding solutions to real-world problems, and that\'s a very creative task for me.',
+        'Almost 30 years later, I still stand with this approach. So much has happened from starting my first coding on an Intel 386DX to today, where AI-based agents code complete applications on their own.',
+        'What was never lost was my will to find the best solution for my customers. The one that actually solves their problem — not the one that looks best on a conference slide. Over this very long time, I stayed on top of the technology, dealing with dozens of programming languages, an uncountable number of frameworks and libraries, and massive conceptual changes in the paradigms how "good software" is built.',
+        'But breadth alone wasn\'t the answer.',
+        'The biggest change until then came about 2016 to 2017, when I noticed the benefits of Serverless Architectures. At the time, we were implementing a microservice-based application using Spring Cloud, which is to some extent the total opposite to Serverless. It wasn\'t the amount of code needed to write the application that drove me almost crazy, it was the complex infrastructure that we needed to build up and maintain, and the limitations we had.',
+        'We asked the customer if we could have a Kafka streaming cluster, and they felt like we were asking for the impossible. We asked for strict schema separation in the database to encapsulate the services with their data, and they looked at us as if we were crazy scientists. And then I saw what Serverless means, and can do. Picking a service because it\'s the perfect fit in the architecture, without causing massive initial costs (servers, team knowledge, etc.) was like a huge release for my creativity. I finally was able to implement the best architecture for my customers, and still had no operational overhead. It was magic! We did everything from Proof-of-Concepts to large-scale ingestion services that can handle millions of messages per hour from zero without losing a single message over years of operations. Things that were impossible (and still are) without Serverless Architecture in the Cloud.',
+        'Then, at the end of 2025, when agentic coding became reality, the next "release of creativity" came — all the ideas, all the features I could think of, can become reality within minutes or hours, or within a few iterations, while I could focus on other projects and tasks. This felt, again, like a door opens to a better world. Most teams are still underestimating the impact this will have on how software is built.',
+        '<strong>Serverless freed us from architectural and infrastructure constraints, and agentic coding freed us from (most of the) time and budget limitations.</strong>',
+        'So what is creative-it standing for today? Who is "we"?',
+        'creative-it is me — supported by a curated network of specialists who join on demand when a project needs it.',
+        'creative-it stands for providing you the best solution for your problem, so that we all can <strong>build</strong> a better future, <strong>grow</strong> on the problems and tasks ahead, and <strong>matter</strong> with what we do.',
+      ],
       values: [
         {
           title: "Build",
           description:
-            "We construct with purpose — software, teams, processes, and lasting relationships.",
+            "We architect serverless systems and AI agents that solve real problems — not theoretical ones.",
         },
         {
           title: "Grow",
           description:
-            "We foster continuous improvement for our clients, our team, and ourselves.",
+            "We scale your AI capabilities and cloud infrastructure so your technology grows with your business.",
         },
         {
           title: "Matter",
           description:
-            "We deliver work that creates real impact and meaningful change.",
+            "We deliver GDPR-compliant solutions with measurable ROI — because impact you can prove is impact that matters.",
         },
       ],
       stats: [
         { value: "150+", label: "Projects Delivered" },
         { value: "30+", label: "Years Experience" },
         { value: "100%", label: "Satisfaction Rate" },
-        { value: "0%", label: "Lack of Confidence" },
+        { value: "AWS", label: "& AI Certified" },
       ],
       whyChooseUs: {
-        headline: "Partnership, Not Just Service",
+        headline: "Specialist, Not Generalist",
         description:
-          "We don't just deliver projects — we build relationships. When you work with creative-it, you gain a technology partner invested in your long-term success.",
+          "We don't try to do everything — we go deep on what matters most. When you work with creative-it, you get focused AWS and AI expertise that delivers results.",
         benefits: [
           {
-            title: "Deep Expertise",
+            title: "Deep AWS & AI Expertise",
             description:
-              "Decades of experience across diverse industries and technologies.",
+              "Specialized in serverless architecture and agentic AI — not a generalist juggling dozens of technologies.",
           },
           {
-            title: "Transparent Communication",
+            title: "GDPR-Compliant by Design",
             description:
-              "Clear, honest dialogue throughout every engagement.",
+              "Every solution is built with EU data protection requirements from the start, not bolted on as an afterthought.",
           },
           {
-            title: "Long-term Vision",
-            description: "Solutions designed to grow with your business.",
+            title: "Fractional Flexibility",
+            description: "C-level technology expertise without the full-time overhead — scale our involvement up or down as you need.",
           },
         ],
         highlights: [
           {
-            title: "Fast & Efficient",
-            description: "Agile delivery without compromise",
+            title: "Production-Ready",
+            description: "Battle-tested serverless architectures",
           },
           {
-            title: "Expert Team",
-            description: "Seasoned professionals at every level",
+            title: "Cost-Optimized",
+            description: "Up to 70% cloud cost reduction",
           },
           {
-            title: "Reliable Support",
-            description: "We're with you for the long haul",
+            title: "EU-Compliant",
+            description: "GDPR built into every solution",
           },
         ],
       },
@@ -572,24 +635,34 @@ const content = {
 
     faq: [
       {
-        question: "What types of projects do you work on?",
+        question: "What is AWS Serverless and why should I care?",
         answer:
-          "We work on a wide range of technology projects including custom software development, cloud architecture, digital transformation initiatives, and IT consulting. From startups to enterprises, we tailor our approach to meet your specific needs.",
+          "AWS Serverless means you run applications without managing servers. Services like Lambda, DynamoDB, and API Gateway automatically scale with demand and you only pay for actual usage. This eliminates idle server costs, reduces operational overhead, and lets your team focus on building features instead of maintaining infrastructure.",
       },
       {
-        question: "How do you handle project communication?",
+        question: "How do you ensure GDPR compliance for AI solutions?",
         answer:
-          "We believe in transparent, consistent communication. You'll have a dedicated point of contact, regular status updates, and access to project management tools. We adapt our communication style to what works best for your team.",
+          "We build on AWS Bedrock, which processes data in the EU region (Frankfurt) and doesn't use your data for model training. All our AI architectures include data residency controls, consent management, and audit trails. We design for GDPR compliance from the start — it's not an afterthought.",
       },
       {
-        question: "What's your typical project timeline?",
+        question: "What does a Fractional CTO engagement look like?",
         answer:
-          "Timelines vary based on project scope and complexity. During our initial consultation, we'll provide a detailed timeline estimate. We focus on delivering quality work efficiently, keeping you informed of progress throughout.",
+          "A Fractional CTO engagement typically starts with a technology audit and strategy session. From there, we work with you on an ongoing basis — usually a few days per month — covering architecture decisions, team mentoring, vendor evaluation, and roadmap planning. You get C-level expertise without the full-time salary.",
       },
       {
-        question: "Do you offer ongoing support after project completion?",
+        question: "How much can serverless save compared to traditional infrastructure?",
         answer:
-          "Absolutely. We offer various support and maintenance packages to ensure your solutions continue to perform optimally. We're committed to your long-term success, not just project delivery.",
+          "Most clients see 40-70% cost reduction after migrating to serverless. The savings come from eliminating idle compute costs, reducing ops overhead, and paying only for actual usage. We provide a detailed cost analysis before any migration to quantify your specific savings potential.",
+      },
+      {
+        question: "Do you work with international clients?",
+        answer:
+          "Yes. We work with clients across Europe and beyond, with experience in cross-border data compliance, multi-region AWS deployments, and distributed team collaboration. Our GDPR expertise is particularly valuable for companies operating in or selling to the EU market.",
+      },
+      {
+        question: "What's the typical engagement timeline?",
+        answer:
+          "It depends on the scope. A serverless architecture review takes 1-2 weeks. An AI agent MVP typically takes 4-8 weeks. A full cloud migration can span 2-6 months. During our free consultation, we'll map out a timeline tailored to your specific needs and priorities.",
       },
     ],
 
@@ -606,30 +679,16 @@ const content = {
 
     pages: {
       home: {
-        chip: "AI · Software · Teams · Trust",
-        headline: { before: "Build. ", gradient: "Grow.", after: " Matter." },
-        ctaPrimary: "Get a Free Consultation",
-        ctaSecondary: "Explore Services",
-
-        animation: {
-          build: [
-            "Apps", "Agents", "Skills", "Knowledge", "Tools", "Services",
-            "Products", "Solutions", "Platforms", "Ecosystems", "Communities",
-            "Partnerships", "Collaborations", "Innovations", "Experiments",
-            "Prototypes", "MVPs", "Proof of Concepts",
-          ],
-          grow: [
-            "Community", "Mindsets", "Trust", "Influence", "Culture", "Values",
-            "Vision", "Mission", "Purpose", "Goals", "Objectives", "Strategies",
-            "Tactics", "Plans", "Roadmaps", "Milestones", "KPIs",
-          ],
-        },
+        chip: "AI Agents · Serverless · Cloud Architecture",
+        headline: { before: "Architect. ", gradient: "Automate.", after: " Accelerate." },
+        ctaPrimary: "Book a Free Consultation",
+        ctaSecondary: "Explore Our Services",
 
         servicesSection: {
-          chip: "What We Do",
-          headline: { before: "Technology Solutions That ", gradient: "Drive Growth", after: "" },
+          chip: "Our Expertise",
+          headline: { before: "Four Pillars of ", gradient: "Technical Excellence", after: "" },
           description:
-            "From custom software to cloud architecture, we deliver solutions that scale with your ambitions.",
+            "From serverless architecture to agentic AI, we deliver specialized solutions that scale with your ambitions.",
           linkText: "Learn more",
         },
 
@@ -649,9 +708,9 @@ const content = {
         },
 
         cta: {
-          headline: "Ready to Build\nSomething That Matters?",
+          headline: "Ready to Architect\nYour Next Solution?",
           description:
-            "Let's discuss how we can help you achieve your technology goals and create lasting impact.",
+            "Let's discuss how serverless architecture and agentic AI can transform your business.",
           button: "Schedule a Consultation",
         },
       },
@@ -659,15 +718,15 @@ const content = {
       about: {
         meta: {
           title: "About",
-          description: "Learn more about creative-it and our Build. Grow. Matter. philosophy",
+          description: "AWS Serverless & Agentic AI Architect — 30+ years of experience, specialized expertise",
         },
         hero: {
           chip: "About Us",
-          headline: { before: "We Build With ", gradient: "Purpose", after: "" },
+          headline: { before: "AWS Serverless & ", gradient: "Agentic AI", after: " Architect" },
         },
         storySection: {
           chip: "Our Story",
-          headline: "The Philosophy Behind Everything We Do",
+          headline: "From Full-Stack to Focused Specialist",
         },
         valuesSection: {
           chip: "Our Values",
@@ -677,9 +736,9 @@ const content = {
           chip: "Why Choose Us",
         },
         cta: {
-          headline: "Let's Build Together",
+          headline: "Let's Architect Together",
           description:
-            "Ready to partner with a team that's invested in your success? Let's start a conversation.",
+            "Ready to work with a specialist who's invested in your success? Let's start a conversation.",
           button: "Get in Touch",
         },
       },
@@ -687,13 +746,13 @@ const content = {
       services: {
         meta: {
           title: "Services",
-          description: "Comprehensive technology solutions to power your business forward",
+          description: "AWS Serverless Architecture, Agentic AI, Fractional CTO & Cloud Cost Optimization",
         },
         hero: {
-          chip: "Our Services",
-          headline: { before: "Technology That ", gradient: "Drives Growth", after: "" },
+          chip: "Our Expertise",
+          headline: { before: "Serverless & AI Solutions That ", gradient: "Deliver Results", after: "" },
           description:
-            "From concept to deployment, we deliver end-to-end solutions that transform your business capabilities and accelerate your success.",
+            "Four specialized pillars — from serverless architecture to agentic AI, fractional CTO services to cloud cost optimization. Deep expertise, measurable outcomes.",
         },
         serviceButton: "Discuss Your Project",
         processSection: {
@@ -1158,13 +1217,13 @@ const content = {
       contact: {
         meta: {
           title: "Contact",
-          description: "Get in touch with creative-it to discuss your project",
+          description: "Book a free consultation for AWS Serverless, Agentic AI, or Fractional CTO services",
         },
         hero: {
           chip: "Contact Us",
-          headline: { before: "Let's Start ", gradient: "Building", after: "" },
+          headline: { before: "Let's Start ", gradient: "Architecting", after: "" },
           description:
-            "Have a project in mind? We'd love to hear about it. Reach out and let's discuss how we can help you achieve your goals.",
+            "Whether you need serverless architecture, AI agents, or strategic technology leadership — let's discuss how we can help.",
         },
         infoHeadline: "Get in Touch",
         socialLabel: "Follow Us",
@@ -1181,10 +1240,10 @@ const content = {
           subjectLabel: "Subject",
           subjectPlaceholder: "Select a topic",
           subjectOptions: [
-            { value: "project", label: "New Project" },
-            { value: "consulting", label: "Consulting Inquiry" },
-            { value: "partnership", label: "Partnership Opportunity" },
-            { value: "careers", label: "Careers" },
+            { value: "serverless", label: "Serverless Architecture" },
+            { value: "ai", label: "AI & Agentic Consulting" },
+            { value: "cto", label: "Fractional CTO Inquiry" },
+            { value: "optimization", label: "Cloud Cost Optimization" },
             { value: "other", label: "Other" },
           ],
           messageLabel: "Message",
@@ -1232,11 +1291,17 @@ const content = {
   de: {
     tagline: "Build. Grow. Matter.",
     description:
-      "Wir entwickeln Software, KI-Agenten, Teams, Prozesse und Vertrauen. Daraus entsteht Wachstum — und nachhaltiger Mehrwert.",
+      "Wir bauen intelligente, serverlose Lösungen auf AWS — von KI-Agenten bis Cloud-Architektur. DSGVO-konform, produktionsreif, in jedem Maßstab.",
 
     navigation: [
       { name: "Home", href: "/de" },
-      { name: "Services", href: "/de/services" },
+      { name: "Services", href: "/de/services", children: [
+        { name: "Übersicht", href: "/de/services" },
+        { name: "AWS Serverless", href: "/de/services/aws-serverless" },
+        { name: "Agentic AI", href: "/de/services/agentic-ai" },
+        { name: "Fractional CTO", href: "/de/services/fractional-cto" },
+        { name: "Cloud-Optimierung", href: "/de/services/cloud-optimization" },
+      ]},
       { name: "Über uns", href: "/de/about" },
       { name: "KI-Labor", href: "#", children: [
         { name: "AI Playground", href: "/de/ai-playground" },
@@ -1250,132 +1315,189 @@ const content = {
 
     services: [
       {
-        title: "Agentic Coding",
+        slug: "aws-serverless",
+        title: "AWS Serverless Architektur",
         description:
-          "Bringen Sie die Vorteile von Agentic Coding in Ihr Team. Steigern Sie die Produktivität massiv.",
-        icon: "brain",
-        features: [
-          "Modellauswahl",
-          "Workflows",
-          "Team-Setup",
-        ],
-      },
-      {
-        title: "KI-basierte Anwendungen",
-        description:
-          "Maßgeschneiderte KI-Agenten und Modelle, die Ihr Produkt intelligenter machen.",
-        icon: "robot",
-        features: [
-          "Agentenentwicklung",
-          "Modelloptimierung",
-          "DSGVO-Konformität",
-        ],
-      },
-      {
-        title: "App-Entwicklung",
-        description: "Individuelle mobile Apps für Ihr Unternehmen. Wir entwickeln native Apps für iOS und Android.",
-        icon: "mobile",
-        features: [
-          "iOS- & Android-Entwicklung",
-          "Backend-Lösungen",
-          "Natives App-Design, gleiche Funktionen",
-        ],
-      },
-      {
-        title: "Softwareentwicklung",
-        description:
-          "Maßgeschneiderte Lösungen mit Präzision und Ziel. Wir verwandeln komplexe Anforderungen in elegante, skalierbare Software.",
-        icon: "code",
-        features: [
-          "Full-Stack-Entwicklung",
-          "API-Design & Integration",
-          "Serverless-Technologien",
-        ],
-      },
-      {
-        title: "Cloud-Architektur",
-        description:
-          "Sichere, skalierbare Infrastruktur für Wachstum. Wir entwerfen Cloud-Lösungen, die auch unter Druck performen.",
+          "Zero-Ops-Infrastruktur, die automatisch skaliert und nur kostet, was Sie nutzen. Der Serverless-Markt wächst von $28 Mrd. auf $92 Mrd. — wir helfen Ihnen, davon zu profitieren.",
         icon: "cloud",
         features: [
-          "Cloud-Migration",
+          "Serverless-Architektur",
           "Infrastructure as Code",
-          "NoOps",
+          "Event-driven Microservices",
+          "Pay-per-Use Kostenmodell",
+        ],
+        tagline: "Infrastruktur, die sich selbst skaliert — damit Sie sich aufs Bauen konzentrieren können.",
+        longDescription: "Serverless-Architektur eliminiert die Notwendigkeit, Server bereitzustellen, zu skalieren oder zu warten. Mit Kerndiensten wie AWS Lambda, DynamoDB und API Gateway reagieren Ihre Anwendungen in Echtzeit auf Nachfrage — skalieren von null auf Millionen Anfragen ohne manuelle Eingriffe.\n\nWir entwerfen event-driven Systeme mit Infrastructure as Code (AWS CDK), wobei jedes Deployment reproduzierbar, auditierbar und versionskontrolliert ist. Von REST-APIs bis zu Echtzeit-Datenpipelines — unsere Serverless-Architekturen sind von Tag eins produktionsreif.\n\nDas Ergebnis: niedrigere Betriebskosten, schnellere Time-to-Market und Infrastruktur, die mit Ihrem Unternehmen wächst — nicht dagegen.",
+        benefits: [
+          { title: "Zero Ops Overhead", description: "Keine Server zum Patchen, Skalieren oder Überwachen. AWS verwaltet die Infrastruktur, damit Ihr Team sich auf Features konzentriert." },
+          { title: "Zahlen nur bei Nutzung", description: "Keine Leerlauf-Compute-Kosten. Sie zahlen pro Anfrage und pro Millisekunde Ausführung — nicht mehr." },
+          { title: "Unbegrenzte Skalierbarkeit", description: "Von null auf Millionen Anfragen automatisch. Keine Kapazitätsplanung, keine Engpässe." },
+        ],
+        useCases: [
+          "REST- & GraphQL-APIs mit automatischer Skalierung",
+          "Event-driven Datenverarbeitungspipelines",
+          "Echtzeit-Webhooks und Integrationen",
+          "Geplante Batch-Jobs und ETL-Workflows",
         ],
       },
       {
-        title: "Technische Beratung",
+        slug: "agentic-ai",
+        title: "Agentic AI & DSGVO-Konformität",
         description:
-          "Strategische Begleitung für Technologieentscheidungen, die zählen. Wir helfen Ihnen, Komplexität souverän zu meistern.",
+          "Maßgeschneiderte KI-Agenten auf AWS Bedrock, die Workflows automatisieren und Ihr Team verstärken. Der Agentic-AI-Markt wächst von $7,8 Mrd. auf $52 Mrd. — wir bauen Lösungen, die von Tag eins EU-konform sind.",
+        icon: "brain",
+        features: [
+          "AWS Bedrock Agentenentwicklung",
+          "RAG-Pipelines & Wissensdatenbanken",
+          "DSGVO-konforme KI-Architektur",
+          "DSGVO-konformes Agentic Coding",
+        ],
+        tagline: "KI-Agenten, die für Sie arbeiten — nicht gegen die Compliance.",
+        longDescription: "Agentic AI geht über einfache Chatbots hinaus. Wir bauen autonome KI-Agenten auf AWS Bedrock, die Kontext verstehen, mehrstufige Aktionen planen und komplexe Workflows ausführen — und dabei Ihre Daten innerhalb der EU halten.\n\nUnsere Agenten nutzen Retrieval-Augmented Generation (RAG), um Antworten in Ihren tatsächlichen Geschäftsdaten zu verankern, Halluzinationen zu reduzieren und die Genauigkeit zu erhöhen. Kombiniert mit Human-in-the-Loop-Sicherungen erhalten Sie KI, die leistungsfähig und dennoch kontrollierbar ist.\n\nJede Lösung wird von Anfang an DSGVO-konform entworfen: Datenresidenz in der EU (dedizierte Region wie Frankfurt/eu-central-1 oder EU-weit für günstigere und schnellere Inferenz), kein Training mit Ihren Daten, vollständige Audit-Trails und eingebautes Consent-Management.",
+        benefits: [
+          { title: "EU-konform by Design", description: "Alle Daten werden in AWS EU-Regionen verarbeitet. Kein Modelltraining mit Ihren Daten. Vollständige Audit-Trails und Consent-Management." },
+          { title: "In Ihren Daten verankert", description: "RAG-Pipelines stellen sicher, dass KI-Antworten auf Ihren tatsächlichen Dokumenten und Wissen basieren — nicht auf generischen Trainingsdaten." },
+          { title: "Mensch im Loop", description: "Kritische Entscheidungen bleiben beim Menschen. Agenten übernehmen die schwere Arbeit; Ihr Team behält die Kontrolle." },
+        ],
+        useCases: [
+          "In-App KI-Assistenten und Chatbots",
+          "Dokumentenverarbeitungs- und Extraktionspipelines",
+          "Wissensdatenbank Q&A-Systeme",
+          "Automatisierte Workflow-Orchestrierung",
+        ],
+      },
+      {
+        slug: "fractional-cto",
+        title: "Fractional CTO",
+        description:
+          "C-Level-Technologieführung zu einem Bruchteil der Kosten. Unternehmen mit starker Tech-Führung wachsen bis zu 400% schneller — erhalten Sie 80% des Wertes bei 20% der Kosten eines Vollzeit-CTOs.",
         icon: "ruler",
         features: [
-          "Architektur-Review",
-          "Technologiestrategie",
-          "Team-Erweiterung",
+          "Technologiestrategie & Roadmap",
+          "Architektur-Review & Entscheidungen",
+          "Team-Mentoring & Hiring-Begleitung",
+          "Vendor-Evaluation & Due Diligence",
+        ],
+        tagline: "C-Level Tech-Führung ohne Vollzeit-Overhead.",
+        longDescription: "Nicht jedes Unternehmen braucht einen Vollzeit-CTO — aber jedes Unternehmen braucht strategische Technologieführung. Als Ihr Fractional CTO bringe ich über 30 Jahre Engineering-Erfahrung in Ihr Führungsteam ein — flexibel und in Teilzeit.\n\nVon Technologiestrategie und Architekturentscheidungen bis zu Team-Mentoring und Vendor-Evaluation: Ich biete die Begleitung, die technische Investitionen in Geschäftsergebnisse verwandelt. Ich habe gesehen, was funktioniert und was nicht — in Startups, Scale-ups und Enterprise-Umgebungen.\n\nDas Engagement wird auf Ihre Bedürfnisse zugeschnitten: einige Tage pro Monat für laufende Beratung oder intensive Sprints für kritische Entscheidungen wie Technologiemigrationen, Team-Skalierung oder Produktarchitektur.",
+        benefits: [
+          { title: "80/20-Wertversprechen", description: "Erhalten Sie 80% des Wertes eines Vollzeit-CTOs bei 20% der Kosten. Strategische Führung ohne Vollzeit-Gehalt." },
+          { title: "30+ Jahre Erfahrung", description: "Tiefe Expertise in Cloud-Architektur, KI, Mobile und Enterprise-Systemen — praxiserprobt in der Produktion." },
+          { title: "Flexibles Engagement", description: "Skalieren Sie die Beteiligung nach Bedarf hoch oder runter. Beratungs-Retainer oder intensive Projekt-Sprints." },
+        ],
+        useCases: [
+          "Technologiestrategie und Roadmap-Planung",
+          "Architektur-Reviews und technische Due Diligence",
+          "Engineering-Team-Mentoring und Hiring",
+          "Build-vs-Buy-Entscheidungen und Vendor-Evaluation",
+        ],
+      },
+      {
+        slug: "cloud-optimization",
+        title: "Kostenoptimierte Cloud & KI",
+        description:
+          "Reduzieren Sie Ihre Cloud-Kosten um bis zu 70% durch Right-Sizing, reservierte Kapazitäten und FinOps-Praktiken. Wir verwandeln aufgeblähte Infrastruktur in schlanke, kosteneffiziente Systeme.",
+        icon: "code",
+        features: [
+          "AWS-Kostenanalyse & Optimierung",
+          "FinOps-Implementierung",
+          "Serverless-Migration zur Kostensenkung",
+          "KI-Workload Kostenmanagement",
+        ],
+        tagline: "Cloud-Kosten um bis zu 70% senken — ohne Leistung einzubüßen.",
+        longDescription: "Die meisten Unternehmen geben 30-50% zu viel für die Cloud aus. Wir führen eine tiefgehende Kostenanalyse Ihrer AWS-Infrastruktur durch, identifizieren Verschwendung und implementieren FinOps-Praktiken, die messbare Einsparungen liefern — ohne Leistung oder Zuverlässigkeit zu opfern.\n\nUnser Ansatz kombiniert Right-Sizing, reservierte Kapazitätsplanung, Spot-Instance-Strategien und Serverless-Migration, um Leerlauf-Compute-Kosten zu eliminieren. Für KI-Workloads optimieren wir Modellauswahl, Batching-Strategien und Caching, um Inferenzkosten unter Kontrolle zu halten.\n\nJedes Engagement beginnt mit einer detaillierten Kostenanalyse und endet mit einer klaren Einsparungs-Roadmap — damit Sie genau wissen, was Sie erwartet, bevor Sie sich committen.",
+        benefits: [
+          { title: "40-70% Kostenreduktion", description: "Die meisten Kunden sehen dramatische Einsparungen durch Right-Sizing, reservierte Kapazitäten und Eliminierung ungenutzter Ressourcen." },
+          { title: "FinOps Best Practices", description: "Implementieren Sie Kostentransparenz, Verantwortlichkeit und Optimierung als laufende Disziplinen — nicht als einmalige Fixes." },
+          { title: "KI-Kostenkontrolle", description: "Optimieren Sie Modellauswahl, Batching und Caching-Strategien, um KI-Inferenzkosten vorhersagbar zu halten." },
+        ],
+        useCases: [
+          "AWS-Kostenaudit und Einsparungs-Roadmap",
+          "Serverless-Migration zur Kostenreduktion",
+          "KI/ML-Workload Kostenoptimierung",
+          "FinOps-Kultur und Tooling-Implementierung",
         ],
       },
     ],
 
     about: {
       mission:
-        "Unternehmen durch Technologie stärken, die transformiert, Teams, die aufblühen, und Partnerschaften, die Bestand haben.",
-      story:
-        "Creative IT wurde auf einer einfachen Überzeugung gegründet: Technologie sollte Wachstum ermöglichen, nicht einschränken. Wir haben unser Unternehmen um die Philosophie Build. Grow. Matter. aufgebaut — Software entwickeln, Teams aufbauen, Vertrauen schaffen. Auf dieser Basis helfen wir unseren Kunden, ihre Fähigkeiten, ihre Reichweite und ihren Einfluss zu steigern. Denn letztlich glauben wir, dass das, was wir gemeinsam schaffen, zählen sollte — für Ihr Unternehmen, für Ihre Kunden und für die Zukunft, die Sie aufbauen.",
+        "Unternehmen dabei unterstützen, die Kraft von AWS Serverless und Agentic AI zu nutzen — mit Lösungen, die DSGVO-konform, produktionsreif und skalierbar sind.",
+      essenz: [
+        'Ich bin <strong>Günther Wieser</strong>, AWS Serverless &amp; Agentic AI Architekt und Gründer von creative-it.',
+        'Seit fast 35 Jahren entwickle ich Software — von meinen ersten Codezeilen auf einem Intel 386DX bis heute, wo KI-Agenten komplette Features liefern, während <a href="/blog/the-rise-of-agentic-coding-moving-beyond-electron-and-react-native" class="text-cyan hover:text-cyan-bright transition-colors underline decoration-cyan/30 hover:decoration-cyan">ich mit dem Hund spazieren gehe</a>.',
+        'Zwei Momente haben alles verändert: Die Entdeckung von <strong>Serverless Architecture</strong> um 2016, die mich von Infrastruktur-Einschränkungen befreite und mir erlaubte, die richtige Lösung zu bauen statt die leistbare. Und der Aufstieg von <strong>Agentic Coding</strong> Ende 2025, der die Zeit- und Budgetlimitierungen beseitigte, die selbst die besten Ideen zurückhielten.',
+        'creative-it bin ich — unterstützt von einem kuratierten Netzwerk aus Spezialisten, die bei Bedarf zum Projekt dazustoßen.',
+      ],
+      storyPrompt: "Die ganze Geschichte lesen",
+      fullStory: [
+        'Ich habe die Domain „creative-it.com" 1997 reserviert, während ich in Graz studierte. Nur wenige Jahre davor begann ich mit Computern zu arbeiten, und von Anfang an erkannte ich: Software zu entwickeln bedeutet, Lösungen für reale Probleme zu finden — und das ist für mich eine zutiefst kreative Aufgabe.',
+        'Fast 30 Jahre später stehe ich immer noch zu diesem Ansatz. So viel ist passiert, von meinem ersten Code auf einem Intel 386DX bis heute, wo KI-basierte Agenten komplette Anwendungen eigenständig programmieren.',
+        'Was nie verloren ging, war mein Wille, die beste Lösung für meine Kunden zu finden. Diejenige, die tatsächlich ihr Problem löst — nicht diejenige, die auf einer Konferenz-Folie am besten aussieht. Über diese sehr lange Zeit blieb ich am Puls der Technologie, arbeitete mit Dutzenden Programmiersprachen, einer unzähligen Menge an Frameworks und Libraries, und massiven konzeptionellen Veränderungen in den Paradigmen, wie „gute Software" gebaut wird.',
+        'Aber Breite allein war nicht die Antwort.',
+        'Die größte Veränderung bis dahin kam etwa 2016 bis 2017, als ich die Vorteile von Serverless Architectures erkannte. Zu der Zeit implementierten wir eine Microservice-basierte Anwendung mit Spring Cloud, was in gewisser Hinsicht das totale Gegenteil von Serverless ist. Es war nicht die Menge an Code, die für die Anwendung geschrieben werden musste, die mich fast wahnsinnig machte — es war die komplexe Infrastruktur, die wir aufbauen und warten mussten, und die Einschränkungen, die wir hatten.',
+        'Wir fragten den Kunden, ob wir einen Kafka-Streaming-Cluster haben könnten, und sie reagierten, als würden wir das Unmögliche verlangen. Wir baten um strikte Schema-Trennung in der Datenbank, um die Services mit ihren Daten zu kapseln, und sie schauten uns an wie verrückte Wissenschaftler. Und dann sah ich, was Serverless bedeutet und kann. Einen Service zu wählen, weil er perfekt in die Architektur passt, ohne massive Anfangskosten (Server, Team-Know-how etc.) zu verursachen — das war wie eine riesige Befreiung für meine Kreativität. Endlich konnte ich die beste Architektur für meine Kunden umsetzen und hatte trotzdem keinen operativen Overhead. Es war Magie! Wir bauten alles von Proof-of-Concepts bis zu Large-Scale-Ingestion-Services, die Millionen von Nachrichten pro Stunde von null verarbeiten können, ohne eine einzige Nachricht über Jahre des Betriebs zu verlieren. Dinge, die ohne Serverless Architecture in der Cloud unmöglich waren (und immer noch sind).',
+        'Dann, Ende 2025, als Agentic Coding Realität wurde, kam die nächste „Befreiung der Kreativität" — alle Ideen, alle Features, die mir einfielen, konnten innerhalb von Minuten oder Stunden Realität werden, oder innerhalb weniger Iterationen, während ich mich auf andere Projekte und Aufgaben konzentrieren konnte. Das fühlte sich wieder an, als würde sich eine Tür zu einer besseren Welt öffnen. Die meisten Teams unterschätzen noch immer den Einfluss, den das auf die Art haben wird, wie Software gebaut wird.',
+        '<strong>Serverless befreite uns von architektonischen und infrastrukturellen Einschränkungen, und Agentic Coding befreite uns von (den meisten) Zeit- und Budget-Limitierungen.</strong>',
+        'Wofür steht creative-it heute? Wer ist „wir"?',
+        'creative-it bin ich — unterstützt von einem kuratierten Netzwerk aus Spezialisten, die bei Bedarf zum Projekt dazustoßen.',
+        'creative-it steht dafür, Ihnen die beste Lösung für Ihr Problem zu liefern, damit wir alle eine bessere Zukunft <strong>bauen</strong>, an den Problemen und Aufgaben vor uns <strong>wachsen</strong> und mit dem, was wir tun, <strong>wirken</strong> können.',
+      ],
       values: [
         {
           title: "Build",
           description:
-            "Wir bauen mit Absicht — Software, Teams, Prozesse und dauerhafte Beziehungen.",
+            "Wir entwerfen Serverless-Systeme und KI-Agenten, die echte Probleme lösen — keine theoretischen.",
         },
         {
           title: "Grow",
           description:
-            "Wir fördern kontinuierliche Verbesserung für unsere Kunden, unser Team und uns selbst.",
+            "Wir skalieren Ihre KI-Fähigkeiten und Cloud-Infrastruktur, damit Ihre Technologie mit Ihrem Unternehmen wächst.",
         },
         {
           title: "Matter",
           description:
-            "Wir liefern Arbeit, die echten Mehrwert und nachhaltigen Wandel schafft.",
+            "Wir liefern DSGVO-konforme Lösungen mit messbarem ROI — denn Wirkung, die man belegen kann, ist Wirkung, die zählt.",
         },
       ],
       stats: [
         { value: "150+", label: "Projekte geliefert" },
         { value: "30+", label: "Jahre Erfahrung" },
         { value: "100%", label: "Zufriedenheitsrate" },
-        { value: "0%", label: "Mangel an Zuversicht" },
+        { value: "AWS", label: "& KI-zertifiziert" },
       ],
       whyChooseUs: {
-        headline: "Partnerschaft, nicht nur Dienstleistung",
+        headline: "Spezialist, kein Generalist",
         description:
-          "Wir liefern nicht nur Projekte — wir bauen Beziehungen auf. Wenn Sie mit creative-it arbeiten, gewinnen Sie einen Technologiepartner, der in Ihren langfristigen Erfolg investiert.",
+          "Wir versuchen nicht, alles zu machen — wir gehen dorthin, wo es am meisten zählt. Mit creative-it bekommen Sie fokussierte AWS- und KI-Expertise, die Ergebnisse liefert.",
         benefits: [
           {
-            title: "Tiefgreifende Expertise",
+            title: "Tiefe AWS- & KI-Expertise",
             description:
-              "Jahrzehntelange Erfahrung in verschiedensten Branchen und Technologien.",
+              "Spezialisiert auf Serverless-Architektur und Agentic AI — kein Generalist, der dutzende Technologien jongliert.",
           },
           {
-            title: "Transparente Kommunikation",
+            title: "DSGVO-konform by Design",
             description:
-              "Klarer, ehrlicher Dialog in jeder Phase der Zusammenarbeit.",
+              "Jede Lösung wird von Anfang an mit EU-Datenschutzanforderungen gebaut — nicht nachträglich draufgeschraubt.",
           },
           {
-            title: "Langfristige Vision",
-            description: "Lösungen, die mit Ihrem Unternehmen wachsen.",
+            title: "Fraktionale Flexibilität",
+            description: "C-Level-Technologie-Expertise ohne Vollzeit-Overhead — skalieren Sie unsere Beteiligung nach Bedarf.",
           },
         ],
         highlights: [
           {
-            title: "Schnell & effizient",
-            description: "Agile Umsetzung ohne Kompromisse",
+            title: "Produktionsreif",
+            description: "Battle-tested Serverless-Architekturen",
           },
           {
-            title: "Erfahrenes Team",
-            description: "Erfahrene Profis auf jeder Ebene",
+            title: "Kostenoptimiert",
+            description: "Bis zu 70% Cloud-Kostenreduktion",
           },
           {
-            title: "Zuverlässiger Support",
-            description: "Wir sind langfristig an Ihrer Seite",
+            title: "EU-konform",
+            description: "DSGVO in jede Lösung eingebaut",
           },
         ],
       },
@@ -1437,24 +1559,34 @@ const content = {
 
     faq: [
       {
-        question: "An welchen Arten von Projekten arbeiten Sie?",
+        question: "Was ist AWS Serverless und warum sollte mich das interessieren?",
         answer:
-          "Wir arbeiten an einem breiten Spektrum von Technologieprojekten, darunter individuelle Softwareentwicklung, Cloud-Architektur, digitale Transformationsinitiativen und IT-Beratung. Von Startups bis zu Großunternehmen passen wir unseren Ansatz an Ihre spezifischen Bedürfnisse an.",
+          "AWS Serverless bedeutet, dass Sie Anwendungen betreiben, ohne Server zu verwalten. Dienste wie Lambda, DynamoDB und API Gateway skalieren automatisch mit der Nachfrage und Sie zahlen nur für die tatsächliche Nutzung. Das eliminiert Leerlauf-Serverkosten, reduziert den Betriebsaufwand und lässt Ihr Team sich auf Features konzentrieren statt auf Infrastruktur.",
       },
       {
-        question: "Wie handhaben Sie die Projektkommunikation?",
+        question: "Wie stellen Sie die DSGVO-Konformität bei KI-Lösungen sicher?",
         answer:
-          "Wir setzen auf transparente, konsistente Kommunikation. Sie erhalten einen festen Ansprechpartner, regelmäßige Statusupdates und Zugang zu Projektmanagement-Tools. Wir passen unseren Kommunikationsstil an das an, was für Ihr Team am besten funktioniert.",
+          "Wir bauen auf AWS Bedrock, das Daten in der EU-Region (Frankfurt) verarbeitet und Ihre Daten nicht für Modelltraining verwendet. Alle unsere KI-Architekturen beinhalten Datenresidenz-Kontrollen, Consent-Management und Audit-Trails. Wir designen für DSGVO-Konformität von Anfang an — es ist kein Nachgedanke.",
       },
       {
-        question: "Wie sieht Ihre typische Projektlaufzeit aus?",
+        question: "Wie sieht ein Fractional-CTO-Engagement aus?",
         answer:
-          "Die Laufzeiten variieren je nach Projektumfang und Komplexität. Während unseres ersten Beratungsgesprächs erstellen wir eine detaillierte Zeitplanung. Wir konzentrieren uns darauf, qualitativ hochwertige Arbeit effizient zu liefern und Sie über den Fortschritt auf dem Laufenden zu halten.",
+          "Ein Fractional-CTO-Engagement beginnt typischerweise mit einem Technologie-Audit und einer Strategie-Session. Danach arbeiten wir fortlaufend mit Ihnen zusammen — meist einige Tage pro Monat — zu Architekturentscheidungen, Team-Mentoring, Vendor-Evaluation und Roadmap-Planung. Sie erhalten C-Level-Expertise ohne Vollzeit-Gehalt.",
       },
       {
-        question: "Bieten Sie nach Projektabschluss laufenden Support an?",
+        question: "Wie viel kann Serverless im Vergleich zu traditioneller Infrastruktur sparen?",
         answer:
-          "Selbstverständlich. Wir bieten verschiedene Support- und Wartungspakete an, damit Ihre Lösungen weiterhin optimal funktionieren. Wir setzen auf Ihren langfristigen Erfolg, nicht nur auf die Projektauslieferung.",
+          "Die meisten Kunden sehen 40-70% Kostenreduktion nach der Migration auf Serverless. Die Einsparungen kommen durch den Wegfall von Leerlauf-Compute-Kosten, reduzierten Betriebsaufwand und Bezahlung nur für die tatsächliche Nutzung. Wir erstellen vor jeder Migration eine detaillierte Kostenanalyse, um Ihr spezifisches Einsparpotenzial zu quantifizieren.",
+      },
+      {
+        question: "Arbeiten Sie mit internationalen Kunden?",
+        answer:
+          "Ja. Wir arbeiten mit Kunden in ganz Europa und darüber hinaus, mit Erfahrung in grenzüberschreitender Daten-Compliance, Multi-Region-AWS-Deployments und verteilter Teamzusammenarbeit. Unsere DSGVO-Expertise ist besonders wertvoll für Unternehmen, die in der EU tätig sind oder dorthin verkaufen.",
+      },
+      {
+        question: "Wie sieht der typische Zeitrahmen eines Engagements aus?",
+        answer:
+          "Das hängt vom Umfang ab. Ein Serverless-Architektur-Review dauert 1-2 Wochen. Ein KI-Agenten-MVP typischerweise 4-8 Wochen. Eine vollständige Cloud-Migration kann 2-6 Monate umfassen. In unserem kostenlosen Beratungsgespräch erstellen wir einen Zeitplan, der auf Ihre spezifischen Bedürfnisse und Prioritäten zugeschnitten ist.",
       },
     ],
 
@@ -1471,30 +1603,16 @@ const content = {
 
     pages: {
       home: {
-        chip: "KI · Software · Teams · Vertrauen",
-        headline: { before: "Build. ", gradient: "Grow.", after: " Matter." },
-        ctaPrimary: "Kostenlose Beratung",
-        ctaSecondary: "Dienstleistungen entdecken",
-
-        animation: {
-          build: [
-            "Apps", "Agents", "Skills", "Knowledge", "Tools", "Services",
-            "Products", "Solutions", "Platforms", "Ecosystems", "Communities",
-            "Partnerships", "Collaborations", "Innovations", "Experiments",
-            "Prototypes", "MVPs", "Proof of Concepts",
-          ],
-          grow: [
-            "Community", "Mindsets", "Trust", "Influence", "Culture", "Values",
-            "Vision", "Mission", "Purpose", "Goals", "Objectives", "Strategies",
-            "Tactics", "Plans", "Roadmaps", "Milestones", "KPIs",
-          ],
-        },
+        chip: "KI-Agenten · Serverless · Cloud-Architektur",
+        headline: { before: "Architektur. ", gradient: "Automatisierung.", after: " Beschleunigung." },
+        ctaPrimary: "Kostenlose Beratung buchen",
+        ctaSecondary: "Unsere Expertise entdecken",
 
         servicesSection: {
-          chip: "Was wir tun",
-          headline: { before: "Technologielösungen, die ", gradient: "Wachstum antreiben", after: "" },
+          chip: "Unsere Expertise",
+          headline: { before: "Vier Säulen der ", gradient: "technischen Exzellenz", after: "" },
           description:
-            "Von individueller Software bis zur Cloud-Architektur liefern wir Lösungen, die mit Ihren Ambitionen skalieren.",
+            "Von Serverless-Architektur bis zu Agentic AI liefern wir spezialisierte Lösungen, die mit Ihren Ambitionen skalieren.",
           linkText: "Mehr erfahren",
         },
 
@@ -1514,9 +1632,9 @@ const content = {
         },
 
         cta: {
-          headline: "Bereit, etwas zu bauen,\ndas zählt?",
+          headline: "Bereit, Ihre nächste\nLösung zu entwerfen?",
           description:
-            "Lassen Sie uns besprechen, wie wir Ihnen helfen können, Ihre Technologieziele zu erreichen und nachhaltige Wirkung zu erzielen.",
+            "Lassen Sie uns besprechen, wie Serverless-Architektur und Agentic AI Ihr Unternehmen transformieren können.",
           button: "Beratungsgespräch vereinbaren",
         },
       },
@@ -1524,15 +1642,15 @@ const content = {
       about: {
         meta: {
           title: "Über uns",
-          description: "Erfahren Sie mehr über creative-it und unsere Build. Grow. Matter. Philosophie",
+          description: "AWS Serverless & Agentic AI Architekt — 30+ Jahre Erfahrung, spezialisierte Expertise",
         },
         hero: {
           chip: "Über uns",
-          headline: { before: "Wir bauen mit ", gradient: "Absicht", after: "" },
+          headline: { before: "AWS Serverless & ", gradient: "Agentic AI", after: " Architekt" },
         },
         storySection: {
           chip: "Unsere Geschichte",
-          headline: "Die Philosophie hinter allem, was wir tun",
+          headline: "Vom Full-Stack zum fokussierten Spezialisten",
         },
         valuesSection: {
           chip: "Unsere Werte",
@@ -1542,9 +1660,9 @@ const content = {
           chip: "Warum wir",
         },
         cta: {
-          headline: "Gemeinsam bauen",
+          headline: "Gemeinsam entwerfen",
           description:
-            "Bereit für eine Partnerschaft mit einem Team, das in Ihren Erfolg investiert? Lassen Sie uns ins Gespräch kommen.",
+            "Bereit, mit einem Spezialisten zu arbeiten, der in Ihren Erfolg investiert? Lassen Sie uns ins Gespräch kommen.",
           button: "Kontakt aufnehmen",
         },
       },
@@ -1552,13 +1670,13 @@ const content = {
       services: {
         meta: {
           title: "Dienstleistungen",
-          description: "Umfassende Technologielösungen, die Ihr Unternehmen voranbringen",
+          description: "AWS Serverless Architektur, Agentic AI, Fractional CTO & Cloud-Kostenoptimierung",
         },
         hero: {
-          chip: "Unsere Dienstleistungen",
-          headline: { before: "Technologie, die ", gradient: "Wachstum antreibt", after: "" },
+          chip: "Unsere Expertise",
+          headline: { before: "Serverless- & KI-Lösungen, die ", gradient: "Ergebnisse liefern", after: "" },
           description:
-            "Vom Konzept bis zum Deployment liefern wir End-to-End-Lösungen, die Ihre Geschäftsfähigkeiten transformieren und Ihren Erfolg beschleunigen.",
+            "Vier spezialisierte Säulen — von Serverless-Architektur bis Agentic AI, Fractional-CTO-Services bis Cloud-Kostenoptimierung. Tiefe Expertise, messbare Ergebnisse.",
         },
         serviceButton: "Projekt besprechen",
         processSection: {
@@ -2023,13 +2141,13 @@ const content = {
       contact: {
         meta: {
           title: "Kontakt",
-          description: "Nehmen Sie Kontakt mit creative-it auf, um Ihr Projekt zu besprechen",
+          description: "Buchen Sie eine kostenlose Beratung für AWS Serverless, Agentic AI oder Fractional-CTO-Services",
         },
         hero: {
           chip: "Kontakt",
-          headline: { before: "Fangen wir an zu ", gradient: "bauen", after: "" },
+          headline: { before: "Fangen wir an zu ", gradient: "entwerfen", after: "" },
           description:
-            "Haben Sie ein Projekt im Sinn? Wir freuen uns, davon zu hören. Nehmen Sie Kontakt auf und lassen Sie uns besprechen, wie wir Ihnen helfen können, Ihre Ziele zu erreichen.",
+            "Ob Serverless-Architektur, KI-Agenten oder strategische Technologieführung — lassen Sie uns besprechen, wie wir helfen können.",
         },
         infoHeadline: "Kontakt aufnehmen",
         socialLabel: "Folgen Sie uns",
@@ -2046,10 +2164,10 @@ const content = {
           subjectLabel: "Betreff",
           subjectPlaceholder: "Thema auswählen",
           subjectOptions: [
-            { value: "project", label: "Neues Projekt" },
-            { value: "consulting", label: "Beratungsanfrage" },
-            { value: "partnership", label: "Partnerschaftsmöglichkeit" },
-            { value: "careers", label: "Karriere" },
+            { value: "serverless", label: "Serverless-Architektur" },
+            { value: "ai", label: "KI & Agentic Consulting" },
+            { value: "cto", label: "Fractional-CTO-Anfrage" },
+            { value: "optimization", label: "Cloud-Kostenoptimierung" },
             { value: "other", label: "Sonstiges" },
           ],
           messageLabel: "Nachricht",

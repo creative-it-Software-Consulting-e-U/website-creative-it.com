@@ -288,6 +288,153 @@ body {
 .hl-string { color: #9CA3FF; }
 .hl-comment { color: #8F96BD; font-style: italic; }
 
+/* ── Prose (Blog Article Styling) ─────────────────────────────────── */
+.prose {
+  color: var(--color-text-secondary);
+  font-size: 1.125rem;
+  line-height: 1.8;
+  max-width: 72ch;
+  margin-inline: auto;
+}
+
+.prose h2 {
+  color: var(--color-off-white);
+  font-weight: 700;
+  font-size: 1.75rem;
+  letter-spacing: -0.025em;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.prose h3 {
+  color: var(--color-off-white);
+  font-weight: 600;
+  font-size: 1.375rem;
+  letter-spacing: -0.02em;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.prose h4 {
+  color: var(--color-off-white);
+  font-weight: 600;
+  font-size: 1.125rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.prose p {
+  margin-bottom: 1.25rem;
+}
+
+.prose a {
+  color: var(--color-cyan);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(35, 240, 195, 0.3);
+  transition: text-decoration-color 0.2s;
+}
+
+.prose a:hover {
+  text-decoration-color: var(--color-cyan);
+}
+
+.prose strong {
+  color: var(--color-off-white);
+  font-weight: 600;
+}
+
+.prose em {
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+.prose blockquote {
+  border-left: 3px solid var(--color-purple);
+  padding-left: 1.25rem;
+  margin: 1.5rem 0;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.prose ul, .prose ol {
+  margin: 1.25rem 0;
+  padding-left: 1.5rem;
+}
+
+.prose ul { list-style-type: disc; }
+.prose ol { list-style-type: decimal; }
+
+.prose li {
+  margin-bottom: 0.5rem;
+}
+
+.prose li::marker {
+  color: var(--color-purple);
+}
+
+.prose code {
+  color: var(--color-cyan);
+  background: var(--color-surface);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-size: 0.875em;
+}
+
+.prose pre {
+  background: var(--color-surface) !important;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+}
+
+.prose pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+
+.prose img {
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  margin: 1.5rem 0;
+  max-width: 100%;
+  height: auto;
+}
+
+.prose hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-border), transparent);
+  margin: 2.5rem 0;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+}
+
+.prose th {
+  background: var(--color-surface);
+  color: var(--color-off-white);
+  font-weight: 600;
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-border);
+}
+
+.prose td {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-border);
+}
+
 /* iOS touch – remove 300ms tap delay on interactive elements */
 button, a, [role="button"], input, select, textarea {
   touch-action: manipulation;

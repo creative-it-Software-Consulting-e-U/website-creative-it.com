@@ -3,45 +3,23 @@ import Layout from "../../layouts/Layout.astro";
 import Breadcrumbs from "../Breadcrumbs.astro";
 import { t, type Locale } from "../../config/site";
 import { localePath } from "../../utils/i18n";
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
+import { getCollection } from "astro:content";
 
 const locale = (Astro.currentLocale || 'en') as Locale;
 const config = t(locale);
 const p = config.pages.blog;
 
-// ── Read articles from local JSON (populated by DynamoDB scan in CI) ────────
-
-interface BlogArticle {
-  slug: string;
-  title: string;
-  brief: string;
-  publishedAt: string;
-  url: string;
-  coverImage: string | null;
-  readTimeInMinutes: number;
-  tags: string[];
-}
-
-let posts: BlogArticle[] = [];
-try {
-  posts = JSON.parse(
-    readFileSync(join(process.cwd(), "public", "blog-slugs.json"), "utf-8")
-  );
-  console.log(`[blog] Loaded ${posts.length} articles from blog-slugs.json`);
-} catch (e) {
-  console.error("[blog] Failed to read blog-slugs.json:", e);
-}
-
-posts.sort(
-  (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+// ── Read articles from Content Collections ────────────────────────
+const posts = (await getCollection("blog")).sort(
+  (a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime()
 );
 
-function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString("en-US", {
+function formatDate(date: Date): string {
+  return date.toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
+    timeZone: "UTC",
   });
 }
 
@@ -59,11 +37,11 @@ const blogSchema = {
   },
   blogPost: posts.map((post) => ({
     "@type": "BlogPosting",
-    headline: post.title,
-    description: post.brief,
-    url: post.url,
-    datePublished: post.publishedAt,
-    ...(post.coverImage && { image: post.coverImage }),
+    headline: post.data.title,
+    description: post.data.brief,
+    url: `https://creative-it.com/blog/${post.id.replace(/\.md$/, "")}`,
+    datePublished: post.data.publishedAt.toISOString(),
+    ...(post.data.coverImage && { image: post.data.coverImage }),
     author: {
       "@type": "Organization",
       name: config.name,
@@ -106,18 +84,16 @@ const blogSchema = {
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {posts.map((post, index) => (
             <a
-              href={post.url}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={`/blog/${post.id.replace(/\.md$/, "")}`}
               class="group reveal"
               style={`transition-delay: ${(index % 6) * 100}ms`}
             >
               <article class="card-elevated h-full flex flex-col overflow-hidden transition-transform duration-300 group-hover:-translate-y-1">
-                {post.coverImage ? (
+                {post.data.coverImage ? (
                   <div class="aspect-[16/9] overflow-hidden">
                     <img
-                      src={post.coverImage}
-                      alt={post.title}
+                      src={post.data.coverImage}
+                      alt={post.data.title}
                       loading="lazy"
                       decoding="async"
                       class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -133,26 +109,26 @@ const blogSchema = {
 
                 <div class="p-6 flex flex-col flex-1">
                   <div class="flex items-center gap-3 text-xs text-text-muted mb-3">
-                    <time datetime={post.publishedAt}>{formatDate(post.publishedAt)}</time>
-                    {post.readTimeInMinutes > 0 && (
+                    <time datetime={post.data.publishedAt.toISOString().slice(0, 10)}>{formatDate(post.data.publishedAt)}</time>
+                    {post.data.readTimeInMinutes > 0 && (
                       <>
                         <span class="w-1 h-1 rounded-full bg-text-muted"></span>
-                        <span>{post.readTimeInMinutes} min read</span>
+                        <span>{post.data.readTimeInMinutes} min read</span>
                       </>
                     )}
                   </div>
 
                   <h2 class="heading-md text-xl text-off-white mb-3 group-hover:text-purple transition-colors duration-300 line-clamp-2">
-                    {post.title}
+                    {post.data.title}
                   </h2>
 
                   <p class="text-text-secondary text-sm leading-relaxed mb-4 flex-1 line-clamp-3">
-                    {post.brief}
+                    {post.data.brief}
                   </p>
 
-                  {post.tags.length > 0 && (
+                  {post.data.tags.length > 0 && (
                     <div class="flex flex-wrap gap-2 mt-auto">
-                      {post.tags.slice(0, 3).map((tag) => (
+                      {post.data.tags.slice(0, 3).map((tag) => (
                         <span class="text-xs px-2 py-1 rounded-full bg-purple/10 text-purple/80 border border-purple/20">
                           {tag}
                         </span>

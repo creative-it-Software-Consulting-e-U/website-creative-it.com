@@ -21,27 +21,15 @@ const p = config.pages.home;
       <div class="hidden md:block absolute inset-0 opacity-[0.015]" style="background-image: linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px); background-size: 80px 80px;"></div>
     </div>
 
-    <!-- Floating word clouds -->
-    <div id="word-cloud" class="absolute inset-x-0 top-[5%] bottom-[50%] md:top-[5%] md:bottom-[30%] overflow-hidden pointer-events-none z-[1]" aria-hidden="true">
-      {p.animation.build.map(word => (
-        <span class="floating-word" data-phase="build">{word}</span>
-      ))}
-      {p.animation.grow.map(word => (
-        <span class="floating-word" data-phase="grow">{word}</span>
-      ))}
-    </div>
-
     <div class="relative max-w-7xl mx-auto px-6 lg:px-8 pt-24 pb-10 md:py-20 lg:py-32 z-[2]">
       <div class="max-w-4xl mx-auto text-center">
         <h1 class="heading-xl text-5xl sm:text-6xl lg:text-7xl xl:text-8xl text-off-white mb-6">
-          <span id="anim-build" class="word-reveal inline-block mr-[0.3em]">{p.headline.before.trim()}</span><span id="anim-grow" class="word-reveal inline-block"><span class="gradient-text">{p.headline.gradient}</span></span>
+          {p.headline.before}<span class="gradient-text">{p.headline.gradient}</span>
           <br/>
-          <span id="anim-matter" class="word-reveal inline-block mt-2 relative">{p.headline.after.trim()}<button id="replay-btn" class="replay-btn" aria-label="Replay animation" title="Replay animation">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h5M20 20v-5h-5M4 9a9 9 0 0115.36-5.36M20 15a9 9 0 01-15.36 5.36" /></svg>
-          </button></span>
+          {p.headline.after}
         </h1>
 
-        <div id="hero-below">
+        <div>
           <div class="inline-flex chip mb-6">
             <span class="w-1.5 h-1.5 rounded-full bg-purple animate-pulse"></span>
             <span class="text-text-secondary">{p.chip}</span>
@@ -58,7 +46,7 @@ const p = config.pages.home;
         </div>
       </div>
 
-      <div id="hero-stats" class="mt-16 lg:mt-32 grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+      <div class="mt-16 lg:mt-32 grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 reveal">
         {config.about.stats.map((stat) => (
           <div class="text-center p-6 rounded-2xl bg-surface/50 border border-white/5">
             <div class="heading-lg text-3xl lg:text-4xl gradient-text mb-1">{stat.value}</div>
@@ -72,13 +60,6 @@ const p = config.pages.home;
       <span class="text-xs text-text-muted">Scroll</span>
       <div class="w-px h-12 bg-gradient-to-b from-indigo/50 to-transparent"></div>
     </div>
-
-    <noscript>
-      <style>
-        .word-reveal { opacity: 1 !important; transform: none !important; }
-        .floating-word { display: none !important; }
-      </style>
-    </noscript>
   </section>
 
   <!-- Services Section -->
@@ -270,216 +251,3 @@ const p = config.pages.home;
   </section>
 </Layout>
 
-<style>
-  .floating-word {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    font-weight: 500;
-    white-space: nowrap;
-    pointer-events: none;
-    color: var(--color-purple);
-  }
-  .word-reveal { opacity: 0; }
-  .replay-btn {
-    position: absolute;
-    left: calc(100% + 0.4em);
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 10;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.08);
-    background: rgba(255,255,255,0.03);
-    color: var(--color-text-muted);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    opacity: 0;
-  }
-  .replay-btn:hover {
-    border-color: var(--color-purple);
-    color: var(--color-purple);
-    background: rgba(161,99,241,0.08);
-  }
-  .replay-btn.visible {
-    display: inline-flex;
-    opacity: 1;
-  }
-</style>
-
-<script>
-  const STORAGE_KEY = 'hero-animation-played';
-  const hero = document.getElementById('hero');
-  const cloud = document.getElementById('word-cloud');
-  const replayBtn = document.getElementById('replay-btn');
-
-  // Show final state without loading GSAP (used for repeat visits / reduced motion)
-  function showFinalState() {
-    document.querySelectorAll<HTMLElement>('.word-reveal').forEach(el => {
-      el.style.opacity = '1';
-      el.style.transform = 'none';
-    });
-    const heroBelow = document.getElementById('hero-below');
-    const heroStats = document.getElementById('hero-stats');
-    if (heroBelow) { heroBelow.style.opacity = '1'; heroBelow.style.transform = 'none'; }
-    if (heroStats) { heroStats.style.opacity = '1'; heroStats.style.transform = 'none'; }
-    document.querySelectorAll<HTMLElement>('.floating-word').forEach(el => { el.style.opacity = '0'; });
-    if (cloud) cloud.style.display = 'none';
-  }
-
-  if (hero && cloud) {
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const alreadyPlayed = !reducedMotion && localStorage.getItem(STORAGE_KEY) === '1';
-
-    if (reducedMotion || alreadyPlayed) {
-      showFinalState();
-      if (alreadyPlayed) replayBtn?.classList.add('visible');
-    } else {
-      // Only load GSAP when animation actually needs to run
-      loadAndRunAnimation();
-    }
-
-    replayBtn?.addEventListener('click', async () => {
-      replayBtn.classList.remove('visible');
-      cloud.style.display = '';
-      document.querySelectorAll<HTMLElement>('.floating-word').forEach(el => { el.style.opacity = '0'; });
-      await loadAndRunAnimation();
-    });
-
-    async function loadAndRunAnimation() {
-      const { default: gsap } = await import('gsap');
-      const buildEls = gsap.utils.toArray<HTMLElement>('[data-phase="build"]');
-      const growEls = gsap.utils.toArray<HTMLElement>('[data-phase="grow"]');
-      const rect = hero!.getBoundingClientRect();
-      const maxR = Math.min(rect.width * 0.42, 420);
-
-      const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
-
-      function scatter(els: HTMLElement[], seed: number, squish: number) {
-        els.forEach((el, i) => {
-          const n = els.length;
-          const angle = seed + i * GOLDEN_ANGLE + gsap.utils.random(-0.25, 0.25);
-          const normR = 0.3 + (i / n) * 0.5 + gsap.utils.random(0, 0.2);
-          const r = maxR * normR;
-          gsap.set(el, {
-            x: Math.cos(angle) * r,
-            y: Math.sin(angle) * r * squish,
-            xPercent: -50,
-            yPercent: -50,
-            opacity: 0,
-            scale: gsap.utils.random(0.85, 1.15),
-            rotation: gsap.utils.random(-6, 6),
-            fontSize: `${gsap.utils.random(0.8, 1.35)}rem`,
-          });
-        });
-      }
-
-      scatter(buildEls, 0, 0.45);
-      scatter(growEls, Math.PI * 0.618, 0.35);
-
-      // Initial states
-      gsap.set('#anim-build, #anim-grow', { opacity: 0, scale: 0.85, y: 12 });
-      gsap.set('#anim-matter', { opacity: 0, scale: 3.5, textShadow: 'none' });
-      gsap.set('#hero-below', { y: 200, opacity: 0.5 });
-      gsap.set('#hero-stats', { y: 160, opacity: 0.5 });
-
-      function phaseTimeline(els: HTMLElement[], wordId: string) {
-        const tl = gsap.timeline();
-        let floats: gsap.core.Tween[] = [];
-
-        tl.to(els, {
-          opacity: () => gsap.utils.random(0.4, 0.75),
-          stagger: { each: 0.06, from: 'random' },
-          duration: 0.5,
-          ease: 'power2.out',
-        });
-
-        tl.call(() => {
-          els.forEach(el => {
-            floats.push(
-              gsap.to(el, {
-                x: `+=${gsap.utils.random(-30, 30)}`,
-                y: `+=${gsap.utils.random(-20, 20)}`,
-                rotation: `+=${gsap.utils.random(-5, 5)}`,
-                scale: `*=${gsap.utils.random(0.9, 1.1)}`,
-                duration: gsap.utils.random(1.5, 2.5),
-                ease: 'sine.inOut',
-                yoyo: true,
-                repeat: -1,
-              })
-            );
-          });
-        });
-
-        tl.to({}, { duration: 1.4 });
-
-        tl.call(() => {
-          floats.forEach(t => t.kill());
-          floats = [];
-        });
-
-        tl.to(els, {
-          x: (i: number, el: HTMLElement) => (gsap.getProperty(el, 'x') as number) * 3,
-          y: (i: number, el: HTMLElement) => (gsap.getProperty(el, 'y') as number) * 3,
-          scale: 2.5,
-          opacity: 0,
-          rotation: (i: number, el: HTMLElement) => (gsap.getProperty(el, 'rotation') as number) * 2,
-          duration: 0.8,
-          stagger: { each: 0.015, from: 'random' },
-          ease: 'power2.in',
-        });
-
-        tl.to(wordId, {
-          opacity: 1,
-          scale: 1,
-          y: 0,
-          duration: 0.6,
-          ease: 'back.out(1.7)',
-        }, '-=0.35');
-
-        return tl;
-      }
-
-      const master = gsap.timeline();
-
-      master.add(phaseTimeline(buildEls, '#anim-build'));
-      master.add(phaseTimeline(growEls, '#anim-grow'), '+=0.4');
-
-      master.to('#anim-matter', {
-        opacity: 1,
-        scale: 1,
-        duration: 1.0,
-        ease: 'power3.out',
-      }, '+=1.3');
-      master.fromTo('#anim-matter',
-        { textShadow: '0 0 80px rgba(161,99,241,0.5), 0 0 30px rgba(99,99,241,0.3)' },
-        { textShadow: '0 0 0px transparent, 0 0 0px transparent', duration: 2, ease: 'power2.out' },
-        '<',
-      );
-
-      master.to('#hero-below', {
-        y: 0,
-        opacity: 1,
-        duration: 1.0,
-        ease: 'power2.out',
-      }, '<');
-      master.to('#hero-stats', {
-        y: 0,
-        opacity: 1,
-        duration: 1.0,
-        ease: 'power2.out',
-      }, '<0.15');
-
-      // Mark as played, hide cloud, show replay button
-      master.call(() => {
-        localStorage.setItem(STORAGE_KEY, '1');
-        cloud!.style.display = 'none';
-        replayBtn?.classList.add('visible');
-      });
-    }
-  }
-</script>

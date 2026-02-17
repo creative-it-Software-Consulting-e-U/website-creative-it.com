@@ -67,13 +67,6 @@ export class ContactApiStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.RETAIN,
     });
 
-    // ── DynamoDB Table for Blog Articles ─────────────────────────────────
-    const blogTable = new dynamodb.Table(this, "BlogTable", {
-      partitionKey: { name: "slug", type: dynamodb.AttributeType.STRING },
-      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
-      removalPolicy: cdk.RemovalPolicy.RETAIN,
-    });
-
     // ── Contact Lambda ─────────────────────────────────────────────────
     const contactHandler = new lambdaNode.NodejsFunction(
       this,
@@ -593,6 +586,17 @@ export class ContactApiStack extends cdk.Stack {
       destinationBucket: knowledgeBucket,
     });
 
+    // Deploy blog articles to S3 for Knowledge Base ingestion
+    const kbBlogDeploy = new s3deploy.BucketDeployment(this, "KnowledgeBlogDeploy", {
+      sources: [
+        s3deploy.Source.asset(
+          path.join(__dirname, "..", "..", "src", "content", "blog")
+        ),
+      ],
+      destinationBucket: knowledgeBucket,
+      destinationKeyPrefix: "blog",
+    });
+
     // Knowledge Base + Data Source IDs (created manually in Bedrock console)
     const kbConfig: Record<string, { knowledgeBaseId: string; dataSourceId: string }> = {
       gw:   { knowledgeBaseId: "GQFVI7ZE8C", dataSourceId: "JK5CKEJDFV" },
@@ -624,88 +628,8 @@ export class ContactApiStack extends cdk.Stack {
         ]),
       });
       kbSync.node.addDependency(kbDocsDeploy);
+      kbSync.node.addDependency(kbBlogDeploy);
     }
-
-    // ── Article Sync Lambda (webhook + scheduled → DynamoDB + S3 + KB) ──
-    const articleSyncHandler = new lambdaNode.NodejsFunction(
-      this,
-      "ArticleSyncHandler",
-      {
-        runtime: lambda.Runtime.NODEJS_22_X,
-        architecture: lambda.Architecture.ARM_64,
-        memorySize: 256,
-        timeout: cdk.Duration.seconds(120),
-        entry: path.join(
-          __dirname,
-          "..",
-          "lambda",
-          "article-sync",
-          "index.ts"
-        ),
-        handler: "handler",
-        bundling: {
-          format: lambdaNode.OutputFormat.ESM,
-          mainFields: ["module", "main"],
-          externalModules: ["@aws-sdk/*"],
-        },
-        environment: {
-          TABLE_NAME: blogTable.tableName,
-          BUCKET_NAME: knowledgeBucket.bucketName,
-          KNOWLEDGE_BASE_ID: kb?.knowledgeBaseId ?? "",
-          DATA_SOURCE_ID: kb?.dataSourceId ?? "",
-          HASHNODE_HOST: "blog.creative-it.com",
-          WEBHOOK_SECRET: process.env.WEBHOOK_SECRET ?? "changeme",
-          GITHUB_TOKEN: process.env.GITHUB_TOKEN ?? "",
-          GITHUB_REPO:
-            "creative-it-Software-Consulting-e-U/website-creative-it.com",
-        },
-      }
-    );
-
-    blogTable.grantReadWriteData(articleSyncHandler);
-
-    articleSyncHandler.addToRolePolicy(
-      new iam.PolicyStatement({
-        actions: ["s3:PutObject", "s3:DeleteObject", "s3:ListBucket"],
-        resources: [
-          `${knowledgeBucket.bucketArn}/hashnode/*`,
-          knowledgeBucket.bucketArn,
-        ],
-      })
-    );
-
-    if (kb?.knowledgeBaseId) {
-      articleSyncHandler.addToRolePolicy(
-        new iam.PolicyStatement({
-          actions: ["bedrock:StartIngestionJob"],
-          resources: [
-            `arn:aws:bedrock:${config.region}:${config.account}:knowledge-base/${kb.knowledgeBaseId}`,
-          ],
-        })
-      );
-    }
-
-    const articleSyncSchedulerRole = new iam.Role(
-      this,
-      "ArticleSyncSchedulerRole",
-      {
-        assumedBy: new iam.ServicePrincipal("scheduler.amazonaws.com"),
-      }
-    );
-
-    articleSyncHandler.grantInvoke(articleSyncSchedulerRole);
-
-    new scheduler.CfnSchedule(this, "ArticleSyncSchedule", {
-      name: `article-sync-daily-${config.envName}`,
-      scheduleExpression: "cron(0 6 * * ? *)",
-      scheduleExpressionTimezone: "UTC",
-      flexibleTimeWindow: { mode: "OFF" },
-      target: {
-        arn: articleSyncHandler.functionArn,
-        roleArn: articleSyncSchedulerRole.roleArn,
-      },
-      state: "ENABLED",
-    });
 
     // IAM role for Bedrock Knowledge Base to access S3 and embedding model
     const kbRole = new iam.Role(this, "KnowledgeBaseRole", {
@@ -936,16 +860,6 @@ export class ContactApiStack extends cdk.Stack {
       integration: new apigwv2Integrations.HttpLambdaIntegration(
         "CommitStoryIntegration",
         commitStoryHandler
-      ),
-    });
-
-    // ── Webhook Route (Hashnode → Article Sync) ────────────────────
-    httpApi.addRoutes({
-      path: "/webhook/hashnode",
-      methods: [apigwv2.HttpMethod.POST],
-      integration: new apigwv2Integrations.HttpLambdaIntegration(
-        "ArticleSyncWebhookIntegration",
-        articleSyncHandler
       ),
     });
 
@@ -1194,9 +1108,78 @@ function handler(event) {
       description: "Knowledge Base S3 bucket",
     });
 
-    new cdk.CfnOutput(this, "BlogTableName", {
-      value: blogTable.tableName,
-      description: "Blog articles DynamoDB table",
-    });
+    // ── blog.creative-it.com → creative-it.com/blog Redirect (prod only) ──
+    if (config.envName === "prod") {
+      const blogDomainName = `blog.${config.domainName}`;
+
+      const blogCertificate = new acm.DnsValidatedCertificate(
+        this,
+        "BlogRedirectCert",
+        {
+          domainName: blogDomainName,
+          hostedZone,
+          region: "us-east-1",
+        }
+      );
+
+      const blogRedirectFunction = new cloudfront.Function(
+        this,
+        "BlogRedirectFunction",
+        {
+          functionName: "blog-redirect-prod",
+          runtime: cloudfront.FunctionRuntime.JS_2_0,
+          code: cloudfront.FunctionCode.fromInline(`
+function handler(event) {
+  var request = event.request;
+  var uri = request.uri;
+  // Strip trailing slash (except root)
+  if (uri.length > 1 && uri.endsWith('/')) {
+    uri = uri.slice(0, -1);
+  }
+  var location = 'https://${config.domainName}/blog' + (uri === '/' ? '' : uri);
+  return {
+    statusCode: 301,
+    statusDescription: 'Moved Permanently',
+    headers: {
+      location: { value: location },
+      'cache-control': { value: 'max-age=86400' },
+    },
+  };
+}
+          `),
+        }
+      );
+
+      // Dummy S3 origin (CloudFront requires an origin even though
+      // the function returns a redirect before the origin is reached)
+      const blogRedirectDistribution = new cloudfront.Distribution(
+        this,
+        "BlogRedirectDistribution",
+        {
+          domainNames: [blogDomainName],
+          certificate: blogCertificate,
+          defaultBehavior: {
+            origin: new origins.HttpOrigin(config.domainName),
+            viewerProtocolPolicy:
+              cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+            functionAssociations: [
+              {
+                function: blogRedirectFunction,
+                eventType: cloudfront.FunctionEventType.VIEWER_REQUEST,
+              },
+            ],
+          },
+        }
+      );
+
+      new route53.ARecord(this, "BlogRedirectARecord", {
+        zone: hostedZone,
+        recordName: "blog",
+        target: route53.RecordTarget.fromAlias(
+          new route53Targets.CloudFrontTarget(blogRedirectDistribution)
+        ),
+      });
+    }
+
   }
 }

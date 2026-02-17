@@ -1,0 +1,162 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import Breadcrumbs from "../../../components/Breadcrumbs.astro";
+import { t } from "../../../config/site";
+import { localePath } from "../../../utils/i18n";
+
+const config = t('de');
+
+export function getStaticPaths() {
+  const de = t('de');
+  return de.services.map((service) => ({
+    params: { slug: service.slug },
+    props: { service },
+  }));
+}
+
+const { service } = Astro.props;
+
+const serviceSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  name: service.title,
+  description: service.description,
+  url: `https://creative-it.com/de/services/${service.slug}`,
+  provider: {
+    "@type": "Organization",
+    name: "creative-it Software Consulting e.U.",
+    url: "https://creative-it.com",
+  },
+};
+---
+
+<Layout title={`${service.title} | creative-it`} description={service.description}>
+  <Breadcrumbs
+    items={[
+      { name: config.pages.services.meta.title, href: localePath("/services", "de") },
+      { name: service.title },
+    ]}
+    locale="de"
+  />
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+
+  <!-- Hero -->
+  <section class="relative py-20 lg:py-32 overflow-hidden">
+    <div class="absolute inset-0">
+      <div class="absolute top-0 right-1/4 w-[300px] h-[200px] md:w-[600px] md:h-[400px] bg-[radial-gradient(circle,rgba(99,99,241,0.05)_0%,transparent_70%)]"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6 animate-fade-in-up opacity-0" style="animation-delay: 0.1s; animation-fill-mode: forwards;">
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple/20 to-indigo/10 border border-purple/20 flex items-center justify-center">
+            {service.icon === "cloud" && (
+              <svg class="w-7 h-7 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" /></svg>
+            )}
+            {service.icon === "brain" && (
+              <svg class="w-7 h-7 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+            )}
+            {service.icon === "ruler" && (
+              <svg class="w-7 h-7 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 20V4l16 16H4zM4 8h2M4 12h2M4 16h2M8 20v-2M12 20v-2M16 20v-2" /></svg>
+            )}
+            {service.icon === "code" && (
+              <svg class="w-7 h-7 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+            )}
+          </div>
+          <p class="text-purple text-sm font-medium tracking-wide uppercase">{service.tagline}</p>
+        </div>
+        <h1 class="heading-xl text-5xl lg:text-6xl text-off-white mb-6 animate-fade-in-up opacity-0" style="animation-delay: 0.2s; animation-fill-mode: forwards;">
+          {service.title}
+        </h1>
+        <p class="text-lg text-text-secondary leading-relaxed animate-fade-in-up opacity-0" style="animation-delay: 0.3s; animation-fill-mode: forwards;">
+          {service.description}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Long Description -->
+  <section class="py-12 lg:py-20">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl reveal">
+        {service.longDescription.split('\n\n').map((paragraph: string) => (
+          <p class="text-text-secondary text-lg leading-relaxed mb-6">{paragraph}</p>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits -->
+  <section class="py-16 lg:py-24 bg-surface relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-purple/3 via-transparent to-transparent"></div>
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="text-center mb-12 reveal">
+        <h2 class="heading-lg text-4xl lg:text-5xl text-off-white">Zentrale Vorteile</h2>
+      </div>
+      <div class="grid md:grid-cols-3 gap-8 reveal">
+        {service.benefits.map((benefit: { title: string; description: string }, index: number) => (
+          <div class="card-elevated p-8" style={`transition-delay: ${index * 100}ms`}>
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple/20 to-indigo/10 border border-purple/20 flex items-center justify-center mb-5">
+              <svg class="w-5 h-5 text-cyan" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+            </div>
+            <h3 class="heading-md text-xl text-off-white mb-3">{benefit.title}</h3>
+            <p class="text-text-muted text-sm leading-relaxed">{benefit.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="py-16 lg:py-24">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl reveal">
+        <h2 class="heading-lg text-3xl lg:text-4xl text-off-white mb-8">Was enthalten ist</h2>
+        <div class="space-y-4">
+          {service.features.map((feature: string) => (
+            <div class="flex items-center gap-4">
+              <div class="w-7 h-7 rounded-lg bg-cyan/10 border border-cyan/20 flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 text-cyan" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
+              </div>
+              <span class="text-text-secondary text-lg">{feature}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Use Cases -->
+  <section class="py-16 lg:py-24 bg-surface relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-indigo/3 via-transparent to-transparent"></div>
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl reveal">
+        <h2 class="heading-lg text-3xl lg:text-4xl text-off-white mb-8">Anwendungsfälle</h2>
+        <div class="space-y-4">
+          {service.useCases.map((useCase: string) => (
+            <div class="flex items-start gap-4">
+              <div class="w-2 h-2 rounded-full bg-purple mt-2.5 flex-shrink-0"></div>
+              <span class="text-text-secondary text-lg">{useCase}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-24 lg:py-32">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="relative rounded-3xl overflow-hidden reveal">
+        <div class="absolute inset-0 bg-gradient-to-br from-purple via-indigo to-indigo"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(35,240,195,0.15),transparent_60%)]"></div>
+
+        <div class="relative px-8 py-16 lg:px-16 lg:py-24 text-center">
+          <h2 class="heading-xl text-4xl lg:text-5xl text-white mb-6">Bauen wir etwas Großartiges</h2>
+          <p class="text-white/70 text-lg max-w-2xl mx-auto mb-10">Bereit, Ihre Ideen in die Realität umzusetzen? Lassen Sie uns besprechen, wie wir helfen können.</p>
+          <a href={localePath("/contact", "de")} class="btn-primary">Kontakt aufnehmen</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

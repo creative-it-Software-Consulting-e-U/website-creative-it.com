@@ -1,0 +1,155 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Breadcrumbs from "../../components/Breadcrumbs.astro";
+import { getCollection } from "astro:content";
+import { render } from "astro:content";
+import { siteConfig } from "../../config/site";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+  return posts.map((post) => ({
+    params: { slug: post.id.replace(/\.md$/, "") },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const slug = post.id.replace(/\.md$/, "");
+const { Content } = await render(post);
+
+const linkedService = post.data.service
+  ? siteConfig.services.find((s) => s.slug === post.data.service)
+  : null;
+
+function formatDate(date: Date): string {
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+}
+
+const postSchema = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: post.data.title,
+  description: post.data.brief,
+  url: `https://creative-it.com/blog/${slug}`,
+  datePublished: post.data.publishedAt.toISOString(),
+  ...(post.data.coverImage && { image: post.data.coverImage }),
+  author: {
+    "@type": "Organization",
+    name: "Creative IT",
+    url: "https://creative-it.com",
+  },
+  publisher: {
+    "@type": "Organization",
+    name: "Creative IT",
+    url: "https://creative-it.com",
+  },
+};
+---
+
+<Layout title={`${post.data.title} | Creative IT Blog`} description={post.data.brief}>
+  <Breadcrumbs
+    items={[
+      { name: "Blog", href: "/blog" },
+      { name: post.data.title },
+    ]}
+    locale="en"
+  />
+  <script type="application/ld+json" set:html={JSON.stringify(postSchema)} />
+
+  <article class="relative py-20 lg:py-32">
+    <div class="absolute inset-0">
+      <div class="absolute top-0 left-1/4 w-[300px] h-[200px] md:w-[600px] md:h-[400px] bg-[radial-gradient(circle,rgba(161,99,241,0.05)_0%,transparent_70%)]"></div>
+    </div>
+
+    <div class="relative max-w-4xl mx-auto px-6 lg:px-8">
+      {post.data.coverImage && (
+        <div class="mb-10 rounded-2xl overflow-hidden border border-border">
+          <img
+            src={post.data.coverImage}
+            alt={post.data.title}
+            class="w-full h-auto"
+            loading="eager"
+          />
+        </div>
+      )}
+
+      <div class="flex items-center gap-3 text-sm text-text-muted mb-4">
+        <time datetime={post.data.publishedAt.toISOString().slice(0, 10)}>
+          {formatDate(post.data.publishedAt)}
+        </time>
+        {post.data.readTimeInMinutes > 0 && (
+          <>
+            <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+            <span>{post.data.readTimeInMinutes} min read</span>
+          </>
+        )}
+      </div>
+
+      <h1 class="heading-xl text-4xl lg:text-5xl text-off-white mb-6">
+        {post.data.title}
+      </h1>
+
+      <p class="text-lg text-text-secondary leading-relaxed mb-6">
+        {post.data.brief}
+      </p>
+
+      {post.data.tags.length > 0 && (
+        <div class="flex flex-wrap gap-2 mb-8">
+          {post.data.tags.map((tag) => (
+            <span class="text-xs px-3 py-1 rounded-full bg-purple/10 text-purple/80 border border-purple/20">
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
+
+      <div class="divider mb-10"></div>
+
+      <div class="prose">
+        <Content />
+      </div>
+
+      <div class="divider mt-10 mb-8"></div>
+
+      {post.data.ctaHeadline && (
+        <div class="relative rounded-2xl overflow-hidden mb-10">
+          <div class="absolute inset-0 bg-gradient-to-br from-purple via-indigo to-indigo"></div>
+          <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(35,240,195,0.15),transparent_60%)]"></div>
+          <div class="relative px-8 py-12 lg:px-12 lg:py-14 text-center">
+            <h2 class="heading-lg text-3xl lg:text-4xl text-white mb-4">{post.data.ctaHeadline}</h2>
+            <p class="text-white/70 text-lg max-w-xl mx-auto mb-8">
+              Let's discuss how we can bring these ideas to life for your business.
+            </p>
+            <a href="/contact" class="btn-primary">Get in Touch</a>
+            {linkedService && (
+              <div class="mt-6">
+                <a
+                  href={`/services/${linkedService.slug}`}
+                  class="text-white/60 hover:text-white transition-colors text-sm inline-flex items-center gap-1.5"
+                >
+                  Learn more about {linkedService.title}
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                </a>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      <a
+        href="/blog"
+        class="inline-flex items-center gap-2 text-cyan hover:text-cyan-bright transition-colors"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        Back to Blog
+      </a>
+    </div>
+  </article>
+</Layout>

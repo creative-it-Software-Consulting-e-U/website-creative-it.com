@@ -38,10 +38,10 @@ async function checkRateLimit(ip: string): Promise<{ allowed: boolean; remaining
 }
 
 const SUBJECT_LABELS: Record<string, string> = {
-  project: "New Project",
-  consulting: "Consulting Inquiry",
-  partnership: "Partnership Opportunity",
-  careers: "Careers",
+  serverless: "Serverless Architecture",
+  ai: "AI & Agentic Consulting",
+  cto: "Fractional CTO Inquiry",
+  optimization: "Cloud Cost Optimization",
   other: "Other",
 };
 

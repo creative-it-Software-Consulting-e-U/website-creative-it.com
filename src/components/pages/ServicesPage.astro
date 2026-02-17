@@ -127,7 +127,10 @@ const serviceSchema = {
                 ))}
               </div>
 
-              <a href={localePath("/contact", locale)} class="btn-secondary">{p.serviceButton}</a>
+              <a href={localePath(`/services/${service.slug}`, locale)} class="btn-secondary">
+                {locale === 'de' ? 'Mehr erfahren' : 'Learn more'}
+                <svg class="w-4 h-4 ml-2 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+              </a>
             </div>
           </div>
         ))}

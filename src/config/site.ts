@@ -726,7 +726,7 @@ const content = {
         },
         storySection: {
           chip: "Our Story",
-          headline: "From Full-Stack to Focused Specialist",
+          headline: "Two Moments That Changed Everything",
         },
         valuesSection: {
           chip: "Our Values",
@@ -1650,7 +1650,7 @@ const content = {
         },
         storySection: {
           chip: "Unsere Geschichte",
-          headline: "Vom Full-Stack zum fokussierten Spezialisten",
+          headline: "Zwei Momente, die alles veränderten",
         },
         valuesSection: {
           chip: "Unsere Werte",

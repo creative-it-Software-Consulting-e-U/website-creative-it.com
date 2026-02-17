@@ -16,6 +16,10 @@ const switchPath = localePath(currentPath, altLocale);
 const switchLabel = locale === 'en' ? 'DE' : 'EN';
 const contactPath = localePath('/contact', locale);
 const ctaLabel = locale === 'de' ? 'Kontakt' : 'Get in Touch';
+
+const isActive = (item: { href: string; children?: { href: string }[] }) =>
+  currentPath === item.href ||
+  item.children?.some(child => currentPath === child.href);
 ---
 
 <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-transparent" id="nav-header">
@@ -39,21 +43,61 @@ const ctaLabel = locale === 'de' ? 'Kontakt' : 'Get in Touch';
       <!-- Desktop Navigation -->
       <ul class="hidden lg:flex items-center gap-3 xl:gap-5">
         {config.navigation.map((item) => (
-          <li>
-            <a
-              href={item.href}
-              class:list={[
-                "relative text-xs xl:text-sm font-medium transition-colors duration-200 whitespace-nowrap",
-                currentPath === item.href
-                  ? "text-off-white"
-                  : "text-text-muted hover:text-off-white",
-              ]}
-            >
-              {item.name}
-              {currentPath === item.href && (
-                <span class="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-purple to-cyan rounded-full"></span>
-              )}
-            </a>
+          <li class={item.children ? "relative group" : ""}>
+            {item.children ? (
+              <>
+                <span
+                  class:list={[
+                    "relative text-xs xl:text-sm font-medium transition-colors duration-200 whitespace-nowrap inline-flex items-center gap-1 cursor-default",
+                    isActive(item)
+                      ? "text-off-white"
+                      : "text-text-muted group-hover:text-off-white",
+                  ]}
+                >
+                  {item.name}
+                  <svg class="w-3 h-3 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                  {isActive(item) && (
+                    <span class="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-purple to-cyan rounded-full"></span>
+                  )}
+                </span>
+                <div class="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 translate-y-1 group-hover:translate-y-0">
+                  <ul class="bg-surface border border-white/10 rounded-xl py-2 px-1 min-w-[180px] shadow-xl shadow-black/30">
+                    {item.children.map((child) => (
+                      <li>
+                        <a
+                          href={child.href}
+                          class:list={[
+                            "block px-4 py-2 text-sm rounded-lg transition-colors duration-150",
+                            currentPath === child.href
+                              ? "text-off-white bg-white/5"
+                              : "text-text-muted hover:text-off-white hover:bg-white/5",
+                          ]}
+                        >
+                          {child.name}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </>
+            ) : (
+              <a
+                href={item.href}
+                class:list={[
+                  "relative text-xs xl:text-sm font-medium transition-colors duration-200 whitespace-nowrap",
+                  currentPath === item.href
+                    ? "text-off-white"
+                    : "text-text-muted hover:text-off-white",
+                ]}
+              >
+                {item.name}
+                {currentPath === item.href && (
+                  <span class="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-purple to-cyan rounded-full"></span>
+                )}
+              </a>
+            )}
           </li>
         ))}
       </ul>
@@ -99,17 +143,59 @@ const ctaLabel = locale === 'de' ? 'Kontakt' : 'Get in Touch';
             class="mobile-nav-item opacity-0 translate-y-4"
             style={`transition-delay: ${index * 100}ms`}
           >
-            <a
-              href={item.href}
-              class:list={[
-                "heading-lg text-4xl sm:text-5xl transition-colors duration-300",
-                currentPath === item.href
-                  ? "gradient-text"
-                  : "text-off-white hover:text-purple",
-              ]}
-            >
-              {item.name}
-            </a>
+            {item.children ? (
+              <>
+                <button
+                  class:list={[
+                    "mobile-dropdown-toggle heading-lg text-4xl sm:text-5xl transition-colors duration-300 inline-flex items-center gap-2",
+                    isActive(item)
+                      ? "gradient-text"
+                      : "text-off-white hover:text-purple",
+                  ]}
+                  data-dropdown={`mobile-dropdown-${index}`}
+                >
+                  {item.name}
+                  <svg class="w-6 h-6 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                <ul
+                  id={`mobile-dropdown-${index}`}
+                  class="mobile-dropdown mt-4 space-y-3 max-h-0 overflow-hidden transition-all duration-300"
+                >
+                  {item.children.map((child, childIndex) => (
+                    <li
+                      class="opacity-0 translate-y-2 transition-all duration-300"
+                      style={`transition-delay: ${childIndex * 75}ms`}
+                    >
+                      <a
+                        href={child.href}
+                        class:list={[
+                          "text-xl sm:text-2xl transition-colors duration-300",
+                          currentPath === child.href
+                            ? "gradient-text"
+                            : "text-text-muted hover:text-off-white",
+                        ]}
+                      >
+                        {child.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : (
+              <a
+                href={item.href}
+                class:list={[
+                  "heading-lg text-4xl sm:text-5xl transition-colors duration-300",
+                  currentPath === item.href
+                    ? "gradient-text"
+                    : "text-off-white hover:text-purple",
+                ]}
+              >
+                {item.name}
+              </a>
+            )}
           </li>
         ))}
       </ul>
@@ -192,7 +278,53 @@ const ctaLabel = locale === 'de' ? 'Kontakt' : 'Get in Touch';
         item.classList.add('opacity-0', 'translate-y-4');
         item.classList.remove('opacity-100', 'translate-y-0');
       });
+
+      // Close all mobile dropdowns when menu closes
+      document.querySelectorAll('.mobile-dropdown').forEach(dropdown => {
+        dropdown.classList.remove('max-h-96');
+        dropdown.classList.add('max-h-0');
+        dropdown.querySelectorAll('li').forEach(li => {
+          li.classList.add('opacity-0', 'translate-y-2');
+          li.classList.remove('opacity-100', 'translate-y-0');
+        });
+      });
+      document.querySelectorAll('.mobile-dropdown-toggle svg').forEach(svg => {
+        svg.classList.remove('rotate-180');
+      });
     }
+  });
+
+  // Mobile dropdown accordion toggles
+  document.querySelectorAll('.mobile-dropdown-toggle').forEach(toggle => {
+    toggle.addEventListener('click', () => {
+      const targetId = toggle.getAttribute('data-dropdown');
+      if (!targetId) return;
+      const dropdown = document.getElementById(targetId);
+      if (!dropdown) return;
+
+      const isExpanded = dropdown.classList.contains('max-h-96');
+      const chevron = toggle.querySelector('svg');
+
+      if (isExpanded) {
+        dropdown.classList.remove('max-h-96');
+        dropdown.classList.add('max-h-0');
+        chevron?.classList.remove('rotate-180');
+        dropdown.querySelectorAll('li').forEach(li => {
+          li.classList.add('opacity-0', 'translate-y-2');
+          li.classList.remove('opacity-100', 'translate-y-0');
+        });
+      } else {
+        dropdown.classList.remove('max-h-0');
+        dropdown.classList.add('max-h-96');
+        chevron?.classList.add('rotate-180');
+        dropdown.querySelectorAll('li').forEach((li, i) => {
+          setTimeout(() => {
+            li.classList.remove('opacity-0', 'translate-y-2');
+            li.classList.add('opacity-100', 'translate-y-0');
+          }, i * 75);
+        });
+      }
+    });
   });
 
   menu?.querySelectorAll('a').forEach(link => {

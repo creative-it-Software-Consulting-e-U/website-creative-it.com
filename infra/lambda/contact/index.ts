@@ -1,10 +1,41 @@
 import { SESv2Client, SendEmailCommand } from "@aws-sdk/client-sesv2";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClient, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { createHash } from "crypto";
 import type { APIGatewayProxyEventV2, APIGatewayProxyResultV2 } from "aws-lambda";
 
 const ses = new SESv2Client({});
+const ddb = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 const RECIPIENT_EMAIL = process.env.RECIPIENT_EMAIL!;
 const SENDER_EMAIL = process.env.SENDER_EMAIL!;
+const TABLE_NAME = process.env.TABLE_NAME!;
 const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS?.split(",") ?? [];
+const RATE_LIMIT = 5;
+
+function hashIp(ip: string): string {
+  return createHash("sha256").update(ip).digest("hex").slice(0, 16);
+}
+
+async function checkRateLimit(ip: string): Promise<{ allowed: boolean; remaining: number }> {
+  const pk = `RATELIMIT#CONTACT#${hashIp(ip)}`;
+  const hourTs = `DATE#${new Date().toISOString().slice(0, 10)}`;
+  const ttl = Math.floor(Date.now() / 1000) + 2 * 24 * 60 * 60;
+
+  const result = await ddb.send(
+    new UpdateCommand({
+      TableName: TABLE_NAME,
+      Key: { pk, hour_ts: hourTs },
+      UpdateExpression: "ADD #count :inc SET #ttl = if_not_exists(#ttl, :ttl)",
+      ExpressionAttributeNames: { "#count": "count", "#ttl": "ttl" },
+      ExpressionAttributeValues: { ":inc": 1, ":ttl": ttl },
+      ReturnValues: "ALL_NEW",
+    })
+  );
+
+  const count = (result.Attributes?.count as number) ?? 1;
+  const remaining = Math.max(0, RATE_LIMIT - count);
+  return { allowed: count <= RATE_LIMIT, remaining };
+}
 
 const SUBJECT_LABELS: Record<string, string> = {
   project: "New Project",
@@ -80,6 +111,15 @@ export async function handler(
 
   if (event.requestContext.http.method !== "POST") {
     return respond(405, { error: "Method not allowed" }, origin);
+  }
+
+  // Rate limit check
+  const ip =
+    event.headers?.["x-forwarded-for"]?.split(",").pop()?.trim() ??
+    event.requestContext.http.sourceIp;
+  const { allowed, remaining } = await checkRateLimit(ip);
+  if (!allowed) {
+    return respond(429, { error: "Rate limit exceeded. Try again tomorrow." }, origin);
   }
 
   // Parse body

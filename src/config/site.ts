@@ -373,10 +373,12 @@ const content = {
       { name: "Home", href: "/" },
       { name: "Services", href: "/services" },
       { name: "About", href: "/about" },
-      { name: "AI Playground", href: "/ai-playground" },
-      { name: "Tech Advisor", href: "/tech-advisor" },
-      { name: "AI Agents", href: "/ai-agents" },
-      { name: "How It Works", href: "/how-it-works" },
+      { name: "AI Lab", href: "#", children: [
+        { name: "AI Playground", href: "/ai-playground" },
+        { name: "Tech Advisor", href: "/tech-advisor" },
+        { name: "AI Agents", href: "/ai-agents" },
+        { name: "How It Works", href: "/how-it-works" },
+      ]},
       { name: "Blog", href: "/blog" },
       { name: "Contact", href: "/contact" },
     ],
@@ -798,55 +800,14 @@ const content = {
           generatingButton: "Generating...",
           charLimit: 2000,
         },
-        exampleCategories: [
-          {
-            label: "Marketing",
-            examples: [
-              "A hero section with a gradient headline, subtitle, and two CTA buttons",
-              "A testimonial carousel card with avatar, quote, name, and role",
-              "A pricing table with three tiers: Free, Pro, and Enterprise",
-              "A feature comparison table with checkmarks and crosses for three plans",
-              "A newsletter signup banner with email input and a bold headline",
-              "A team member profile card with photo placeholder, name, role, and social links",
-            ],
-          },
-          {
-            label: "Dashboard",
-            examples: [
-              "A dashboard stats grid with 4 metric cards showing icons and trends",
-              "A notification feed panel with timestamps, icons, and read/unread states",
-              "A user profile sidebar with avatar, stats, and a list of recent activity",
-              "A progress tracker with 5 steps, current step highlighted, and completion percentage",
-              "A data table with sortable column headers, striped rows, and pagination",
-            ],
-          },
-          {
-            label: "E-Commerce",
-            examples: [
-              "A product card with image placeholder, title, price, rating stars, and add-to-cart button",
-              "A shopping cart summary with item list, quantities, subtotal, and checkout button",
-              "A product review section with star rating breakdown and individual review cards",
-              "A category filter sidebar with checkboxes, price range slider, and apply button",
-            ],
-          },
-          {
-            label: "Forms",
-            examples: [
-              "A login form with email, password, social sign-in buttons, and a remember-me checkbox",
-              "A multi-step registration wizard with progress indicator and form fields",
-              "A contact form with name, email, subject dropdown, message area, and file upload",
-              "A settings page with toggle switches, radio groups, and a save button",
-            ],
-          },
-          {
-            label: "Navigation",
-            examples: [
-              "A responsive navbar with logo, menu links, search bar, and a user avatar dropdown",
-              "A sidebar navigation with collapsible sections, icons, and an active state indicator",
-              "A breadcrumb bar with current page highlighted and a back button",
-              "A tab bar with icons and labels for a mobile app bottom navigation",
-            ],
-          },
+        examples: [
+          "A hero section with a gradient headline, subtitle, and two CTA buttons",
+          "A pricing table with three tiers: Free, Pro, and Enterprise",
+          "A dashboard stats grid with 4 metric cards showing icons and trends",
+          "A product card with image, title, price, rating stars, and add-to-cart button",
+          "A login form with email, password, social sign-in, and remember-me checkbox",
+          "A data table with sortable columns, striped rows, and pagination",
+          "A testimonial carousel card with avatar, quote, name, and role",
         ],
         previewSection: {
           previewTab: "Preview",
@@ -1277,10 +1238,12 @@ const content = {
       { name: "Home", href: "/de" },
       { name: "Services", href: "/de/services" },
       { name: "Über uns", href: "/de/about" },
-      { name: "AI Playground", href: "/de/ai-playground" },
-      { name: "Tech-Berater", href: "/de/tech-advisor" },
-      { name: "KI-Agenten", href: "/de/ai-agents" },
-      { name: "Technologie", href: "/de/how-it-works" },
+      { name: "KI-Labor", href: "#", children: [
+        { name: "AI Playground", href: "/de/ai-playground" },
+        { name: "Tech-Berater", href: "/de/tech-advisor" },
+        { name: "KI-Agenten", href: "/de/ai-agents" },
+        { name: "Technologie", href: "/de/how-it-works" },
+      ]},
       { name: "Blog", href: "/de/blog" },
       { name: "Kontakt", href: "/de/contact" },
     ],
@@ -1702,55 +1665,14 @@ const content = {
           generatingButton: "Wird generiert...",
           charLimit: 2000,
         },
-        exampleCategories: [
-          {
-            label: "Marketing",
-            examples: [
-              "Ein Hero-Bereich mit Gradient-Überschrift, Untertitel und zwei CTA-Buttons",
-              "Eine Testimonial-Karussell-Karte mit Avatar, Zitat, Name und Rolle",
-              "Eine Preistabelle mit drei Stufen: Free, Pro und Enterprise",
-              "Eine Feature-Vergleichstabelle mit Häkchen und Kreuzen für drei Pläne",
-              "Ein Newsletter-Anmeldebanner mit E-Mail-Eingabe und fetter Überschrift",
-              "Eine Teammitglieder-Profilkarte mit Foto-Platzhalter, Name, Rolle und Social Links",
-            ],
-          },
-          {
-            label: "Dashboard",
-            examples: [
-              "Ein Dashboard-Statistikraster mit 4 Metrikkarten mit Icons und Trends",
-              "Ein Benachrichtigungs-Feed-Panel mit Zeitstempeln, Icons und gelesen/ungelesen Status",
-              "Eine Benutzerprofil-Seitenleiste mit Avatar, Statistiken und einer Liste der letzten Aktivitäten",
-              "Ein Fortschritts-Tracker mit 5 Schritten, aktuellem Schritt hervorgehoben und Abschlussprozentzahl",
-              "Eine Datentabelle mit sortierbaren Spaltenüberschriften, gestreiften Zeilen und Paginierung",
-            ],
-          },
-          {
-            label: "E-Commerce",
-            examples: [
-              "Eine Produktkarte mit Bild-Platzhalter, Titel, Preis, Sterne-Bewertung und Warenkorb-Button",
-              "Eine Warenkorb-Zusammenfassung mit Artikelliste, Mengen, Zwischensumme und Checkout-Button",
-              "Ein Produktbewertungs-Bereich mit Sterne-Aufschlüsselung und einzelnen Bewertungskarten",
-              "Eine Kategorie-Filter-Seitenleiste mit Checkboxen, Preisspannen-Slider und Anwenden-Button",
-            ],
-          },
-          {
-            label: "Formulare",
-            examples: [
-              "Ein Login-Formular mit E-Mail, Passwort, Social-Sign-in-Buttons und einer Angemeldet-bleiben-Checkbox",
-              "Ein mehrstufiger Registrierungs-Assistent mit Fortschrittsanzeige und Formularfeldern",
-              "Ein Kontaktformular mit Name, E-Mail, Betreff-Dropdown, Nachrichtenfeld und Datei-Upload",
-              "Eine Einstellungsseite mit Toggle-Switches, Radio-Gruppen und einem Speichern-Button",
-            ],
-          },
-          {
-            label: "Navigation",
-            examples: [
-              "Eine responsive Navbar mit Logo, Menü-Links, Suchleiste und einem Benutzer-Avatar-Dropdown",
-              "Eine Seitenleisten-Navigation mit einklappbaren Abschnitten, Icons und einem Aktiv-Status-Indikator",
-              "Eine Breadcrumb-Leiste mit hervorgehobener aktueller Seite und einem Zurück-Button",
-              "Eine Tab-Leiste mit Icons und Labels für eine mobile App Bottom-Navigation",
-            ],
-          },
+        examples: [
+          "Ein Hero-Bereich mit Gradient-Überschrift, Untertitel und zwei CTA-Buttons",
+          "Eine Preistabelle mit drei Stufen: Free, Pro und Enterprise",
+          "Ein Dashboard-Statistikraster mit 4 Metrikkarten mit Icons und Trends",
+          "Eine Produktkarte mit Bild-Platzhalter, Titel, Preis und Warenkorb-Button",
+          "Ein Login-Formular mit E-Mail, Passwort, Social-Sign-in und Angemeldet-bleiben",
+          "Eine Datentabelle mit sortierbaren Spalten, gestreiften Zeilen und Paginierung",
+          "Eine Testimonial-Karussell-Karte mit Avatar, Zitat, Name und Rolle",
         ],
         previewSection: {
           previewTab: "Vorschau",

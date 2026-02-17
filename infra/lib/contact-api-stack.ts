@@ -94,6 +94,7 @@ export class ContactApiStack extends cdk.Stack {
           RECIPIENT_EMAIL: config.recipientEmail,
           SENDER_EMAIL: config.senderEmail,
           ALLOWED_ORIGINS: config.allowedOrigins.join(","),
+          TABLE_NAME: githubStatsTable.tableName,
         },
       }
     );
@@ -107,6 +108,7 @@ export class ContactApiStack extends cdk.Stack {
         ],
       })
     );
+    githubStatsTable.grantReadWriteData(contactHandler);
 
     // ── GitHub Stats API Lambda (reads from DynamoDB) ──────────────────
     const githubStatsHandler = new lambdaNode.NodejsFunction(

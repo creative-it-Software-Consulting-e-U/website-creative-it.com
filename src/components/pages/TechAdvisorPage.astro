@@ -50,7 +50,7 @@ const p = config.pages.techAdvisor;
 
           <!-- Example Chips -->
           <div class="mb-6">
-            <span class="text-xs text-text-muted uppercase tracking-wider mb-2 block">Try an example</span>
+            <p class="text-xs text-text-muted mb-3">{locale === 'de' ? 'Beschreiben Sie oben frei Ihr Projekt — oder lassen Sie sich inspirieren:' : 'Describe your project above — or get inspired:'}</p>
             <div class="flex flex-wrap gap-2">
               {p.examples.map((example) => (
                 <button

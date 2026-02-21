@@ -12,26 +12,44 @@ jobs:
   deploy-cdk:
     runs-on: ubuntu-latest
     outputs:
-      ai_playground_url: ${{ steps.cdk-deploy.outputs.ai_playground_url }}
-      tech_advisor_url: ${{ steps.cdk-deploy.outputs.tech_advisor_url }}
-      knowledge_bot_url: ${{ steps.cdk-deploy.outputs.knowledge_bot_url }}
-      agent_visualizer_url: ${{ steps.cdk-deploy.outputs.agent_visualizer_url }}
-      website_remix_url: ${{ steps.cdk-deploy.outputs.website_remix_url }}
-      live_translation_url: ${{ steps.cdk-deploy.outputs.live_translation_url }}
+      ai_playground_url: ${{ steps.resolve-urls.outputs.ai_playground_url }}
+      tech_advisor_url: ${{ steps.resolve-urls.outputs.tech_advisor_url }}
+      knowledge_bot_url: ${{ steps.resolve-urls.outputs.knowledge_bot_url }}
+      agent_visualizer_url: ${{ steps.resolve-urls.outputs.agent_visualizer_url }}
+      website_remix_url: ${{ steps.resolve-urls.outputs.website_remix_url }}
+      live_translation_url: ${{ steps.resolve-urls.outputs.live_translation_url }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for infra changes
+        id: changes
+        run: |
+          BEFORE="${{ github.event.before }}"
+          if [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
+            echo "infra=true" >> "$GITHUB_OUTPUT"
+          elif git diff --name-only "$BEFORE" "${{ github.sha }}" | grep -q '^infra/'; then
+            echo "infra=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "infra=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Skipping CDK deploy — no changes in infra/"
+          fi
 
       - uses: actions/setup-node@v4
+        if: steps.changes.outputs.infra == 'true'
         with:
           node-version: 20
           cache: npm
           cache-dependency-path: infra/package-lock.json
 
       - name: Install CDK dependencies
+        if: steps.changes.outputs.infra == 'true'
         run: npm ci
         working-directory: infra
 
       - name: Configure AWS credentials
+        if: steps.changes.outputs.infra == 'true'
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ github.ref == 'refs/heads/main' && secrets.AWS_ACCESS_KEY_ID_PROD || secrets.AWS_ACCESS_KEY_ID_GW }}
@@ -40,6 +58,7 @@ jobs:
 
       - name: CDK deploy
         id: cdk-deploy
+        if: steps.changes.outputs.infra == 'true'
         run: |
           GITHUB_TOKEN=${{ secrets.GH_PAT_SCHEDULER }} npx cdk deploy -c env=${{ github.ref == 'refs/heads/main' && 'prod' || 'gw' }} --require-approval never --outputs-file cdk-outputs.json
           echo "ai_playground_url=$(jq -r '.ContactApiStack.AiPlaygroundUrl // empty' cdk-outputs.json)" >> "$GITHUB_OUTPUT"
@@ -49,6 +68,30 @@ jobs:
           echo "website_remix_url=$(jq -r '.ContactApiStack.WebsiteRemixUrl // empty' cdk-outputs.json)" >> "$GITHUB_OUTPUT"
           echo "live_translation_url=$(jq -r '.ContactApiStack.LiveTranslationUrl // empty' cdk-outputs.json)" >> "$GITHUB_OUTPUT"
         working-directory: infra
+
+      - name: Resolve API URLs
+        id: resolve-urls
+        run: |
+          if [ "${{ steps.changes.outputs.infra }}" = "true" ]; then
+            echo "ai_playground_url=${{ steps.cdk-deploy.outputs.ai_playground_url }}" >> "$GITHUB_OUTPUT"
+            echo "tech_advisor_url=${{ steps.cdk-deploy.outputs.tech_advisor_url }}" >> "$GITHUB_OUTPUT"
+            echo "knowledge_bot_url=${{ steps.cdk-deploy.outputs.knowledge_bot_url }}" >> "$GITHUB_OUTPUT"
+            echo "agent_visualizer_url=${{ steps.cdk-deploy.outputs.agent_visualizer_url }}" >> "$GITHUB_OUTPUT"
+            echo "website_remix_url=${{ steps.cdk-deploy.outputs.website_remix_url }}" >> "$GITHUB_OUTPUT"
+            echo "live_translation_url=${{ steps.cdk-deploy.outputs.live_translation_url }}" >> "$GITHUB_OUTPUT"
+          else
+            if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+              AI_DOMAIN="ai.creative-it.com"
+            else
+              AI_DOMAIN="ai.gw.dev.creative-it.com"
+            fi
+            echo "ai_playground_url=https://${AI_DOMAIN}/playground" >> "$GITHUB_OUTPUT"
+            echo "tech_advisor_url=https://${AI_DOMAIN}/tech-advisor" >> "$GITHUB_OUTPUT"
+            echo "knowledge_bot_url=https://${AI_DOMAIN}/knowledge-bot" >> "$GITHUB_OUTPUT"
+            echo "agent_visualizer_url=https://${AI_DOMAIN}/agent-visualizer" >> "$GITHUB_OUTPUT"
+            echo "website_remix_url=https://${AI_DOMAIN}/website-remix" >> "$GITHUB_OUTPUT"
+            echo "live_translation_url=https://${AI_DOMAIN}/live-translation" >> "$GITHUB_OUTPUT"
+          fi
 
   deploy-vercel:
     needs: deploy-cdk

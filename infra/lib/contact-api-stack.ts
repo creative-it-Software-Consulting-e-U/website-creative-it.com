@@ -160,6 +160,39 @@ export class ContactApiStack extends cdk.Stack {
 
     githubStatsTable.grantReadWriteData(githubStatsScheduler);
 
+    // ── GitHub Webhook Lambda (real-time push events → DynamoDB) ───────
+    const githubWebhookHandler = new lambdaNode.NodejsFunction(
+      this,
+      "GitHubWebhookHandler",
+      {
+        runtime: lambda.Runtime.NODEJS_22_X,
+        architecture: lambda.Architecture.ARM_64,
+        memorySize: 256,
+        timeout: cdk.Duration.seconds(30),
+        entry: path.join(
+          __dirname,
+          "..",
+          "lambda",
+          "github-webhook",
+          "index.ts"
+        ),
+        handler: "handler",
+        bundling: {
+          format: lambdaNode.OutputFormat.ESM,
+          mainFields: ["module", "main"],
+          externalModules: ["@aws-sdk/*"],
+        },
+        environment: {
+          TABLE_NAME: githubStatsTable.tableName,
+          WEBHOOK_SECRET: process.env.GITHUB_WEBHOOK_SECRET ?? "",
+          GITHUB_TOKEN: process.env.GITHUB_TOKEN ?? "",
+          GITHUB_ORG: "creative-it-Software-Consulting-e-U",
+        },
+      }
+    );
+
+    githubStatsTable.grantReadWriteData(githubWebhookHandler);
+
     // ── EventBridge Scheduler (every hour at x:00) ─────────────────────
     const schedulerRole = new iam.Role(this, "GitHubStatsSchedulerRole", {
       assumedBy: new iam.ServicePrincipal("scheduler.amazonaws.com"),
@@ -855,6 +888,15 @@ export class ContactApiStack extends cdk.Stack {
     });
 
     httpApi.addRoutes({
+      path: "/github-webhook",
+      methods: [apigwv2.HttpMethod.POST],
+      integration: new apigwv2Integrations.HttpLambdaIntegration(
+        "GitHubWebhookIntegration",
+        githubWebhookHandler
+      ),
+    });
+
+    httpApi.addRoutes({
       path: "/commit-story",
       methods: [apigwv2.HttpMethod.GET],
       integration: new apigwv2Integrations.HttpLambdaIntegration(
@@ -1056,6 +1098,11 @@ function handler(event) {
     new cdk.CfnOutput(this, "GitHubStatsUrl", {
       value: `https://${apiDomainName}/github-stats`,
       description: "GitHub Stats API endpoint",
+    });
+
+    new cdk.CfnOutput(this, "GitHubWebhookUrl", {
+      value: `https://${apiDomainName}/github-webhook`,
+      description: "GitHub Webhook endpoint",
     });
 
     new cdk.CfnOutput(this, "HttpApiUrl", {

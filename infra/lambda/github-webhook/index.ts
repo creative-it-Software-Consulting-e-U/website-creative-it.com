@@ -23,6 +23,7 @@ const ddb = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 interface PushCommit {
   id: string;
   timestamp: string;
+  message: string;
   added: string[];
   removed: string[];
   modified: string[];
@@ -57,6 +58,10 @@ function verifySignature(payload: string, signature: string): boolean {
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
+
+function isMergeCommit(message: string): boolean {
+  return /^Merge (branch|pull request|remote-tracking) /.test(message);
+}
 
 function floorToHour(date: Date): Date {
   const d = new Date(date);
@@ -210,15 +215,24 @@ export async function handler(
     `Processing push: ${payload.repository.full_name} ${payload.ref} (${payload.commits.length} commits)`
   );
 
-  // Get line-level stats via Compare API (single call for entire push)
-  const { additions, deletions } = await fetchCompareStats(
-    payload.repository.full_name,
-    payload.before,
-    payload.after
+  // Separate merge commits from regular commits (count all, but only
+  // fetch line stats for non-merge commits to avoid inflated numbers)
+  const nonMergeCommits = payload.commits.filter(
+    (c) => !isMergeCommit(c.message)
   );
-  const totalLines = additions + deletions;
 
-  // Bucket commits by hour and write atomically
+  // Only call Compare API if there are non-merge commits
+  let totalLines = 0;
+  if (nonMergeCommits.length > 0) {
+    const { additions, deletions } = await fetchCompareStats(
+      payload.repository.full_name,
+      payload.before,
+      payload.after
+    );
+    totalLines = additions + deletions;
+  }
+
+  // Bucket ALL commits by hour (merge commits count toward commit total)
   const buckets = new Map<string, { commits: number; lines: number }>();
 
   for (const commit of payload.commits) {
@@ -228,20 +242,24 @@ export async function handler(
     buckets.set(hourKey, bucket);
   }
 
-  // Distribute lines proportionally across hour buckets
-  const totalCommits = payload.commits.length;
+  // Distribute lines only across non-merge commit hour buckets
+  const nonMergeBuckets = new Map<string, number>();
+  for (const commit of nonMergeCommits) {
+    const hourKey = floorToHour(new Date(commit.timestamp)).toISOString();
+    nonMergeBuckets.set(hourKey, (nonMergeBuckets.get(hourKey) ?? 0) + 1);
+  }
+  const totalNonMerge = nonMergeCommits.length;
   let linesDistributed = 0;
-  const bucketEntries = Array.from(buckets.entries());
-  for (let i = 0; i < bucketEntries.length; i++) {
-    const [hourKey, bucket] = bucketEntries[i];
-    if (i === bucketEntries.length - 1) {
-      // Last bucket gets remainder to avoid rounding errors
+  const nmEntries = Array.from(nonMergeBuckets.entries());
+  for (let i = 0; i < nmEntries.length; i++) {
+    const [hourKey, count] = nmEntries[i];
+    const bucket = buckets.get(hourKey)!;
+    if (i === nmEntries.length - 1) {
       bucket.lines = totalLines - linesDistributed;
     } else {
-      bucket.lines = Math.round((bucket.commits / totalCommits) * totalLines);
+      bucket.lines = Math.round((count / totalNonMerge) * totalLines);
       linesDistributed += bucket.lines;
     }
-    buckets.set(hourKey, bucket);
   }
 
   // Write each hour bucket with atomic increment
@@ -251,13 +269,15 @@ export async function handler(
   );
   await Promise.all(writePromises);
 
+  const mergeCount = payload.commits.length - nonMergeCommits.length;
   console.log(
-    `Wrote ${buckets.size} hour bucket(s): ${totalCommits} commits, ${totalLines} lines`
+    `Wrote ${buckets.size} hour bucket(s): ${payload.commits.length} commits (${mergeCount} merge), ${totalLines} lines`
   );
 
   return respond(200, {
     message: "Processed",
-    commits: totalCommits,
+    commits: payload.commits.length,
+    mergeCommits: mergeCount,
     lines: totalLines,
     buckets: buckets.size,
   });

@@ -12,7 +12,6 @@ import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 import * as scheduler from "aws-cdk-lib/aws-scheduler";
 import * as s3 from "aws-cdk-lib/aws-s3";
 import * as s3deploy from "aws-cdk-lib/aws-s3-deployment";
-import * as opensearchserverless from "aws-cdk-lib/aws-opensearchserverless";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
 import * as cr from "aws-cdk-lib/custom-resources";
@@ -599,189 +598,80 @@ export class ContactApiStack extends cdk.Stack {
 
     githubStatsTable.grantReadWriteData(agentVisualizerHandler);
 
-    // ── Knowledge Bot Infrastructure (S3 + Bedrock Knowledge Base) ──────
+    // ── Knowledge Bot Infrastructure (S3 Embeddings + In-Lambda RAG) ────
 
-    // S3 bucket for knowledge base documents
-    const knowledgeBucket = new s3.Bucket(this, "KnowledgeBucket", {
-      bucketName: `creative-it-knowledge-${config.envName}`,
+    // S3 bucket for pre-computed embeddings (built locally / in CI from
+    // infra/knowledge-base/*.md and src/content/blog/*.md, then uploaded here).
+    // The Lambda loads the JSON on cold start and runs cosine similarity in
+    // memory — far cheaper than OpenSearch Serverless ($0.01/month vs $700+).
+    const embeddingsBucket = new s3.Bucket(this, "EmbeddingsBucket", {
+      bucketName: `creative-it-embeddings-${config.envName}`,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      versioned: true,
     });
 
-    // Deploy knowledge base documents to S3
-    const kbDocsDeploy = new s3deploy.BucketDeployment(this, "KnowledgeBaseDocsDeploy", {
+    new s3deploy.BucketDeployment(this, "EmbeddingsDeploy", {
       sources: [
-        s3deploy.Source.asset(
-          path.join(__dirname, "..", "knowledge-base")
-        ),
+        s3deploy.Source.asset(path.join(__dirname, "..", "embeddings")),
       ],
-      destinationBucket: knowledgeBucket,
+      destinationBucket: embeddingsBucket,
+      prune: true,
     });
 
-    // Deploy blog articles to S3 for Knowledge Base ingestion
-    const kbBlogDeploy = new s3deploy.BucketDeployment(this, "KnowledgeBlogDeploy", {
-      sources: [
-        s3deploy.Source.asset(
-          path.join(__dirname, "..", "..", "src", "content", "blog")
-        ),
-      ],
-      destinationBucket: knowledgeBucket,
-      destinationKeyPrefix: "blog",
-    });
-
-    // Knowledge Base + Data Source IDs (created manually in Bedrock console)
-    const kbConfig: Record<string, { knowledgeBaseId: string; dataSourceId: string }> = {
-      gw:   { knowledgeBaseId: "GQFVI7ZE8C", dataSourceId: "JK5CKEJDFV" },
-      prod: { knowledgeBaseId: "ME4IUCQZDU", dataSourceId: "HEMTOV1CFQ" },
+    // One-shot cleanup: removes the manually-created Bedrock KBs and any
+    // OpenSearch Serverless orphan collections from the Bedrock Console
+    // wizard. Idempotent: re-deploys are no-op once everything is gone.
+    // TODO: remove this construct + the kb-cleanup Lambda in a follow-up
+    // PR once the cleanup has run successfully in both environments.
+    const kbIdsToDelete: Record<string, string[]> = {
+      gw: ["GQFVI7ZE8C"],
+      prod: ["ME4IUCQZDU"],
     };
-    const kb = kbConfig[config.envName];
-
-    // Auto-sync Knowledge Base after S3 docs are deployed
-    if (kb?.knowledgeBaseId && kb?.dataSourceId) {
-      const kbSync = new cr.AwsCustomResource(this, "KnowledgeBaseSyncTrigger", {
-        onUpdate: {
-          service: "BedrockAgent",
-          action: "startIngestionJob",
-          parameters: {
-            knowledgeBaseId: kb.knowledgeBaseId,
-            dataSourceId: kb.dataSourceId,
-          },
-          physicalResourceId: cr.PhysicalResourceId.of(
-            `kb-sync-${Date.now()}`
-          ),
-        },
-        policy: cr.AwsCustomResourcePolicy.fromStatements([
-          new iam.PolicyStatement({
-            actions: ["bedrock:StartIngestionJob"],
-            resources: [
-              `arn:aws:bedrock:${config.region}:${config.account}:knowledge-base/${kb.knowledgeBaseId}`,
-            ],
-          }),
-        ]),
-      });
-      kbSync.node.addDependency(kbDocsDeploy);
-      kbSync.node.addDependency(kbBlogDeploy);
-    }
-
-    // IAM role for Bedrock Knowledge Base to access S3 and embedding model
-    const kbRole = new iam.Role(this, "KnowledgeBaseRole", {
-      assumedBy: new iam.ServicePrincipal("bedrock.amazonaws.com"),
-      inlinePolicies: {
-        BedrockS3Access: new iam.PolicyDocument({
-          statements: [
-            new iam.PolicyStatement({
-              actions: ["s3:GetObject", "s3:ListBucket"],
-              resources: [
-                knowledgeBucket.bucketArn,
-                `${knowledgeBucket.bucketArn}/*`,
-              ],
-            }),
-            new iam.PolicyStatement({
-              actions: ["bedrock:InvokeModel"],
-              resources: [
-                "arn:aws:bedrock:eu-central-1::foundation-model/amazon.titan-embed-text-v2:0",
-              ],
-            }),
-          ],
-        }),
+    const cleanupHandler = new lambdaNode.NodejsFunction(this, "KbCleanupHandler", {
+      runtime: lambda.Runtime.NODEJS_22_X,
+      architecture: lambda.Architecture.ARM_64,
+      memorySize: 256,
+      timeout: cdk.Duration.minutes(5),
+      entry: path.join(__dirname, "..", "lambda", "kb-cleanup", "index.ts"),
+      handler: "handler",
+      bundling: {
+        externalModules: [
+          "@aws-sdk/client-bedrock-agent",
+          "@aws-sdk/client-opensearchserverless",
+        ],
       },
     });
-
-    // OpenSearch Serverless encryption policy (must exist before collection)
-    const ossEncryptionPolicy = new opensearchserverless.CfnSecurityPolicy(
-      this,
-      "KBEncryptionPolicy",
-      {
-        name: `creative-it-kb-enc-${config.envName}`,
-        type: "encryption",
-        policy: JSON.stringify({
-          Rules: [
-            {
-              ResourceType: "collection",
-              Resource: [`collection/creative-it-kb-${config.envName}`],
-            },
-          ],
-          AWSOwnedKey: true,
-        }),
-      }
+    cleanupHandler.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: [
+          "bedrock:DeleteKnowledgeBase",
+          "bedrock:DeleteDataSource",
+          "bedrock:ListDataSources",
+          "bedrock:GetKnowledgeBase",
+          "aoss:ListCollections",
+          "aoss:DeleteCollection",
+          "aoss:BatchGetCollection",
+        ],
+        resources: ["*"],
+      })
     );
-
-    // OpenSearch Serverless network policy (must exist before collection)
-    const ossNetworkPolicy = new opensearchserverless.CfnSecurityPolicy(
-      this,
-      "KBNetworkPolicy",
-      {
-        name: `creative-it-kb-net-${config.envName}`,
-        type: "network",
-        policy: JSON.stringify([
-          {
-            Rules: [
-              {
-                ResourceType: "collection",
-                Resource: [`collection/creative-it-kb-${config.envName}`],
-              },
-              {
-                ResourceType: "dashboard",
-                Resource: [`collection/creative-it-kb-${config.envName}`],
-              },
-            ],
-            AllowFromPublic: true,
-          },
-        ]),
-      }
-    );
-
-    // OpenSearch Serverless collection for vector store
-    const ossCollection = new opensearchserverless.CfnCollection(
-      this,
-      "KBVectorCollection",
-      {
-        name: `creative-it-kb-${config.envName}`,
-        type: "VECTORSEARCH",
-      }
-    );
-
-    // Collection depends on security policies being created first
-    ossCollection.addDependency(ossEncryptionPolicy);
-    ossCollection.addDependency(ossNetworkPolicy);
-
-    // OpenSearch Serverless data access policy
-    new opensearchserverless.CfnAccessPolicy(
-      this,
-      "KBDataAccessPolicy",
-      {
-        name: `creative-it-kb-data-${config.envName}`,
-        type: "data",
-        policy: JSON.stringify([
-          {
-            Rules: [
-              {
-                ResourceType: "collection",
-                Resource: [`collection/creative-it-kb-${config.envName}`],
-                Permission: [
-                  "aoss:CreateCollectionItems",
-                  "aoss:UpdateCollectionItems",
-                  "aoss:DescribeCollectionItems",
-                ],
-              },
-              {
-                ResourceType: "index",
-                Resource: [`index/creative-it-kb-${config.envName}/*`],
-                Permission: [
-                  "aoss:CreateIndex",
-                  "aoss:UpdateIndex",
-                  "aoss:DescribeIndex",
-                  "aoss:ReadDocument",
-                  "aoss:WriteDocument",
-                ],
-              },
-            ],
-            Principal: [kbRole.roleArn],
-          },
-        ]),
-      }
-    );
+    const cleanupProvider = new cr.Provider(this, "KbCleanupProvider", {
+      onEventHandler: cleanupHandler,
+    });
+    new cdk.CustomResource(this, "KbCleanupResource", {
+      serviceToken: cleanupProvider.serviceToken,
+      properties: {
+        knowledgeBaseIds: kbIdsToDelete[config.envName] ?? [],
+        // Match the auto-named collections the Bedrock Console wizard creates.
+        // CDK-managed `creative-it-kb-${envName}` collections are removed by
+        // CloudFormation as part of this same deploy.
+        collectionNamePrefixes: ["bedrock-knowledge-base-"],
+        // Bump to force re-run of the cleanup Lambda after fixing bugs.
+        cleanupVersion: 2,
+      },
+    });
 
     // Knowledge Bot Lambda
     const knowledgeBotHandler = new lambdaNode.NodejsFunction(
@@ -806,13 +696,16 @@ export class ContactApiStack extends cdk.Stack {
           externalModules: [
             "@aws-sdk/client-dynamodb",
             "@aws-sdk/lib-dynamodb",
-            "@aws-sdk/client-bedrock-agent-runtime",
+            "@aws-sdk/client-bedrock-runtime",
+            "@aws-sdk/client-s3",
           ],
         },
         environment: {
           TABLE_NAME: githubStatsTable.tableName,
-          KNOWLEDGE_BASE_ID: kb?.knowledgeBaseId ?? "",
-          MODEL_ARN: `arn:aws:bedrock:eu-central-1:${config.account}:inference-profile/eu.anthropic.claude-sonnet-4-20250514-v1:0`,
+          EMBEDDINGS_BUCKET: embeddingsBucket.bucketName,
+          EMBEDDINGS_KEY: "embeddings.json",
+          MODEL_ID: "eu.anthropic.claude-sonnet-4-20250514-v1:0",
+          EMBED_MODEL_ID: "amazon.titan-embed-text-v2:0",
           ALLOWED_ORIGINS: config.allowedOrigins.join(","),
         },
       }
@@ -833,8 +726,6 @@ export class ContactApiStack extends cdk.Stack {
     knowledgeBotHandler.addToRolePolicy(
       new iam.PolicyStatement({
         actions: [
-          "bedrock:RetrieveAndGenerate",
-          "bedrock:Retrieve",
           "bedrock:InvokeModel",
           "bedrock:InvokeModelWithResponseStream",
           "bedrock:GetInferenceProfile",
@@ -843,16 +734,7 @@ export class ContactApiStack extends cdk.Stack {
       })
     );
 
-    knowledgeBotHandler.addToRolePolicy(
-      new iam.PolicyStatement({
-        actions: [
-          "aws-marketplace:ViewSubscriptions",
-          "aws-marketplace:Subscribe",
-        ],
-        resources: ["*"],
-      })
-    );
-
+    embeddingsBucket.grantRead(knowledgeBotHandler);
     githubStatsTable.grantReadWriteData(knowledgeBotHandler);
 
     // ── API Gateway HTTP API v2 ────────────────────────────────────────
@@ -1150,9 +1032,9 @@ function handler(event) {
       description: "AI CloudFront distribution domain (for verification)",
     });
 
-    new cdk.CfnOutput(this, "KnowledgeBucketName", {
-      value: knowledgeBucket.bucketName,
-      description: "Knowledge Base S3 bucket",
+    new cdk.CfnOutput(this, "EmbeddingsBucketName", {
+      value: embeddingsBucket.bucketName,
+      description: "Knowledge Bot embeddings S3 bucket",
     });
 
     // ── blog.creative-it.com → creative-it.com/blog Redirect (prod only) ──

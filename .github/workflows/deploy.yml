@@ -23,17 +23,20 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check for infra changes
+      - name: Check for infra or content changes
         id: changes
         run: |
           BEFORE="${{ github.event.before }}"
           if [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
             echo "infra=true" >> "$GITHUB_OUTPUT"
-          elif git diff --name-only "$BEFORE" "${{ github.sha }}" | grep -q '^infra/'; then
-            echo "infra=true" >> "$GITHUB_OUTPUT"
           else
-            echo "infra=false" >> "$GITHUB_OUTPUT"
-            echo "::notice::Skipping CDK deploy — no changes in infra/"
+            CHANGED_FILES=$(git diff --name-only "$BEFORE" "${{ github.sha }}")
+            if echo "$CHANGED_FILES" | grep -qE '^(infra/|src/content/blog/)'; then
+              echo "infra=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "infra=false" >> "$GITHUB_OUTPUT"
+              echo "::notice::Skipping CDK deploy — no changes in infra/ or src/content/blog/"
+            fi
           fi
 
       - uses: actions/setup-node@v4
@@ -55,6 +58,11 @@ jobs:
           aws-access-key-id: ${{ github.ref == 'refs/heads/main' && secrets.AWS_ACCESS_KEY_ID_PROD || secrets.AWS_ACCESS_KEY_ID_GW }}
           aws-secret-access-key: ${{ github.ref == 'refs/heads/main' && secrets.AWS_SECRET_ACCESS_KEY_PROD || secrets.AWS_SECRET_ACCESS_KEY_GW }}
           aws-region: eu-central-1
+
+      - name: Build knowledge-bot embeddings
+        if: steps.changes.outputs.infra == 'true'
+        run: npm run build:embeddings
+        working-directory: infra
 
       - name: CDK deploy
         id: cdk-deploy

@@ -1,22 +1,61 @@
 import {
-  BedrockAgentRuntimeClient,
-  RetrieveAndGenerateCommand,
-} from "@aws-sdk/client-bedrock-agent-runtime";
+  BedrockRuntimeClient,
+  InvokeModelCommand,
+  InvokeModelWithResponseStreamCommand,
+} from "@aws-sdk/client-bedrock-runtime";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, UpdateCommand } from "@aws-sdk/lib-dynamodb";
-import { createHash } from "crypto";
+import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
+import { createHash, randomUUID } from "crypto";
 
-const bedrockAgent = new BedrockAgentRuntimeClient({});
+const bedrock = new BedrockRuntimeClient({});
 const ddb = DynamoDBDocumentClient.from(new DynamoDBClient({}));
+const s3 = new S3Client({});
 
 const TABLE_NAME = process.env.TABLE_NAME!;
+const EMBEDDINGS_BUCKET = process.env.EMBEDDINGS_BUCKET!;
+const EMBEDDINGS_KEY = process.env.EMBEDDINGS_KEY ?? "embeddings.json";
+const MODEL_ID = process.env.MODEL_ID
+  ?? "eu.anthropic.claude-sonnet-4-20250514-v1:0";
+const EMBED_MODEL_ID = process.env.EMBED_MODEL_ID ?? "amazon.titan-embed-text-v2:0";
+const EMBED_DIMENSIONS = 1024;
+const TOP_K = 5;
+const RATE_LIMIT = 20;
+
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS ?? "")
   .split(",")
   .map((origin) => origin.trim())
   .filter(Boolean);
-const KNOWLEDGE_BASE_ID = process.env.KNOWLEDGE_BASE_ID!;
-const MODEL_ARN = process.env.MODEL_ARN || "arn:aws:bedrock:eu-central-1::foundation-model/anthropic.claude-sonnet-4-20250514-v1:0";
-const RATE_LIMIT = 20;
+
+interface EmbeddedChunk {
+  id: string;
+  source: string;
+  url: string;
+  title: string;
+  text: string;
+  vector: number[];
+}
+
+interface EmbeddingsFile {
+  version: number;
+  embeddingModel: string;
+  dimensions: number;
+  generatedAt: string;
+  chunkCount: number;
+  chunks: EmbeddedChunk[];
+}
+
+let embeddingsCache: EmbeddingsFile | null = null;
+
+async function loadEmbeddings(): Promise<EmbeddingsFile> {
+  if (embeddingsCache) return embeddingsCache;
+  const res = await s3.send(
+    new GetObjectCommand({ Bucket: EMBEDDINGS_BUCKET, Key: EMBEDDINGS_KEY })
+  );
+  const body = await res.Body!.transformToString();
+  embeddingsCache = JSON.parse(body) as EmbeddingsFile;
+  return embeddingsCache;
+}
 
 function hashIp(ip: string): string {
   return createHash("sha256").update(ip).digest("hex").slice(0, 16);
@@ -61,6 +100,61 @@ async function checkRateLimit(ip: string): Promise<{ allowed: boolean; remaining
   const count = (result.Attributes?.count as number) ?? 1;
   const remaining = Math.max(0, RATE_LIMIT - count);
   return { allowed: count <= RATE_LIMIT, remaining };
+}
+
+async function embedQuery(text: string): Promise<number[]> {
+  const res = await bedrock.send(
+    new InvokeModelCommand({
+      modelId: EMBED_MODEL_ID,
+      contentType: "application/json",
+      accept: "application/json",
+      body: JSON.stringify({
+        inputText: text,
+        dimensions: EMBED_DIMENSIONS,
+        normalize: true,
+      }),
+    })
+  );
+  const payload = JSON.parse(new TextDecoder().decode(res.body));
+  return payload.embedding as number[];
+}
+
+function cosineSim(a: number[], b: number[]): number {
+  // Vectors come pre-normalized from Titan, so dot product = cosine similarity.
+  let sum = 0;
+  for (let i = 0; i < a.length; i++) sum += a[i] * b[i];
+  return sum;
+}
+
+function topKChunks(query: number[], chunks: EmbeddedChunk[], k: number): EmbeddedChunk[] {
+  const scored = chunks.map((c) => ({ chunk: c, score: cosineSim(query, c.vector) }));
+  scored.sort((a, b) => b.score - a.score);
+  return scored.slice(0, k).map((s) => s.chunk);
+}
+
+function buildPrompt(question: string, contexts: EmbeddedChunk[]): string {
+  const contextBlock = contexts
+    .map(
+      (c, i) =>
+        `[Source ${i + 1}] ${c.title}\nURL: ${c.url}\n${c.text}`
+    )
+    .join("\n\n---\n\n");
+
+  return `You are a helpful AI assistant for creative-it, a software consulting company based in Austria. Answer questions about the company using the provided context.
+
+Rules:
+- Be friendly, professional, and concise
+- Use the provided context to answer accurately
+- If you don't know something, say so honestly and suggest contacting the team
+- For complex project inquiries, recommend reaching out via the contact form at /contact
+- Include relevant links to pages when applicable (e.g., /services, /about, /contact)
+- When your answer draws on a blog article, include a markdown link to its URL and mention that more articles are available at https://blog.creative-it.com
+- Keep responses focused and under 200 words
+
+Context:
+${contextBlock}
+
+Question: ${question}`;
 }
 
 // @ts-expect-error — awslambda global type for streaming handler
@@ -166,66 +260,49 @@ export const handler = awslambda.streamifyResponse(
     }
 
     try {
-      const commandInput: Record<string, unknown> = {
-        input: { text: question },
-        retrieveAndGenerateConfiguration: {
-          type: "KNOWLEDGE_BASE",
-          knowledgeBaseConfiguration: {
-            knowledgeBaseId: KNOWLEDGE_BASE_ID,
-            modelArn: MODEL_ARN,
-            retrievalConfiguration: {
-              vectorSearchConfiguration: {
-                numberOfResults: 10,
-              },
-            },
-            generationConfiguration: {
-              promptTemplate: {
-                textPromptTemplate: `You are a helpful AI assistant for creative-it, a software consulting company based in Austria. Answer questions about the company using the provided context.
+      const embeddings = await loadEmbeddings();
+      const queryVec = await embedQuery(question);
+      const topChunks = topKChunks(queryVec, embeddings.chunks, TOP_K);
+      const prompt = buildPrompt(question, topChunks);
+      const newSessionId = sessionId ?? randomUUID();
 
-Rules:
-- Be friendly, professional, and concise
-- Use the provided context to answer accurately
-- If you don't know something, say so honestly and suggest contacting the team
-- For complex project inquiries, recommend reaching out via the contact form at /contact
-- Include relevant links to pages when applicable (e.g., /services, /about, /contact)
-- When your answer draws on blog article content, include a markdown link to the original article URL (found as "Original URL" in the source). Also mention that more articles are available at https://blog.creative-it.com
-- Keep responses focused and under 200 words
-
-Context: $search_results$
-
-Question: $query$`,
-              },
-            },
-          },
-        },
-      };
-
-      if (sessionId) {
-        commandInput.sessionId = sessionId;
-      }
-
-      const response = await bedrockAgent.send(
-        new RetrieveAndGenerateCommand(commandInput as any)
-      );
-
-      const text = response.output?.text ?? "I'm sorry, I couldn't find an answer to that question. Please contact us at info@creative-it.com for more help.";
-      const newSessionId = response.sessionId;
-
-      // Stream the response character by character for typing effect
       // @ts-expect-error — awslambda HttpResponseStream type
       responseStream = awslambda.HttpResponseStream.from(responseStream, {
         statusCode: 200,
         headers: {
           ...baseHeaders,
-          "X-Session-Id": newSessionId ?? "",
+          "X-Session-Id": newSessionId,
           "X-Remaining-Requests": String(remaining),
         },
       });
 
-      // Send response in small chunks for typing effect
-      const chunkSize = 3;
-      for (let i = 0; i < text.length; i += chunkSize) {
-        responseStream.write(text.slice(i, i + chunkSize));
+      const claudeRes = await bedrock.send(
+        new InvokeModelWithResponseStreamCommand({
+          modelId: MODEL_ID,
+          contentType: "application/json",
+          accept: "application/json",
+          body: JSON.stringify({
+            anthropic_version: "bedrock-2023-05-31",
+            max_tokens: 600,
+            messages: [{ role: "user", content: prompt }],
+          }),
+        })
+      );
+
+      if (!claudeRes.body) {
+        responseStream.write(
+          "I'm sorry, I couldn't process your question. Please try again or contact us at info@creative-it.com."
+        );
+        responseStream.end();
+        return;
+      }
+
+      for await (const chunk of claudeRes.body) {
+        if (!chunk.chunk?.bytes) continue;
+        const event = JSON.parse(new TextDecoder().decode(chunk.chunk.bytes));
+        if (event.type === "content_block_delta" && event.delta?.text) {
+          responseStream.write(event.delta.text);
+        }
       }
 
       responseStream.end();

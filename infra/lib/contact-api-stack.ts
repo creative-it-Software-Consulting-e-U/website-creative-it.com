@@ -14,7 +14,6 @@ import * as s3 from "aws-cdk-lib/aws-s3";
 import * as s3deploy from "aws-cdk-lib/aws-s3-deployment";
 import * as cloudfront from "aws-cdk-lib/aws-cloudfront";
 import * as origins from "aws-cdk-lib/aws-cloudfront-origins";
-import * as cr from "aws-cdk-lib/custom-resources";
 import { Construct } from "constructs";
 import * as path from "path";
 
@@ -618,59 +617,6 @@ export class ContactApiStack extends cdk.Stack {
       ],
       destinationBucket: embeddingsBucket,
       prune: true,
-    });
-
-    // One-shot cleanup: removes the manually-created Bedrock KBs and any
-    // OpenSearch Serverless orphan collections from the Bedrock Console
-    // wizard. Idempotent: re-deploys are no-op once everything is gone.
-    // TODO: remove this construct + the kb-cleanup Lambda in a follow-up
-    // PR once the cleanup has run successfully in both environments.
-    const kbIdsToDelete: Record<string, string[]> = {
-      gw: ["GQFVI7ZE8C"],
-      prod: ["ME4IUCQZDU"],
-    };
-    const cleanupHandler = new lambdaNode.NodejsFunction(this, "KbCleanupHandler", {
-      runtime: lambda.Runtime.NODEJS_22_X,
-      architecture: lambda.Architecture.ARM_64,
-      memorySize: 256,
-      timeout: cdk.Duration.minutes(5),
-      entry: path.join(__dirname, "..", "lambda", "kb-cleanup", "index.ts"),
-      handler: "handler",
-      bundling: {
-        externalModules: [
-          "@aws-sdk/client-bedrock-agent",
-          "@aws-sdk/client-opensearchserverless",
-        ],
-      },
-    });
-    cleanupHandler.addToRolePolicy(
-      new iam.PolicyStatement({
-        actions: [
-          "bedrock:DeleteKnowledgeBase",
-          "bedrock:DeleteDataSource",
-          "bedrock:ListDataSources",
-          "bedrock:GetKnowledgeBase",
-          "aoss:ListCollections",
-          "aoss:DeleteCollection",
-          "aoss:BatchGetCollection",
-        ],
-        resources: ["*"],
-      })
-    );
-    const cleanupProvider = new cr.Provider(this, "KbCleanupProvider", {
-      onEventHandler: cleanupHandler,
-    });
-    new cdk.CustomResource(this, "KbCleanupResource", {
-      serviceToken: cleanupProvider.serviceToken,
-      properties: {
-        knowledgeBaseIds: kbIdsToDelete[config.envName] ?? [],
-        // Match the auto-named collections the Bedrock Console wizard creates.
-        // CDK-managed `creative-it-kb-${envName}` collections are removed by
-        // CloudFormation as part of this same deploy.
-        collectionNamePrefixes: ["bedrock-knowledge-base-"],
-        // Bump to force re-run of the cleanup Lambda after fixing bugs.
-        cleanupVersion: 2,
-      },
     });
 
     // Knowledge Bot Lambda

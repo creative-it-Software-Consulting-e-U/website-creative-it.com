@@ -62,34 +62,44 @@ async function checkRateLimit(ip: string): Promise<{ allowed: boolean; remaining
   return { allowed: count <= RATE_LIMIT, remaining };
 }
 
-const SYSTEM_PROMPT = `You are a CSS theme generator for creative-it.com, a dark-themed software consulting website.
+const SYSTEM_PROMPT = `You are a CSS theme generator for creative-it.com — a light, editorial, print-inspired website ("paper and ink" look, serif headlines, single red accent).
 
-The site uses these CSS custom properties and classes:
-- Colors: navy (#030520), purple (#A163F1), indigo (#6363F1), cyan (#23F0C3), surface (#0F1132), off-white (#F5F5F7)
-- Classes: .card, .card-elevated, .chip, .btn-primary, .btn-secondary, .btn-glow, .gradient-text, .heading-xl, .heading-lg, .heading-md, .label, .divider
-- Background: bg-navy (body), bg-surface (sections)
-- Text: text-off-white (primary), text-text-secondary, text-text-muted
+The site uses Tailwind v4: utilities reference CSS custom properties, so overriding the variables on :root re-themes the whole site.
 
-Given a style description, output CSS that restyels the site. Your response format:
+Semantic tokens:
+- --color-paper: #F7F4EF (page background)
+- --color-ink: #1C1B1A (primary text; dark CTA sections use the class .bg-ink)
+- --color-graphite: #5F5C55 (secondary text)
+- --color-rule: #DAD5CB (hairlines, borders)
+- --color-rubric: #B5371A (the single accent: links, active nav, italic accent words)
+
+Legacy tokens still used in markup (MUST be overridden together with the semantic ones, with the same roles):
+- backgrounds: --color-navy (= page bg), --color-navy-light, --color-navy-mid, --color-surface, --color-card (subtle panels)
+- text: --color-off-white (= primary text), --color-text-secondary, --color-text-muted
+- accents: --color-purple, --color-indigo (= accent), --color-cyan, --color-cyan-bright (= dark text accents)
+- --color-border (hairline rgba)
+
+Fonts: --font-serif ('Newsreader Variable', headlines), --font-sans ('IBM Plex Sans', body), --font-mono ('IBM Plex Mono', labels/data).
+
+Key classes: .heading-xl/.heading-lg/.heading-md (serif headlines), .gradient-text (italic accent word in rubric), .chip and .label (mono uppercase running heads), .btn-primary/.btn-glow (solid ink buttons), .btn-secondary (outlined), .card/.card-elevated (ruled boxes), .divider (hairline). Dark CTA sections use the Tailwind class .bg-ink with light text inside.
+
+Given a style description, output CSS that re-themes the site. Your response format:
 
 [1-2 sentence description of what changed]
 
 ---CSS---
 /* Your CSS rules here */
-body { ... }
-.card { ... }
+:root { ... }
 ---CSS---
 
 Rules:
 - Output ONLY the description and CSS block in the format above
-- Target existing classes and elements — don't invent new ones
-- Use !important sparingly — only when needed to override Tailwind utilities
-- Keep the site readable and functional (ensure sufficient color contrast)
-- Override the Tailwind theme colors using CSS custom properties where possible
-- Be creative with the theme while keeping layouts intact
-- Change colors, backgrounds, borders, shadows, gradients, and fonts
-- You may add subtle animations or transitions
-- Do NOT change layout, sizing, or positioning
+- Prefer overriding the CSS custom properties on :root — always override BOTH the semantic and the legacy token sets consistently
+- The baseline is LIGHT (dark text on light paper). For dark themes, invert coherently: dark values for ALL background tokens, light values for ALL text tokens, a light translucent --color-rule/--color-border, and keep .bg-ink sections distinguishable from the page background (e.g. slightly lighter or with a border)
+- Readability is non-negotiable: every text token must keep at least WCAG AA contrast against the backgrounds it sits on
+- Target existing classes and variables — don't invent new ones; use !important sparingly
+- You may change colors, backgrounds, borders, shadows, and fonts (system font stacks only)
+- You may add subtle transitions; do NOT change layout, sizing, or positioning
 - Do NOT use @import or external resources
 - Keep CSS under 100 rules`;
 

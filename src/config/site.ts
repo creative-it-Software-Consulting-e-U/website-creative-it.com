@@ -1267,10 +1267,10 @@ const content = {
     remix: {
       buttonLabel: "Remix",
       headline: "Remix This Site",
-      placeholder: "How should it look? (e.g., retro 80s neon)",
+      placeholder: "How should it look? (e.g., elegant dark mode)",
       remixButton: "Remix",
       resetButton: "Reset to Original",
-      examples: ["Retro 80s neon", "Warm earthy tones", "Minimalist monochrome", "Cyberpunk"],
+      examples: ["Elegant dark mode", "Warm terracotta & sand", "Cool Scandinavian blue", "1970s magazine"],
     },
   },
 
@@ -2183,10 +2183,10 @@ const content = {
     remix: {
       buttonLabel: "Remix",
       headline: "Website umgestalten",
-      placeholder: "Wie soll es aussehen? (z.B. Retro 80er Neon)",
+      placeholder: "Wie soll es aussehen? (z.B. elegantes Dark Mode)",
       remixButton: "Remix",
       resetButton: "Auf Original zurücksetzen",
-      examples: ["Retro 80er Neon", "Warme Erdtöne", "Minimalistisches Monochrom", "Cyberpunk"],
+      examples: ["Elegantes Dark Mode", "Warmes Terrakotta & Sand", "Kühles Skandinavisch-Blau", "70er-Jahre-Magazin"],
     },
   },
 };

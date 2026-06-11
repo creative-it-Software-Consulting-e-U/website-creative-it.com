@@ -689,6 +689,8 @@ const content = {
           headline: { before: "Products I ", gradient: "built", after: "" },
           description:
             "Focused tools and applications that solve real problems with clean design and thoughtful engineering.",
+          linkText: "View all apps",
+          linkUrl: "https://apps.creative-it.com",
         },
 
         philosophySection: {
@@ -1605,6 +1607,8 @@ const content = {
           headline: { before: "Produkte, die ich ", gradient: "gebaut", after: " habe" },
           description:
             "Fokussierte Tools und Anwendungen, die echte Probleme mit klarem Design und durchdachtem Engineering lösen.",
+          linkText: "Alle Apps ansehen",
+          linkUrl: "https://apps.creative-it.com",
         },
 
         philosophySection: {

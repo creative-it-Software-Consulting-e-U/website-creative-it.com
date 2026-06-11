@@ -63,7 +63,7 @@ const postSchema = {
 
   <article class="relative py-20 lg:py-32">
     <div class="absolute inset-0">
-      <div class="absolute top-0 left-1/4 w-[300px] h-[200px] md:w-[600px] md:h-[400px] bg-[radial-gradient(circle,rgba(161,99,241,0.05)_0%,transparent_70%)]"></div>
+      <div class="absolute top-0 left-1/4 w-[300px] h-[200px] md:w-[600px] md:h-[400px]"></div>
     </div>
 
     <div class="relative max-w-4xl mx-auto px-6 lg:px-8">
@@ -118,8 +118,8 @@ const postSchema = {
 
       {post.data.ctaHeadline && (
         <div class="relative rounded-2xl overflow-hidden mb-10">
-          <div class="absolute inset-0 bg-gradient-to-br from-purple via-indigo to-indigo"></div>
-          <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(35,240,195,0.15),transparent_60%)]"></div>
+          <div class="absolute inset-0 bg-ink"></div>
+          <div class="absolute inset-0"></div>
           <div class="relative px-8 py-12 lg:px-12 lg:py-14 text-center">
             <h2 class="heading-lg text-3xl lg:text-4xl text-white mb-4">{post.data.ctaHeadline}</h2>
             <p class="text-white/70 text-lg max-w-xl mx-auto mb-8">

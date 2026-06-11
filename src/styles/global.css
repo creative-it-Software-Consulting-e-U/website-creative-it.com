@@ -1,23 +1,43 @@
 @import "tailwindcss";
 
+/* Self-hosted fonts (Fontsource) — replaces the former Google Fonts CDN load */
+@import "@fontsource-variable/newsreader";
+@import "@fontsource-variable/newsreader/wght-italic.css";
+@import "@fontsource/ibm-plex-sans/400.css";
+@import "@fontsource/ibm-plex-sans/500.css";
+@import "@fontsource/ibm-plex-sans/600.css";
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";
+
 @theme {
-  /* Brand Colors — WorkOS-inspired */
-  --color-navy: #030520;
-  --color-navy-light: #181B39;
-  --color-navy-mid: #24274C;
-  --color-purple: #A163F1;
-  --color-indigo: #6363F1;
-  --color-cyan: #23F0C3;
-  --color-cyan-bright: #40DFA3;
-  --color-card: #0D1025;
-  --color-surface: #0F1132;
-  --color-off-white: #F5F5F7;
-  --color-text-secondary: #B6BDE2;
-  --color-text-muted: #8F96BD;
-  --color-border: rgba(255, 255, 255, 0.08);
+  /* Editorial palette — "Klartext" */
+  --color-paper: #F7F4EF;
+  --color-ink: #1C1B1A;
+  --color-graphite: #5F5C55;
+  --color-rule: #DAD5CB;
+  --color-rubric: #B5371A;
+
+  /* Legacy token names remapped onto the editorial palette so existing
+     utility classes in the page markup keep resolving. Pages migrate to
+     the semantic names above in later redesign phases. */
+  --color-navy: #F7F4EF;
+  --color-navy-light: #EDE8DF;
+  --color-navy-mid: #DAD5CB;
+  --color-purple: #B5371A;
+  --color-indigo: #B5371A;
+  --color-cyan: #1C1B1A;
+  --color-cyan-bright: #1C1B1A;
+  --color-card: #F1ECE4;
+  --color-surface: #F1ECE4;
+  --color-off-white: #1C1B1A;
+  --color-text-secondary: #5F5C55;
+  --color-text-muted: #6F6B5F;
+  --color-border: rgba(28, 27, 26, 0.12);
 
   /* Fonts */
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-serif: 'Newsreader Variable', 'Newsreader', Georgia, 'Times New Roman', serif;
+  --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 }
 
 /* Base Styles */
@@ -26,85 +46,85 @@ html {
      overflow on <body> creates a scroll container in iOS Safari, which causes
      position:fixed elements to lose touch interactivity. */
   overflow-x: clip;
+  color-scheme: light;
 }
 
 body {
   font-family: var(--font-sans);
-  background-color: var(--color-navy);
-  color: var(--color-off-white);
-  line-height: 1.6;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   /* Safe-area padding for notched iPhones */
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* Typography */
+/* Typography — headlines are set in the serif, weight 500 (not shouted) */
 .heading-xl {
-  font-weight: 800;
-  letter-spacing: -0.03em;
+  font-family: var(--font-serif);
+  font-weight: 500;
+  letter-spacing: -0.01em;
   line-height: 1.05;
 }
 
 .heading-lg {
-  font-weight: 700;
-  letter-spacing: -0.025em;
+  font-family: var(--font-serif);
+  font-weight: 500;
+  letter-spacing: -0.01em;
   line-height: 1.1;
 }
 
 .heading-md {
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  font-family: var(--font-serif);
+  font-weight: 500;
+  letter-spacing: -0.005em;
   line-height: 1.2;
 }
 
 .label {
+  font-family: var(--font-mono);
   font-weight: 500;
-  font-size: 0.8125rem;
-  letter-spacing: 0.04em;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  color: var(--color-graphite);
 }
 
-/* Gradient Text */
+/* Accent word in headlines — formerly a gradient, now serif italic in rubric.
+   Class names kept so the {before, gradient, after} headline schema and all
+   page templates continue to work unchanged. */
 .gradient-text {
-  background: linear-gradient(135deg, var(--color-purple) 0%, var(--color-indigo) 40%, var(--color-cyan) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-style: italic;
+  color: var(--color-rubric);
 }
 
 .gradient-text-cyan {
-  background: linear-gradient(135deg, var(--color-cyan) 0%, var(--color-cyan-bright) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-style: italic;
+  color: var(--color-ink);
 }
 
-/* Button Styles */
-.btn-primary {
+/* Button Styles — solid ink, sharp corners, no glow, no lift */
+.btn-primary,
+.btn-glow {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 0.875rem 2rem;
-  background: var(--color-off-white);
-  color: var(--color-navy);
+  background: var(--color-ink);
+  color: var(--color-paper);
   font-family: var(--font-sans);
-  font-weight: 600;
-  font-size: 0.875rem;
-  border-radius: 10px;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.2),
-    0 4px 12px rgba(0, 0, 0, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  font-weight: 500;
+  font-size: 0.9375rem;
+  border: 1px solid var(--color-ink);
+  border-radius: 2px;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
-.btn-primary:hover {
-  transform: translateY(-1px);
-  box-shadow:
-    0 2px 4px rgba(0, 0, 0, 0.25),
-    0 8px 24px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+.btn-primary:hover,
+.btn-glow:hover {
+  background: #33312E;
+  border-color: #33312E;
 }
 
 .btn-secondary {
@@ -113,85 +133,75 @@ body {
   justify-content: center;
   padding: 0.875rem 2rem;
   background: transparent;
-  color: var(--color-off-white);
+  color: var(--color-ink);
   font-family: var(--font-sans);
-  font-weight: 600;
-  font-size: 0.875rem;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 10px;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 500;
+  font-size: 0.9375rem;
+  border: 1px solid var(--color-ink);
+  border-radius: 2px;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .btn-secondary:hover {
-  border-color: var(--color-cyan);
-  color: var(--color-cyan);
-  box-shadow: 0 0 20px rgba(35, 240, 195, 0.1);
+  background: var(--color-ink);
+  color: var(--color-paper);
 }
 
-.btn-glow {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.875rem 2rem;
-  background: linear-gradient(135deg, var(--color-purple), var(--color-indigo));
-  color: white;
-  font-family: var(--font-sans);
-  font-weight: 600;
-  font-size: 0.875rem;
-  border-radius: 10px;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow:
-    0 2px 8px rgba(99, 99, 241, 0.3),
-    0 8px 24px rgba(99, 99, 241, 0.15);
+/* Inside ink blocks (the only dark moments), buttons invert */
+.bg-ink .btn-primary,
+.bg-ink .btn-glow {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  border-color: var(--color-paper);
 }
 
-.btn-glow:hover {
-  transform: translateY(-1px);
-  box-shadow:
-    0 4px 12px rgba(99, 99, 241, 0.4),
-    0 12px 32px rgba(99, 99, 241, 0.2);
+.bg-ink .btn-primary:hover,
+.bg-ink .btn-glow:hover {
+  background: #EDE8DF;
+  border-color: #EDE8DF;
 }
 
-/* Card Styles */
+.bg-ink .btn-secondary {
+  color: var(--color-paper);
+  border-color: rgba(247, 244, 239, 0.45);
+}
+
+.bg-ink .btn-secondary:hover {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  border-color: var(--color-paper);
+}
+
+/* Card Styles — ruled boxes instead of floating glass panels */
 .card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 16px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--color-rule);
+  border-radius: 0;
+  transition: border-color 0.2s ease;
 }
 
 .card:hover {
-  border-color: rgba(255, 255, 255, 0.12);
-  box-shadow:
-    0 4px 16px rgba(0, 0, 0, 0.2),
-    0 8px 32px rgba(0, 0, 0, 0.1);
+  border-top-color: var(--color-ink);
 }
 
 .card-elevated {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 16px;
-  box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.15),
-    0 8px 24px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--color-paper);
+  border: 1px solid var(--color-rule);
+  border-radius: 0;
+  transition: border-color 0.2s ease;
 }
 
 .card-elevated:hover {
-  border-color: rgba(255, 255, 255, 0.12);
-  transform: translateY(-2px);
-  box-shadow:
-    0 4px 16px rgba(0, 0, 0, 0.25),
-    0 16px 48px rgba(0, 0, 0, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  border-color: var(--color-graphite);
 }
 
-/* Animations */
+/* Animations — a single subtle entrance fade is allowed (hero only);
+   everything else (scroll reveals, glows, pulses) has been removed. */
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(24px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -204,31 +214,15 @@ body {
   to { opacity: 1; }
 }
 
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-@keyframes glow {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
-}
-
-@keyframes slideRight {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(100%); }
-}
-
 .animate-fade-in-up {
-  animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.6s ease forwards;
+  animation: fadeIn 0.4s ease forwards;
 }
 
-/* Delay utilities */
+/* Delay utilities (used by the hero entrance fades) */
 .delay-100 { animation-delay: 0.1s; }
 .delay-200 { animation-delay: 0.2s; }
 .delay-300 { animation-delay: 0.3s; }
@@ -240,86 +234,74 @@ body {
 /* Divider */
 .divider {
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--color-border), transparent);
+  background: var(--color-rule);
 }
 
-/* Chip/Badge */
+/* Chip — formerly a pill badge, now a mono running head */
 .chip {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: rgba(99, 99, 241, 0.1);
-  border: 1px solid rgba(99, 99, 241, 0.2);
-  border-radius: 9999px;
-  font-size: 0.8125rem;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
   font-weight: 500;
-  color: var(--color-purple);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-graphite);
 }
 
 /* Selection */
 ::selection {
-  background: var(--color-indigo);
-  color: white;
+  background: #F4D9D1;
+  color: var(--color-ink);
 }
 
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--color-navy);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--color-navy-mid);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-muted);
-}
-
-/* Syntax Highlighting */
-.hl-bracket { color: #6B7394; }
-.hl-tag { color: #23F0C3; }
-.hl-attr { color: #A163F1; }
-.hl-string { color: #9CA3FF; }
-.hl-comment { color: #8F96BD; font-style: italic; }
+/* Syntax Highlighting (AI playground preview panel, light surface) */
+.hl-bracket { color: #8A8678; }
+.hl-tag { color: #B5371A; }
+.hl-attr { color: #5F5C55; }
+.hl-string { color: #44624F; }
+.hl-comment { color: #8A8678; font-style: italic; }
 
 /* ── Prose (Blog Article Styling) ─────────────────────────────────── */
 .prose {
-  color: var(--color-text-secondary);
-  font-size: 1.125rem;
-  line-height: 1.8;
-  max-width: 72ch;
+  color: var(--color-ink);
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  max-width: 68ch;
   margin-inline: auto;
 }
 
 .prose h2 {
-  color: var(--color-off-white);
-  font-weight: 700;
+  font-family: var(--font-serif);
+  color: var(--color-ink);
+  font-weight: 500;
   font-size: 1.75rem;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.01em;
   margin-top: 2.5rem;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-rule);
 }
 
 .prose h3 {
-  color: var(--color-off-white);
-  font-weight: 600;
+  font-family: var(--font-serif);
+  color: var(--color-ink);
+  font-weight: 500;
   font-size: 1.375rem;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.005em;
   margin-top: 2rem;
   margin-bottom: 0.75rem;
 }
 
 .prose h4 {
-  color: var(--color-off-white);
-  font-weight: 600;
+  font-family: var(--font-serif);
+  color: var(--color-ink);
+  font-weight: 500;
   font-size: 1.125rem;
   margin-top: 1.5rem;
   margin-bottom: 0.5rem;
@@ -330,32 +312,31 @@ body {
 }
 
 .prose a {
-  color: var(--color-cyan);
+  color: var(--color-rubric);
   text-decoration: underline;
   text-underline-offset: 3px;
-  text-decoration-color: rgba(35, 240, 195, 0.3);
+  text-decoration-color: rgba(181, 55, 26, 0.35);
   transition: text-decoration-color 0.2s;
 }
 
 .prose a:hover {
-  text-decoration-color: var(--color-cyan);
+  text-decoration-color: var(--color-rubric);
 }
 
 .prose strong {
-  color: var(--color-off-white);
+  color: var(--color-ink);
   font-weight: 600;
 }
 
 .prose em {
-  color: var(--color-text-secondary);
   font-style: italic;
 }
 
 .prose blockquote {
-  border-left: 3px solid var(--color-purple);
+  border-left: 2px solid var(--color-ink);
   padding-left: 1.25rem;
   margin: 1.5rem 0;
-  color: var(--color-text-muted);
+  color: var(--color-graphite);
   font-style: italic;
 }
 
@@ -372,21 +353,24 @@ body {
 }
 
 .prose li::marker {
-  color: var(--color-purple);
+  color: var(--color-graphite);
 }
 
 .prose code {
-  color: var(--color-cyan);
-  background: var(--color-surface);
+  font-family: var(--font-mono);
+  color: var(--color-ink);
+  background: rgba(28, 27, 26, 0.06);
   padding: 0.15em 0.4em;
-  border-radius: 4px;
+  border-radius: 2px;
   font-size: 0.875em;
 }
 
+/* Code blocks stay dark: machine output lives in the terminal.
+   (Shiki renders github-dark token colors, which need a dark panel.) */
 .prose pre {
-  background: var(--color-surface) !important;
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
+  background: var(--color-ink) !important;
+  border: 0;
+  border-radius: 2px;
   padding: 1.25rem;
   margin: 1.5rem 0;
   overflow-x: auto;
@@ -401,8 +385,8 @@ body {
 }
 
 .prose img {
-  border-radius: 12px;
-  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  border: 1px solid var(--color-rule);
   margin: 1.5rem 0;
   max-width: 100%;
   height: auto;
@@ -411,7 +395,7 @@ body {
 .prose hr {
   border: none;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--color-border), transparent);
+  background: var(--color-rule);
   margin: 2.5rem 0;
 }
 
@@ -422,17 +406,21 @@ body {
 }
 
 .prose th {
-  background: var(--color-surface);
-  color: var(--color-off-white);
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-graphite);
+  background: none;
+  font-weight: 500;
   text-align: left;
   padding: 0.75rem 1rem;
-  border: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-ink);
 }
 
 .prose td {
   padding: 0.75rem 1rem;
-  border: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-rule);
 }
 
 /* iOS touch – remove 300ms tap delay on interactive elements */
@@ -443,8 +431,12 @@ button, a, [role="button"], input, select, textarea {
 
 /* Focus States */
 *:focus-visible {
-  outline: 2px solid var(--color-indigo);
+  outline: 2px solid var(--color-ink);
   outline-offset: 2px;
+}
+
+.bg-ink *:focus-visible {
+  outline-color: var(--color-paper);
 }
 
 /* Form Inputs */
@@ -454,6 +446,16 @@ input, textarea, select {
 
 input:focus, textarea:focus, select:focus {
   outline: none;
-  border-color: var(--color-indigo);
-  box-shadow: 0 0 0 3px rgba(99, 99, 241, 0.15);
+  border-color: var(--color-ink);
+  box-shadow: 0 0 0 3px rgba(28, 27, 26, 0.1);
+}
+
+/* Reduced motion — kill all animation and transitions globally */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

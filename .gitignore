@@ -34,3 +34,4 @@ infra/cdk-outputs.json
 infra/node_modules/
 infra/embeddings/
 cdk.context.json
+.gstack/

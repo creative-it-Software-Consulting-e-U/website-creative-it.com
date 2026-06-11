@@ -15,7 +15,7 @@ const remixHowItWorksPath = localePath('/how-it-works#website-remix', locale);
 <!-- Remix Toggle Button (controlled by AI Tools menu) -->
 <button
   id="remix-toggle"
-  class="fixed left-6 z-50 w-11 h-11 rounded-full bg-surface border border-white/[0.08] shadow-[0_4px_16px_rgba(0,0,0,0.3)] flex items-center justify-center cursor-pointer hover:border-purple/30 hover:shadow-[0_4px_24px_rgba(161,99,241,0.15)] transition-[transform,opacity,box-shadow,border-color] duration-300 opacity-0 pointer-events-none group"
+  class="fixed left-6 z-50 w-11 h-11 rounded-full bg-surface border border-ink/[0.08] shadow-[0_4px_16px_rgba(0,0,0,0.3)] flex items-center justify-center cursor-pointer hover:border-purple/30 hover:shadow-[0_4px_24px_rgba(28,27,26,0.15)] transition-[transform,opacity,box-shadow,border-color] duration-300 opacity-0 pointer-events-none group"
   style="bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px)); -webkit-backface-visibility: hidden"
   aria-label={r.buttonLabel}
   title={r.buttonLabel}
@@ -31,9 +31,9 @@ const remixHowItWorksPath = localePath('/how-it-works#website-remix', locale);
   class="fixed left-6 z-50 w-[340px] max-w-[calc(100vw-3rem)] hidden opacity-0 translate-y-4 transition-[transform,opacity] duration-300"
   style="bottom: calc(12.5rem + env(safe-area-inset-bottom, 0px))"
 >
-  <div class="card-elevated rounded-2xl overflow-hidden shadow-[0_8px_48px_rgba(0,0,0,0.5)]">
+  <div class="card-elevated rounded-2xl overflow-hidden shadow-[0_8px_48px_rgba(0,0,0,0.12)]">
     <!-- Header -->
-    <div class="bg-gradient-to-r from-purple/10 to-indigo/5 border-b border-white/[0.06] px-5 py-3 flex items-center justify-between">
+    <div class="bg-ink/5 border-b border-ink/[0.06] px-5 py-3 flex items-center justify-between">
       <h3 class="text-sm font-semibold text-off-white">{r.headline}</h3>
       <button id="remix-close" class="text-text-muted hover:text-off-white transition-colors duration-200 cursor-pointer">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
@@ -45,7 +45,7 @@ const remixHowItWorksPath = localePath('/how-it-works#website-remix', locale);
       <input
         id="remix-input"
         type="text"
-        class="w-full bg-navy/60 border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-off-white placeholder-text-muted focus:outline-none focus:border-indigo focus:shadow-[0_0_0_3px_rgba(99,99,241,0.15)] transition-all duration-200"
+        class="w-full bg-navy/60 border border-ink/[0.08] rounded-xl px-4 py-2.5 text-sm text-off-white placeholder-text-muted focus:outline-none focus:border-indigo focus:shadow-[0_0_0_3px_rgba(28,27,26,0.12)] transition-all duration-200"
         placeholder={r.placeholder}
         maxlength="500"
       />
@@ -73,7 +73,7 @@ const remixHowItWorksPath = localePath('/how-it-works#website-remix', locale);
         </button>
         <button
           id="remix-reset"
-          class="hidden text-sm text-text-muted hover:text-off-white border border-white/[0.08] rounded-lg px-3 py-2 transition-colors duration-200 cursor-pointer"
+          class="hidden text-sm text-text-muted hover:text-off-white border border-ink/[0.08] rounded-lg px-3 py-2 transition-colors duration-200 cursor-pointer"
         >
           {r.resetButton}
         </button>
@@ -83,7 +83,7 @@ const remixHowItWorksPath = localePath('/how-it-works#website-remix', locale);
       <p id="remix-status" class="hidden text-xs text-text-muted mt-3 text-center"></p>
 
       <!-- Footer -->
-      <div class="mt-3 pt-3 border-t border-white/[0.06] flex items-center justify-center">
+      <div class="mt-3 pt-3 border-t border-ink/[0.06] flex items-center justify-center">
         <a href={remixHowItWorksPath} class="text-[10px] text-text-muted hover:text-purple transition-colors duration-200">
           Powered by AWS Bedrock &middot; How it works
         </a>
@@ -97,7 +97,7 @@ const remixHowItWorksPath = localePath('/how-it-works#website-remix', locale);
   id="remix-banner"
   class="fixed top-20 left-1/2 -translate-x-1/2 z-50 hidden opacity-0 -translate-y-4 transition-all duration-300"
 >
-  <div class="bg-surface border border-purple/20 rounded-full px-5 py-2 shadow-[0_4px_24px_rgba(0,0,0,0.4)] flex items-center gap-3">
+  <div class="bg-surface border border-purple/20 rounded-full px-5 py-2 shadow-[0_4px_24px_rgba(0,0,0,0.12)] flex items-center gap-3">
     <svg class="w-4 h-4 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
     <span id="remix-banner-text" class="text-sm text-text-secondary">Remixed!</span>
     <button id="remix-banner-reset" class="text-xs text-purple hover:text-cyan transition-colors duration-200 cursor-pointer font-medium">Reset</button>

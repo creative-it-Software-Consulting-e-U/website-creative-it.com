@@ -16,8 +16,8 @@ const p = config.pages.home;
   <!-- Hero Section -->
   <section id="hero" class="relative min-h-[80vh] md:min-h-[90vh] flex items-start md:items-center overflow-hidden">
     <div class="absolute inset-0 overflow-hidden">
-      <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[250px] md:w-[800px] md:h-[500px] bg-[radial-gradient(ellipse,rgba(161,99,241,0.08)_0%,rgba(99,99,241,0.05)_40%,transparent_70%)]"></div>
-      <div class="absolute bottom-0 left-1/4 w-[150px] h-[150px] md:w-[300px] md:h-[300px] bg-[radial-gradient(circle,rgba(35,240,195,0.05)_0%,transparent_70%)]"></div>
+      <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[250px] md:w-[800px] md:h-[500px]"></div>
+      <div class="absolute bottom-0 left-1/4 w-[150px] h-[150px] md:w-[300px] md:h-[300px]"></div>
       <div class="hidden md:block absolute inset-0 opacity-[0.015]" style="background-image: linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px); background-size: 80px 80px;"></div>
     </div>
 
@@ -48,8 +48,8 @@ const p = config.pages.home;
 
       <div class="mt-16 lg:mt-32 grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 reveal">
         {config.about.stats.map((stat) => (
-          <div class="text-center p-6 rounded-2xl bg-surface/50 border border-white/5">
-            <div class="heading-lg text-3xl lg:text-4xl gradient-text mb-1">{stat.value}</div>
+          <div class="text-center p-6 rounded-2xl bg-surface/50 border border-ink/5">
+            <div class="heading-lg text-3xl lg:text-4xl text-ink mb-1">{stat.value}</div>
             <div class="text-sm text-text-muted">{stat.label}</div>
           </div>
         ))}
@@ -58,7 +58,7 @@ const p = config.pages.home;
 
     <div class="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2">
       <span class="text-xs text-text-muted">Scroll</span>
-      <div class="w-px h-12 bg-gradient-to-b from-indigo/50 to-transparent"></div>
+      <div class="w-px h-12 bg-rule"></div>
     </div>
   </section>
 
@@ -79,7 +79,7 @@ const p = config.pages.home;
         {config.services.map((service, index) => (
           <a href={localePath("/services", locale)} class="group card-elevated p-8 lg:p-10 reveal" style={`transition-delay: ${index * 100}ms`}>
             <div class="relative">
-              <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple/20 to-indigo/10 border border-purple/20 flex items-center justify-center mb-6 group-hover:border-purple/40 transition-colors duration-300">
+              <div class="w-12 h-12 rounded-xl bg-ink/5 border border-purple/20 flex items-center justify-center mb-6 group-hover:border-purple/40 transition-colors duration-300">
                 {service.icon === "brain" && (
                   <svg class="w-6 h-6 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
                 )}
@@ -125,7 +125,7 @@ const p = config.pages.home;
 
   <!-- Apps Section -->
   <section class="py-24 lg:py-32 bg-surface relative overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-indigo/3 to-transparent"></div>
+    <div class="absolute inset-0 "></div>
 
     <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
       <div class="max-w-2xl mb-16 reveal">
@@ -196,7 +196,7 @@ const p = config.pages.home;
   <!-- Philosophy Section -->
   <section class="py-24 lg:py-32 relative overflow-hidden">
     <div class="absolute inset-0 bg-surface"></div>
-    <div class="absolute inset-0 bg-gradient-to-br from-purple/3 via-transparent to-cyan/3"></div>
+    <div class="absolute inset-0 "></div>
 
     <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
       <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
@@ -219,7 +219,7 @@ const p = config.pages.home;
           {config.about.values.map((value, index) => (
             <div class="group card p-6">
               <div class="flex items-start gap-4">
-                <div class="flex-shrink-0 w-11 h-11 rounded-xl bg-gradient-to-br from-purple/20 to-indigo/10 border border-purple/20 flex items-center justify-center">
+                <div class="flex-shrink-0 w-11 h-11 rounded-xl bg-ink/5 border border-purple/20 flex items-center justify-center">
                   <span class="heading-md text-purple text-sm">{String(index + 1).padStart(2, '0')}</span>
                 </div>
                 <div>
@@ -238,8 +238,8 @@ const p = config.pages.home;
   <section class="py-24 lg:py-32 relative overflow-hidden">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
       <div class="relative rounded-3xl overflow-hidden reveal">
-        <div class="absolute inset-0 bg-gradient-to-br from-purple via-indigo to-indigo"></div>
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(35,240,195,0.15),transparent_60%)]"></div>
+        <div class="absolute inset-0 bg-ink"></div>
+        <div class="absolute inset-0"></div>
 
         <div class="relative px-8 py-16 lg:px-16 lg:py-24 text-center">
           <h2 class="heading-xl text-4xl lg:text-5xl xl:text-6xl text-white mb-6 whitespace-pre-line">{p.cta.headline}</h2>

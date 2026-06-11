@@ -19,24 +19,22 @@ const privacyLabel = locale === 'de' ? 'Datenschutz' : 'Privacy Policy';
 const rightsLabel = locale === 'de' ? 'Alle Rechte vorbehalten.' : 'All rights reserved.';
 ---
 
-<footer class="relative bg-navy border-t border-white/5">
+<footer class="relative bg-navy border-t border-ink/5">
   <div class="max-w-7xl mx-auto px-6 lg:px-8 py-16 lg:py-20">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8">
       <!-- Brand Column -->
       <div class="lg:col-span-5 flex flex-col items-center text-center">
-        <a href={localePath('/', locale)} class="mb-6">
-          <picture>
-            <source srcset="/logo-dark.webp" type="image/webp" />
-            <img
-              src="/logo-dark.png"
-              alt={config.name}
-              width="1457"
-              height="988"
-              loading="lazy"
-              decoding="async"
-              class="h-40 w-auto"
-            />
-          </picture>
+        <a href={localePath('/', locale)} class="mb-6 flex flex-col items-center gap-4">
+          <img
+            src="/logo-only.webp"
+            alt=""
+            width="504"
+            height="548"
+            loading="lazy"
+            decoding="async"
+            class="h-14 w-auto"
+          />
+          <span class="font-serif text-2xl text-ink tracking-tight">creative-it<span class="text-rubric">.</span></span>
         </a>
         <p class="text-text-muted text-sm leading-relaxed max-w-sm mb-8">
           {config.description}
@@ -48,7 +46,7 @@ const rightsLabel = locale === 'de' ? 'Alle Rechte vorbehalten.' : 'All rights r
             href={config.social.linkedin}
             target="_blank"
             rel="noopener noreferrer"
-            class="w-10 h-10 rounded-lg bg-navy-light border border-white/5 flex items-center justify-center text-text-muted hover:text-cyan hover:border-cyan/30 transition-all duration-300"
+            class="w-10 h-10 rounded-lg bg-navy-light border border-ink/5 flex items-center justify-center text-text-muted hover:text-cyan hover:border-cyan/30 transition-all duration-300"
             aria-label="LinkedIn"
           >
             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -59,7 +57,7 @@ const rightsLabel = locale === 'de' ? 'Alle Rechte vorbehalten.' : 'All rights r
             href={config.social.twitter}
             target="_blank"
             rel="noopener noreferrer"
-            class="w-10 h-10 rounded-lg bg-navy-light border border-white/5 flex items-center justify-center text-text-muted hover:text-cyan hover:border-cyan/30 transition-all duration-300"
+            class="w-10 h-10 rounded-lg bg-navy-light border border-ink/5 flex items-center justify-center text-text-muted hover:text-cyan hover:border-cyan/30 transition-all duration-300"
             aria-label="Twitter"
           >
             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -70,7 +68,7 @@ const rightsLabel = locale === 'de' ? 'Alle Rechte vorbehalten.' : 'All rights r
             href={config.social.github}
             target="_blank"
             rel="noopener noreferrer"
-            class="w-10 h-10 rounded-lg bg-navy-light border border-white/5 flex items-center justify-center text-text-muted hover:text-cyan hover:border-cyan/30 transition-all duration-300"
+            class="w-10 h-10 rounded-lg bg-navy-light border border-ink/5 flex items-center justify-center text-text-muted hover:text-cyan hover:border-cyan/30 transition-all duration-300"
             aria-label="GitHub"
           >
             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -167,7 +165,7 @@ const rightsLabel = locale === 'de' ? 'Alle Rechte vorbehalten.' : 'All rights r
     </div>
 
     <!-- Bottom Bar -->
-    <div class="mt-16 pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
+    <div class="mt-16 pt-8 border-t border-ink/5 flex flex-col sm:flex-row justify-between items-center gap-4">
       <div class="flex items-center gap-4">
         <p class="text-text-muted text-sm">
           &copy; {new Date().getFullYear()} {config.name}. {rightsLabel}

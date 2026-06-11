@@ -11,7 +11,7 @@ const p = config.pages.techAdvisor;
   <!-- Hero -->
   <section class="relative py-20 lg:py-28 overflow-hidden">
     <div class="absolute inset-0">
-      <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[250px] md:w-[800px] md:h-[500px] bg-[radial-gradient(ellipse,rgba(161,99,241,0.08)_0%,rgba(99,99,241,0.05)_40%,transparent_70%)]"></div>
+      <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[250px] md:w-[800px] md:h-[500px]"></div>
     </div>
 
     <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
@@ -39,7 +39,7 @@ const p = config.pages.techAdvisor;
           <label for="advisor-prompt" class="label text-text-muted mb-3">{p.inputSection.promptLabel}</label>
           <textarea
             id="advisor-prompt"
-            class="w-full h-40 bg-navy/60 border border-white/[0.08] rounded-xl px-4 py-3 text-off-white placeholder-text-muted resize-none focus:outline-none focus:border-indigo focus:shadow-[0_0_0_3px_rgba(99,99,241,0.15)] transition-all duration-200"
+            class="w-full h-40 bg-navy/60 border border-ink/[0.08] rounded-xl px-4 py-3 text-off-white placeholder-text-muted resize-none focus:outline-none focus:border-indigo focus:shadow-[0_0_0_3px_rgba(28,27,26,0.12)] transition-all duration-200"
             placeholder={p.inputSection.promptPlaceholder}
             maxlength={p.inputSection.charLimit}
           ></textarea>
@@ -69,7 +69,7 @@ const p = config.pages.techAdvisor;
               <span class="w-1.5 h-1.5 rounded-full bg-cyan animate-pulse"></span>
               <span id="refining-label">{p.conversation.refiningLabel} &middot; 2 messages</span>
             </div>
-            <button id="new-analysis-btn" class="text-xs text-text-muted hover:text-off-white border border-white/[0.08] rounded-lg px-3 py-1.5 transition-colors duration-200 cursor-pointer">
+            <button id="new-analysis-btn" class="text-xs text-text-muted hover:text-off-white border border-ink/[0.08] rounded-lg px-3 py-1.5 transition-colors duration-200 cursor-pointer">
               {p.conversation.newAnalysisButton}
             </button>
           </div>
@@ -81,7 +81,7 @@ const p = config.pages.techAdvisor;
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
             <span id="generate-btn-text">{p.inputSection.generateButton}</span>
           </button>
-          <p class="text-xs text-text-muted mt-3 text-center">Press <kbd class="px-1.5 py-0.5 bg-navy/60 border border-white/[0.08] rounded text-[10px]">Ctrl</kbd> + <kbd class="px-1.5 py-0.5 bg-navy/60 border border-white/[0.08] rounded text-[10px]">Enter</kbd> to analyze</p>
+          <p class="text-xs text-text-muted mt-3 text-center">Press <kbd class="px-1.5 py-0.5 bg-navy/60 border border-ink/[0.08] rounded text-[10px]">Ctrl</kbd> + <kbd class="px-1.5 py-0.5 bg-navy/60 border border-ink/[0.08] rounded text-[10px]">Enter</kbd> to analyze</p>
         </div>
 
         <!-- Results Panel -->
@@ -95,13 +95,13 @@ const p = config.pages.techAdvisor;
               {p.previewSection.diagramTab}
             </button>
             <div class="flex-1"></div>
-            <button id="clear-btn" class="hidden text-xs text-text-muted hover:text-off-white border border-white/[0.08] rounded-lg px-3 py-1.5 transition-colors duration-200 cursor-pointer">
+            <button id="clear-btn" class="hidden text-xs text-text-muted hover:text-off-white border border-ink/[0.08] rounded-lg px-3 py-1.5 transition-colors duration-200 cursor-pointer">
               Clear
             </button>
           </div>
 
           <!-- Results view -->
-          <div id="results-container" class="flex-1 relative rounded-xl overflow-hidden border border-white/[0.06]">
+          <div id="results-container" class="flex-1 relative rounded-xl overflow-hidden border border-ink/[0.06]">
             <div id="empty-state" class="absolute inset-0 flex items-center justify-center bg-navy/95">
               <div class="text-center px-6">
                 <svg class="w-12 h-12 text-text-muted/30 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
@@ -112,7 +112,7 @@ const p = config.pages.techAdvisor;
           </div>
 
           <!-- Diagram view -->
-          <div id="diagram-container" class="hidden flex-1 relative rounded-xl overflow-hidden border border-white/[0.06]">
+          <div id="diagram-container" class="hidden flex-1 relative rounded-xl overflow-hidden border border-ink/[0.06]">
             <div id="diagram-empty" class="absolute inset-0 flex items-center justify-center bg-navy/95">
               <p class="text-sm text-text-muted">Architecture diagram will appear after analysis</p>
             </div>
@@ -121,7 +121,7 @@ const p = config.pages.techAdvisor;
 
           <!-- Loading indicator -->
           <div id="loading-indicator" class="hidden absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div class="flex items-center gap-3 bg-surface/90 backdrop-blur-sm border border-white/[0.08] rounded-xl px-5 py-3">
+            <div class="flex items-center gap-3 bg-surface/90 backdrop-blur-sm border border-ink/[0.08] rounded-xl px-5 py-3">
               <div class="w-4 h-4 border-2 border-purple border-t-transparent rounded-full animate-spin"></div>
               <span class="text-sm text-text-secondary">Analyzing...</span>
             </div>
@@ -147,8 +147,8 @@ const p = config.pages.techAdvisor;
   <section class="py-24 lg:py-32 relative overflow-hidden">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
       <div class="relative rounded-3xl overflow-hidden reveal">
-        <div class="absolute inset-0 bg-gradient-to-br from-purple via-indigo to-indigo"></div>
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(35,240,195,0.15),transparent_60%)]"></div>
+        <div class="absolute inset-0 bg-ink"></div>
+        <div class="absolute inset-0"></div>
 
         <div class="relative px-8 py-16 lg:px-16 lg:py-24 text-center">
           <h2 class="heading-xl text-4xl lg:text-5xl xl:text-6xl text-white mb-6">{p.cta.headline}</h2>
@@ -244,7 +244,7 @@ const p = config.pages.techAdvisor;
     html = html.replace(/\*\*(.+?)\*\*/g, '<strong class="text-off-white">$1</strong>');
 
     // Code blocks
-    html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre class="bg-surface border border-white/[0.06] rounded-lg p-4 my-3 overflow-x-auto text-xs"><code>$2</code></pre>');
+    html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre class="bg-surface border border-ink/[0.06] rounded-lg p-4 my-3 overflow-x-auto text-xs"><code>$2</code></pre>');
 
     // Inline code
     html = html.replace(/`([^`]+)`/g, '<code class="bg-surface px-1.5 py-0.5 rounded text-cyan text-xs">$1</code>');

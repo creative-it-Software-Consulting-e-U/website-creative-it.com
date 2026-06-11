@@ -11,7 +11,7 @@ const p = config.pages.agenticCoding;
   <!-- Hero -->
   <section class="relative py-20 lg:py-32 overflow-hidden">
     <div class="absolute inset-0">
-      <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[250px] md:w-[800px] md:h-[500px] bg-[radial-gradient(ellipse,rgba(161,99,241,0.08)_0%,rgba(99,99,241,0.05)_40%,transparent_70%)]"></div>
+      <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[250px] md:w-[800px] md:h-[500px]"></div>
     </div>
 
     <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
@@ -98,9 +98,9 @@ const p = config.pages.agenticCoding;
           <div id="story-content" class="pl-12">
             <!-- Loading skeleton -->
             <div id="story-skeleton" class="space-y-3">
-              <div class="h-4 bg-white/[0.06] rounded-lg w-full animate-pulse"></div>
-              <div class="h-4 bg-white/[0.06] rounded-lg w-4/5 animate-pulse"></div>
-              <div class="h-4 bg-white/[0.06] rounded-lg w-3/5 animate-pulse"></div>
+              <div class="h-4 bg-ink/[0.06] rounded-lg w-full animate-pulse"></div>
+              <div class="h-4 bg-ink/[0.06] rounded-lg w-4/5 animate-pulse"></div>
+              <div class="h-4 bg-ink/[0.06] rounded-lg w-3/5 animate-pulse"></div>
             </div>
             <!-- Story text (hidden initially) -->
             <p id="story-text" class="hidden text-text-secondary text-lg leading-relaxed italic"></p>
@@ -123,7 +123,7 @@ const p = config.pages.agenticCoding;
 
   <!-- What Is Agentic Coding -->
   <section class="py-24 lg:py-32 bg-surface relative overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-purple/3 to-transparent"></div>
+    <div class="absolute inset-0 "></div>
 
     <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
       <div class="max-w-2xl mb-16 reveal">
@@ -137,7 +137,7 @@ const p = config.pages.agenticCoding;
       <div class="grid md:grid-cols-3 gap-6">
         {p.whatSection.points.map((point, index) => (
           <div class="card-elevated p-8 reveal" style={`transition-delay: ${index * 100}ms`}>
-            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple/20 to-indigo/10 border border-purple/20 flex items-center justify-center mb-6">
+            <div class="w-12 h-12 rounded-xl bg-ink/5 border border-purple/20 flex items-center justify-center mb-6">
               {index === 0 && (
                 <svg class="w-6 h-6 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
               )}
@@ -171,7 +171,7 @@ const p = config.pages.agenticCoding;
         {p.howSection.steps.map((step, index) => (
           <div class="group card p-8 reveal" style={`transition-delay: ${index * 100}ms`}>
             <div class="flex items-start gap-5">
-              <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-purple/20 to-indigo/10 border border-purple/20 flex items-center justify-center">
+              <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-ink/5 border border-purple/20 flex items-center justify-center">
                 <span class="heading-md text-purple text-sm">{step.step}</span>
               </div>
               <div>
@@ -187,7 +187,7 @@ const p = config.pages.agenticCoding;
 
   <!-- Productivity Gains -->
   <section class="py-24 lg:py-32 bg-surface relative overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-br from-purple/3 via-transparent to-cyan/3"></div>
+    <div class="absolute inset-0 "></div>
 
     <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
       <div class="max-w-2xl mb-16 reveal">
@@ -203,7 +203,7 @@ const p = config.pages.agenticCoding;
       <div class="grid md:grid-cols-2 gap-6">
         {p.benefitsSection.benefits.map((benefit, index) => (
           <div class="card-elevated p-8 lg:p-10 reveal" style={`transition-delay: ${index * 100}ms`}>
-            <div class="heading-lg text-3xl lg:text-4xl gradient-text mb-2">{benefit.value}</div>
+            <div class="heading-lg text-3xl lg:text-4xl text-ink mb-2">{benefit.value}</div>
             <h3 class="heading-md text-xl text-off-white mb-3">{benefit.label}</h3>
             <p class="text-text-secondary leading-relaxed">{benefit.description}</p>
           </div>
@@ -216,8 +216,8 @@ const p = config.pages.agenticCoding;
   <section class="py-24 lg:py-32 relative overflow-hidden">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
       <div class="relative rounded-3xl overflow-hidden reveal">
-        <div class="absolute inset-0 bg-gradient-to-br from-purple via-indigo to-indigo"></div>
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(35,240,195,0.15),transparent_60%)]"></div>
+        <div class="absolute inset-0 bg-ink"></div>
+        <div class="absolute inset-0"></div>
 
         <div class="relative px-8 py-16 lg:px-16 lg:py-24 text-center">
           <h2 class="heading-xl text-4xl lg:text-5xl xl:text-6xl text-white mb-6">{p.cta.headline}</h2>

@@ -26,18 +26,16 @@ const isActive = (item: { href: string; children?: { href: string }[] }) =>
   <nav class="max-w-7xl mx-auto px-6 lg:px-8">
     <div class="flex justify-between items-center h-16 lg:h-20">
       <!-- Logo -->
-      <a href={localePath('/', locale)} class="relative z-10 flex items-center gap-3 group">
-        <picture>
-          <source srcset="/logo-dark.webp" type="image/webp" />
-          <img
-            src="/logo-dark.png"
-            alt={config.name}
-            width="1457"
-            height="988"
-            fetchpriority="high"
-            class="h-14 lg:h-[4.5rem] w-auto py-2 transition-transform duration-300 group-hover:scale-105"
-          />
-        </picture>
+      <a href={localePath('/', locale)} class="relative z-10 flex items-center gap-2.5 group">
+        <img
+          src="/logo-only.webp"
+          alt=""
+          width="504"
+          height="548"
+          fetchpriority="high"
+          class="h-8 lg:h-9 w-auto"
+        />
+        <span class="font-serif text-xl lg:text-2xl text-ink tracking-tight">creative-it<span class="text-rubric">.</span></span>
       </a>
 
       <!-- Desktop Navigation -->
@@ -59,11 +57,11 @@ const isActive = (item: { href: string; children?: { href: string }[] }) =>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                   </svg>
                   {isActive(item) && (
-                    <span class="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-purple to-cyan rounded-full"></span>
+                    <span class="absolute -bottom-1 left-0 w-full h-0.5 bg-rubric rounded-full"></span>
                   )}
                 </span>
                 <div class="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 translate-y-1 group-hover:translate-y-0">
-                  <ul class="bg-surface border border-white/10 rounded-xl py-2 px-1 min-w-[180px] shadow-xl shadow-black/30">
+                  <ul class="bg-surface border border-ink/10 rounded-xl py-2 px-1 min-w-[180px] shadow-xl shadow-black/10">
                     {item.children.map((child) => (
                       <li>
                         <a
@@ -71,8 +69,8 @@ const isActive = (item: { href: string; children?: { href: string }[] }) =>
                           class:list={[
                             "block px-4 py-2 text-sm rounded-lg transition-colors duration-150",
                             currentPath === child.href
-                              ? "text-off-white bg-white/5"
-                              : "text-text-muted hover:text-off-white hover:bg-white/5",
+                              ? "text-off-white bg-ink/5"
+                              : "text-text-muted hover:text-off-white hover:bg-ink/5",
                           ]}
                         >
                           {child.name}
@@ -94,7 +92,7 @@ const isActive = (item: { href: string; children?: { href: string }[] }) =>
               >
                 {item.name}
                 {currentPath === item.href && (
-                  <span class="absolute -bottom-1 left-0 w-full h-0.5 bg-gradient-to-r from-purple to-cyan rounded-full"></span>
+                  <span class="absolute -bottom-1 left-0 w-full h-0.5 bg-rubric rounded-full"></span>
                 )}
               </a>
             )}
@@ -234,10 +232,10 @@ const isActive = (item: { href: string; children?: { href: string }[] }) =>
     const currentScroll = window.scrollY;
 
     if (currentScroll > 50) {
-      header?.classList.add('bg-navy/95', 'border-white/5');
+      header?.classList.add('bg-navy/95', 'border-ink/5');
       header?.classList.remove('border-transparent');
     } else {
-      header?.classList.remove('bg-navy/95', 'border-white/5');
+      header?.classList.remove('bg-navy/95', 'border-ink/5');
       header?.classList.add('border-transparent');
     }
   });

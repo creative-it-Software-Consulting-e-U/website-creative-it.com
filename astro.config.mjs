@@ -30,7 +30,12 @@ export default defineConfig({
   },
 
   vite: {
-    plugins: [tailwindcss()]
+    plugins: [tailwindcss()],
+    build: {
+      // Never inline scripts/assets into the HTML — required for the
+      // strict CSP (script-src 'self' without unsafe-inline)
+      assetsInlineLimit: 0,
+    },
   },
 
   integrations: [sitemap()],

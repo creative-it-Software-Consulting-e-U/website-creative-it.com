@@ -12,14 +12,16 @@ No linting or test scripts are configured.
 
 ## AWS Deployment
 
-Two environments: **prod** (`creative-it.com`, account `348854311973`) and **gw** (`gw.dev.creative-it.com`, account `734830471883`).
+Two environments: **prod** (`www.creative-it.com`, account `348854311973`) and **gw** (website: `hp.gw.dev.creative-it.com`, API: `api.gw.dev.creative-it.com`, AI tools: `ai.gw.dev.creative-it.com`, account `734830471883`). Note: `gw.dev.creative-it.com` itself has no DNS record — the dev website lives on the `hp.` subdomain (Vercel alias, set automatically by the deploy workflow).
+
+The gw API's CORS allowlist only permits `hp.gw.dev.creative-it.com` and `localhost:4321` as browser origins — AI features do NOT work on raw `*.vercel.app` preview URLs.
 
 - **SSO Login (Prod):** `aws sso login --profile AdministratorAccess-348854311973`
 - **SSO Login (GW):** `aws sso login --profile AdministratorAccess-734830471883`
 - **CDK Deploy (Prod):** `cd infra && AWS_PROFILE=AdministratorAccess-348854311973 GITHUB_TOKEN=xxx npx cdk deploy -c env=prod`
 - **CDK Deploy (GW):** `cd infra && AWS_PROFILE=AdministratorAccess-734830471883 GITHUB_TOKEN=xxx npx cdk deploy -c env=gw`
 
-CI/CD: GitHub Actions (`.github/workflows/deploy.yml`) — `main` → prod, `dev` → gw. CDK deploys first, then Vercel.
+CI/CD: GitHub Actions (`.github/workflows/deploy.yml`) — `main` → prod, `dev` → gw. CDK deploys first (skipped unless `infra/` or `src/content/blog/` changed), then Vercel; dev deploys are aliased to `hp.gw.dev.creative-it.com`.
 
 ## Architecture
 

@@ -2,7 +2,8 @@
   const toggle = document.getElementById('ai-tools-toggle')!;
   const icon = document.getElementById('ai-tools-icon')!;
   const closeIcon = document.getElementById('ai-tools-close-icon')!;
-  const pulse = document.getElementById('ai-tools-pulse')!;
+  // Optional: the pulse ring was removed in the editorial redesign
+  const pulse = document.getElementById('ai-tools-pulse');
   const chatBtn = document.getElementById('chat-toggle')!;
   const remixBtn = document.getElementById('remix-toggle')!;
   const translateBtn = document.getElementById('translate-toggle')!;
@@ -28,7 +29,7 @@
 
   // Remove pulse entirely after 8s (display:none stops the animation
   // AND removes the element from the compositing tree)
-  setTimeout(() => { pulse.style.display = 'none'; }, 8000);
+  if (pulse) setTimeout(() => { pulse.style.display = 'none'; }, 8000);
 
   function hideAllLabels() {
     for (const { label } of items) {
@@ -48,7 +49,7 @@
     isMenuOpen = true;
     icon.classList.add('hidden');
     closeIcon.classList.remove('hidden');
-    pulse.style.display = 'none';
+    if (pulse) pulse.style.display = 'none';
     toggle.classList.add('rotate-90');
 
     items.forEach(({ btn, label }, i) => {

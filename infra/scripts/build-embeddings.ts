@@ -27,7 +27,7 @@ const BLOG_DIR = path.join(REPO_ROOT, "src", "content", "blog");
 const OUTPUT_DIR = path.join(REPO_ROOT, "infra", "embeddings");
 const OUTPUT_FILE = path.join(OUTPUT_DIR, "embeddings.json");
 
-const HASHNODE_BLOG_BASE = "https://buildgrowmatter.hashnode.dev";
+const BLOG_BASE = "https://www.creative-it.com/blog";
 
 // Approximate token cap per chunk (Titan max 8192 tokens, but smaller chunks
 // give more granular retrieval). ~3.5 chars per token rule of thumb.
@@ -74,7 +74,7 @@ function loadCompanyDocs(): RawDoc[] {
     const raw = fs.readFileSync(full, "utf-8");
     docs.push({
       source: file,
-      url: "https://creative-it.com",
+      url: "https://www.creative-it.com",
       title: file.replace(/\.md$/, ""),
       body: raw,
     });
@@ -93,7 +93,7 @@ function loadBlogDocs(): RawDoc[] {
     const slug = file.replace(/\.md$/, "");
     docs.push({
       source: `blog/${file}`,
-      url: `${HASHNODE_BLOG_BASE}/${slug}`,
+      url: `${BLOG_BASE}/${slug}/`,
       title: meta.title || slug,
       body,
     });

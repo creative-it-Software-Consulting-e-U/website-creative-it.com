@@ -1,6 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import Breadcrumbs from "../Breadcrumbs.astro";
+import CtaBlock from "../CtaBlock.astro";
 import { t, type Locale } from "../../config/site";
 import { localePath } from "../../utils/i18n";
 import { getCollection } from "astro:content";
@@ -14,6 +15,8 @@ const posts = (await getCollection("blog")).sort(
   (a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime()
 );
 
+const [lead, ...rest] = posts;
+
 function formatDate(date: Date): string {
   return date.toLocaleDateString("en-US", {
     year: "numeric",
@@ -21,6 +24,10 @@ function formatDate(date: Date): string {
     day: "numeric",
     timeZone: "UTC",
   });
+}
+
+function postUrl(post: { id: string }): string {
+  return `/blog/${post.id.replace(/\.md$/, "")}`;
 }
 
 // JSON-LD Blog schema
@@ -43,8 +50,8 @@ const blogSchema = {
     datePublished: post.data.publishedAt.toISOString(),
     ...(post.data.coverImage && { image: post.data.coverImage }),
     author: {
-      "@type": "Organization",
-      name: config.name,
+      "@type": "Person",
+      name: "Günther Wieser",
     },
   })),
 };
@@ -55,123 +62,89 @@ const blogSchema = {
   <script type="application/ld+json" set:html={JSON.stringify(blogSchema)} />
 
   <!-- Hero -->
-  <section class="relative py-20 lg:py-32 overflow-hidden">
-    <div class="absolute inset-0">
-      <div class="absolute top-0 left-1/4 w-[300px] h-[200px] md:w-[600px] md:h-[400px]"></div>
-    </div>
-
-    <div class="relative max-w-7xl mx-auto px-6 lg:px-8 text-center">
-      <div class="chip mb-4 inline-flex animate-fade-in-up opacity-0" style="animation-delay: 0.1s; animation-fill-mode: forwards;">
-        <span>{p.hero.chip}</span>
+  <section class="relative py-16 lg:py-24">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl">
+        <div class="chip mb-6 animate-fade-in-up opacity-0" style="animation-delay: 0.1s; animation-fill-mode: forwards;">
+          <span>{p.hero.chip}</span>
+        </div>
+        <h1 class="heading-xl text-5xl lg:text-6xl xl:text-7xl text-ink mb-6 animate-fade-in-up opacity-0" style="animation-delay: 0.2s; animation-fill-mode: forwards;">
+          {p.hero.headline.before}<span class="gradient-text">{p.hero.headline.gradient}</span>{p.hero.headline.after}
+        </h1>
+        <p class="text-lg text-graphite leading-relaxed animate-fade-in-up opacity-0" style="animation-delay: 0.3s; animation-fill-mode: forwards;">
+          {p.hero.description}
+        </p>
       </div>
-      <h1 class="heading-xl text-5xl lg:text-6xl xl:text-7xl text-off-white mb-6 animate-fade-in-up opacity-0" style="animation-delay: 0.2s; animation-fill-mode: forwards;">
-        {p.hero.headline.before}<span class="gradient-text">{p.hero.headline.gradient}</span>{p.hero.headline.after}
-      </h1>
-      <p class="text-lg text-text-secondary leading-relaxed max-w-2xl mx-auto animate-fade-in-up opacity-0" style="animation-delay: 0.3s; animation-fill-mode: forwards;">
-        {p.hero.description}
-      </p>
     </div>
   </section>
 
-  <!-- Articles Grid -->
-  <section class="py-24 lg:py-32 bg-surface relative overflow-hidden">
-    <div class="absolute inset-0 "></div>
-
-    <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
+  <!-- Articles — feuilleton -->
+  <section class="pb-20 lg:pb-28">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
       {posts.length === 0 ? (
-        <p class="text-center text-text-muted text-lg">No articles found. Check back soon!</p>
+        <p class="text-graphite text-lg">No articles found. Check back soon!</p>
       ) : (
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {posts.map((post, index) => (
-            <a
-              href={`/blog/${post.id.replace(/\.md$/, "")}`}
-              class="group reveal"
-              style={`transition-delay: ${(index % 6) * 100}ms`}
-            >
-              <article class="card-elevated h-full flex flex-col overflow-hidden transition-transform duration-300 group-hover:-translate-y-1">
-                {post.data.coverImage ? (
-                  <div class="aspect-[16/9] overflow-hidden">
-                    <img
-                      src={post.data.coverImage}
-                      alt={post.data.title}
-                      loading="lazy"
-                      decoding="async"
-                      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                ) : (
-                  <div class="aspect-[16/9] bg-ink/5 flex items-center justify-center">
-                    <svg class="w-12 h-12 text-purple/40" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                    </svg>
+        <>
+          <!-- Lead article -->
+          <a href={postUrl(lead)} class="group grid lg:grid-cols-12 gap-x-8 gap-y-6 py-12 lg:py-16 border-t border-rule">
+            <div class="lg:col-span-7">
+              <div class="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-xs uppercase tracking-[0.06em] text-graphite mb-5">
+                <time datetime={lead.data.publishedAt.toISOString().slice(0, 10)}>{formatDate(lead.data.publishedAt)}</time>
+                {lead.data.readTimeInMinutes > 0 && <span>{lead.data.readTimeInMinutes} min</span>}
+                <span>Günther Wieser</span>
+              </div>
+              <h2 class="heading-lg text-3xl lg:text-5xl text-ink group-hover:text-rubric transition-colors duration-150 mb-5">
+                {lead.data.title}
+              </h2>
+              <p class="text-graphite text-lg leading-relaxed mb-6 max-w-[60ch]">{lead.data.brief}</p>
+              {lead.data.tags.length > 0 && (
+                <div class="font-mono text-xs uppercase tracking-[0.06em] text-graphite">
+                  {lead.data.tags.slice(0, 3).join(' · ')}
+                </div>
+              )}
+            </div>
+            {lead.data.coverImage && (
+              <div class="lg:col-span-5">
+                <img
+                  src={lead.data.coverImage}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  class="w-full h-auto border border-rule"
+                />
+              </div>
+            )}
+          </a>
+
+          <!-- Remaining articles as ruled list -->
+          {rest.map((post) => (
+            <a href={postUrl(post)} class="group grid lg:grid-cols-12 gap-x-8 gap-y-2 py-8 lg:py-10 border-t border-rule last:border-b">
+              <div class="lg:col-span-3 flex flex-wrap lg:flex-col gap-x-4 gap-y-1 font-mono text-xs uppercase tracking-[0.06em] text-graphite">
+                <time datetime={post.data.publishedAt.toISOString().slice(0, 10)}>{formatDate(post.data.publishedAt)}</time>
+                {post.data.readTimeInMinutes > 0 && <span>{post.data.readTimeInMinutes} min</span>}
+              </div>
+              <div class="lg:col-span-9">
+                <h2 class="heading-md text-2xl lg:text-3xl text-ink group-hover:text-rubric transition-colors duration-150 mb-3">
+                  {post.data.title}
+                </h2>
+                <p class="text-graphite leading-relaxed max-w-[70ch] mb-3">{post.data.brief}</p>
+                {post.data.tags.length > 0 && (
+                  <div class="font-mono text-xs uppercase tracking-[0.06em] text-graphite">
+                    {post.data.tags.slice(0, 3).join(' · ')}
                   </div>
                 )}
-
-                <div class="p-6 flex flex-col flex-1">
-                  <div class="flex items-center gap-3 text-xs text-text-muted mb-3">
-                    <time datetime={post.data.publishedAt.toISOString().slice(0, 10)}>{formatDate(post.data.publishedAt)}</time>
-                    {post.data.readTimeInMinutes > 0 && (
-                      <>
-                        <span class="w-1 h-1 rounded-full bg-text-muted"></span>
-                        <span>{post.data.readTimeInMinutes} min read</span>
-                      </>
-                    )}
-                  </div>
-
-                  <h2 class="heading-md text-xl text-off-white mb-3 group-hover:text-purple transition-colors duration-300 line-clamp-2">
-                    {post.data.title}
-                  </h2>
-
-                  <p class="text-text-secondary text-sm leading-relaxed mb-4 flex-1 line-clamp-3">
-                    {post.data.brief}
-                  </p>
-
-                  {post.data.tags.length > 0 && (
-                    <div class="flex flex-wrap gap-2 mt-auto">
-                      {post.data.tags.slice(0, 3).map((tag) => (
-                        <span class="text-xs px-2 py-1 rounded-full bg-purple/10 text-purple/80 border border-purple/20">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </article>
+              </div>
             </a>
           ))}
-        </div>
+        </>
       )}
     </div>
   </section>
 
-  <!-- CTA -->
-  <section class="py-24 lg:py-32">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
-      <div class="relative rounded-3xl overflow-hidden reveal">
-        <div class="absolute inset-0 bg-ink"></div>
-        <div class="absolute inset-0"></div>
-
-        <div class="relative px-8 py-16 lg:px-16 lg:py-24 text-center">
-          <h2 class="heading-xl text-4xl lg:text-5xl text-white mb-6">{p.cta.headline}</h2>
-          <p class="text-white/70 text-lg max-w-2xl mx-auto mb-10">{p.cta.description}</p>
-          <a href={localePath("/contact", locale)} class="btn-primary">{p.cta.button}</a>
-        </div>
-      </div>
-    </div>
-  </section>
+  <CtaBlock
+    headline={p.cta.headline}
+    description={p.cta.description}
+    button={p.cta.button}
+    href={localePath("/contact", locale)}
+  />
 </Layout>
-
-<style>
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-</style>

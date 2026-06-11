@@ -1,5 +1,6 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import CtaBlock from "../CtaBlock.astro";
 import { t, type Locale } from "../../config/site";
 import { localePath } from "../../utils/i18n";
 const locale = (Astro.currentLocale || 'en') as Locale;
@@ -7,7 +8,7 @@ const config = t(locale);
 const p = config.pages.agenticCoding;
 ---
 
-<Layout title={p.meta.title} description={p.meta.description} hideStatsBanner>
+<Layout title={p.meta.title} description={p.meta.description}>
   <!-- Hero -->
   <section class="relative py-20 lg:py-32 overflow-hidden">
     <div class="absolute inset-0">
@@ -212,21 +213,12 @@ const p = config.pages.agenticCoding;
     </div>
   </section>
 
-  <!-- CTA -->
-  <section class="py-24 lg:py-32 relative overflow-hidden">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
-      <div class="relative rounded-3xl overflow-hidden reveal">
-        <div class="absolute inset-0 bg-ink"></div>
-        <div class="absolute inset-0"></div>
-
-        <div class="relative px-8 py-16 lg:px-16 lg:py-24 text-center">
-          <h2 class="heading-xl text-4xl lg:text-5xl xl:text-6xl text-white mb-6">{p.cta.headline}</h2>
-          <p class="text-white/70 text-lg max-w-2xl mx-auto mb-10">{p.cta.description}</p>
-          <a href={localePath("/contact", locale)} class="btn-primary">{p.cta.button}</a>
-        </div>
-      </div>
-    </div>
-  </section>
+  <CtaBlock
+    headline={p.cta.headline}
+    description={p.cta.description}
+    button={p.cta.button}
+    href={localePath("/contact", locale)}
+  />
 </Layout>
 
 <script>

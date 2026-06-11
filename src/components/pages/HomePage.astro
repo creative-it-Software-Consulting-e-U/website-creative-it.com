@@ -1,5 +1,6 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import CtaBlock from "../CtaBlock.astro";
 import { t, type Locale } from "../../config/site";
 import { localePath } from "../../utils/i18n";
 
@@ -10,222 +11,178 @@ interface Props {
 const locale = (Astro.props.locale || Astro.currentLocale || 'en') as Locale;
 const config = t(locale);
 const p = config.pages.home;
+
+const serviceAnchor = (title: string) =>
+  title.toLowerCase().replace(/[\s-]+/g, '-').replace(/[^a-z0-9-]/g, '');
 ---
 
 <Layout locale={locale}>
-  <!-- Hero Section -->
-  <section id="hero" class="relative min-h-[80vh] md:min-h-[90vh] flex items-start md:items-center overflow-hidden">
-    <div class="absolute inset-0 overflow-hidden">
-      <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[250px] md:w-[800px] md:h-[500px]"></div>
-      <div class="absolute bottom-0 left-1/4 w-[150px] h-[150px] md:w-[300px] md:h-[300px]"></div>
-      <div class="hidden md:block absolute inset-0 opacity-[0.015]" style="background-image: linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px); background-size: 80px 80px;"></div>
-    </div>
+  <!-- Hero — broadsheet front page -->
+  <section id="hero" class="relative">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 pt-16 pb-12 lg:pt-28 lg:pb-20">
+      <div class="chip mb-8 animate-fade-in-up opacity-0" style="animation-delay: 0.05s; animation-fill-mode: forwards;">
+        <span class="w-1.5 h-1.5 rounded-full bg-rubric"></span>
+        <span>{p.chip}</span>
+      </div>
 
-    <div class="relative max-w-7xl mx-auto px-6 lg:px-8 pt-24 pb-10 md:py-20 lg:py-32 z-[2]">
-      <div class="max-w-4xl mx-auto text-center">
-        <h1 class="heading-xl text-5xl sm:text-6xl lg:text-7xl xl:text-8xl text-off-white mb-6">
-          {p.headline.before}<span class="gradient-text">{p.headline.gradient}</span>
-          <br/>
-          {p.headline.after}
-        </h1>
+      <h1 class="heading-xl text-5xl sm:text-6xl lg:text-7xl xl:text-8xl text-ink max-w-5xl mb-10 animate-fade-in-up opacity-0" style="animation-delay: 0.15s; animation-fill-mode: forwards;">
+        {p.headline.before}<span class="gradient-text">{p.headline.gradient}</span>
+        {p.headline.after}
+      </h1>
 
-        <div>
-          <div class="inline-flex chip mb-6">
-            <span class="w-1.5 h-1.5 rounded-full bg-purple animate-pulse"></span>
-            <span class="text-text-secondary">{p.chip}</span>
-          </div>
-
-          <p class="text-lg lg:text-xl text-text-secondary max-w-2xl mx-auto mb-10 leading-relaxed">
-            {config.description}
-          </p>
-
-          <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href={localePath("/contact", locale)} class="btn-glow">{p.ctaPrimary}</a>
-            <a href={localePath("/services", locale)} class="btn-secondary">{p.ctaSecondary}</a>
-          </div>
+      <div class="grid lg:grid-cols-12 gap-8 animate-fade-in-up opacity-0" style="animation-delay: 0.25s; animation-fill-mode: forwards;">
+        <p class="lg:col-span-6 text-lg lg:text-xl text-graphite leading-relaxed">
+          {config.description}
+        </p>
+        <div class="lg:col-span-6 flex flex-col sm:flex-row items-start gap-4 lg:justify-end">
+          <a href={localePath("/contact", locale)} class="btn-glow">{p.ctaPrimary}</a>
+          <a href={localePath("/services", locale)} class="btn-secondary">{p.ctaSecondary}</a>
         </div>
       </div>
-
-      <div class="mt-16 lg:mt-32 grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 reveal">
-        {config.about.stats.map((stat) => (
-          <div class="text-center p-6 rounded-2xl bg-surface/50 border border-ink/5">
-            <div class="heading-lg text-3xl lg:text-4xl text-ink mb-1">{stat.value}</div>
-            <div class="text-sm text-text-muted">{stat.label}</div>
-          </div>
-        ))}
-      </div>
     </div>
 
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2">
-      <span class="text-xs text-text-muted">Scroll</span>
-      <div class="w-px h-12 bg-rule"></div>
-    </div>
-  </section>
-
-  <!-- Services Section -->
-  <section class="py-24 lg:py-32 relative">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
-      <div class="max-w-2xl mb-16 reveal">
-        <div class="chip mb-4">
-          <span>{p.servicesSection.chip}</span>
-        </div>
-        <h2 class="heading-lg text-4xl lg:text-5xl text-off-white mb-6">
-          {p.servicesSection.headline.before}<span class="gradient-text">{p.servicesSection.headline.gradient}</span>{p.servicesSection.headline.after}
-        </h2>
-        <p class="text-text-secondary text-lg">{p.servicesSection.description}</p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {config.services.map((service, index) => (
-          <a href={localePath("/services", locale)} class="group card-elevated p-8 lg:p-10 reveal" style={`transition-delay: ${index * 100}ms`}>
-            <div class="relative">
-              <div class="w-12 h-12 rounded-xl bg-ink/5 border border-purple/20 flex items-center justify-center mb-6 group-hover:border-purple/40 transition-colors duration-300">
-                {service.icon === "brain" && (
-                  <svg class="w-6 h-6 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
-                )}
-                {service.icon === "robot" && (
-                  <svg class="w-6 h-6 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 3v1m6-1v1m-6 8h.01M15 12h.01M12 2a1 1 0 011 1v1h-2V3a1 1 0 011-1zM5 8h14a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2v-8a2 2 0 012-2zm3 12v2m8-2v2" /></svg>
-                )}
-                {service.icon === "mobile" && (
-                  <svg class="w-6 h-6 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
-                )}
-                {service.icon === "code" && (
-                  <svg class="w-6 h-6 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
-                )}
-                {service.icon === "cloud" && (
-                  <svg class="w-6 h-6 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" /></svg>
-                )}
-                {service.icon === "ruler" && (
-                  <svg class="w-6 h-6 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 20V4l16 16H4zM4 8h2M4 12h2M4 16h2M8 20v-2M12 20v-2M16 20v-2" /></svg>
-                )}
-              </div>
-
-              <h3 class="heading-md text-xl text-off-white mb-3 group-hover:text-purple transition-colors duration-300">{service.title}</h3>
-              <p class="text-text-secondary mb-6 leading-relaxed">{service.description}</p>
-
-              <ul class="space-y-2 mb-6">
-                {service.features.map((feature) => (
-                  <li class="flex items-center gap-2 text-sm text-text-muted">
-                    <svg class="w-4 h-4 text-cyan" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-
-              <div class="flex items-center gap-2 text-indigo text-sm font-medium group-hover:text-purple transition-colors duration-300">
-                <span>{p.servicesSection.linkText}</span>
-                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-              </div>
-            </div>
-          </a>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- Apps Section -->
-  <section class="py-24 lg:py-32 bg-surface relative overflow-hidden">
-    <div class="absolute inset-0 "></div>
-
-    <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
-      <div class="max-w-2xl mb-16 reveal">
-        <div class="chip mb-4">
-          <span>{p.appsSection.chip}</span>
-        </div>
-        <h2 class="heading-lg text-4xl lg:text-5xl text-off-white mb-6">
-          {p.appsSection.headline.before}<span class="gradient-text">{p.appsSection.headline.gradient}</span>{p.appsSection.headline.after}
-        </h2>
-        <p class="text-text-secondary text-lg">{p.appsSection.description}</p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {config.apps.map((app, index) => {
-          const isLive = app.status === "live" && app.link;
-          const Tag = isLive ? "a" : "div";
-          return (
-            <Tag
-              {...(isLive ? { href: app.link!, target: "_blank", rel: "noopener noreferrer" } : {})}
-              class:list={[
-                "group card-elevated p-8 reveal",
-                isLive && "cursor-pointer",
-              ]}
-              style={`transition-delay: ${index * 100}ms`}
-            >
-              <img
-                src={app.icon}
-                alt={app.title}
-                width="52"
-                height="52"
-                loading="lazy"
-                decoding="async"
-                class="w-13 h-13 rounded-xl mb-6"
-              />
-
-              <div class="flex items-center gap-3 mb-3">
-                <h3 class:list={[
-                  "heading-md text-xl text-off-white",
-                  isLive && "group-hover:text-purple transition-colors duration-300",
-                ]}>{app.title}</h3>
-                {app.status === "coming-soon" && (
-                  <span class="text-[0.7rem] font-medium uppercase tracking-wider text-indigo bg-indigo/10 border border-indigo/20 px-2 py-0.5 rounded-full">Coming Soon</span>
-                )}
-              </div>
-
-              <p class="text-text-secondary text-sm leading-relaxed mb-6">{app.description}</p>
-
-              {isLive && (
-                <div class="flex items-center gap-2 text-indigo text-sm font-medium group-hover:text-purple transition-colors duration-300">
-                  <span>Open App</span>
-                  <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-                </div>
-              )}
-            </Tag>
-          );
-        })}
-      </div>
-
-      <div class="mt-10 text-center reveal" style="transition-delay: 400ms">
-        <a href={p.appsSection.linkUrl} target="_blank" rel="noopener noreferrer" class="btn-secondary inline-flex items-center gap-2">
-          {p.appsSection.linkText}
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+    <!-- Live commit ticker — real data instead of a stats band -->
+    <div class="border-t border-b border-rule">
+      <div id="commit-ticker" class="hidden max-w-7xl mx-auto px-6 lg:px-8">
+        <a
+          href={localePath("/agentic-coding", locale)}
+          class="flex flex-wrap items-center gap-x-6 gap-y-1 py-3 font-mono text-xs uppercase tracking-[0.06em] text-graphite hover:text-ink transition-colors duration-150"
+          data-i18n-commits={config.statsBanner.commits}
+          data-i18n-lines={config.statsBanner.lines}
+        >
+          <span class="flex items-center gap-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-rubric"></span>
+            {config.statsBanner.description}
+          </span>
+          <span>{config.statsBanner.last24h}: <span class="text-ink" id="ticker-24h"></span></span>
+          <span>{config.statsBanner.last7d}: <span class="text-ink" id="ticker-7d"></span></span>
+          <span class="text-rubric">{config.statsBanner.learnMore} &rarr;</span>
         </a>
       </div>
     </div>
   </section>
 
-  <!-- Philosophy Section -->
-  <section class="py-24 lg:py-32 relative overflow-hidden">
-    <div class="absolute inset-0 bg-surface"></div>
-    <div class="absolute inset-0 "></div>
+  <!-- Services — numbered index -->
+  <section class="py-20 lg:py-28">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex items-baseline gap-4 mb-4">
+        <span class="font-mono text-xs uppercase tracking-[0.08em] text-graphite">01 — {p.servicesSection.chip}</span>
+        <div class="flex-1 h-px bg-rule"></div>
+      </div>
 
-    <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
-      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-        <div class="reveal">
-          <div class="chip mb-4">
-            <span>{p.philosophySection.chip}</span>
-          </div>
-          <h2 class="heading-lg text-4xl lg:text-5xl text-off-white mb-8">
+      <div class="grid lg:grid-cols-12 gap-6 mb-14 lg:mb-20">
+        <h2 class="lg:col-span-7 heading-lg text-4xl lg:text-5xl text-ink">
+          {p.servicesSection.headline.before}<span class="gradient-text">{p.servicesSection.headline.gradient}</span>{p.servicesSection.headline.after}
+        </h2>
+        <p class="lg:col-span-5 text-graphite text-lg self-end">{p.servicesSection.description}</p>
+      </div>
+
+      <div>
+        {config.services.map((service, index) => (
+          <a
+            href={`${localePath("/services", locale)}#${serviceAnchor(service.title)}`}
+            class="group grid grid-cols-[auto_1fr] lg:grid-cols-12 gap-x-6 gap-y-2 py-8 lg:py-10 border-t border-rule last:border-b transition-colors duration-150 hover:bg-ink/[0.02]"
+          >
+            <span class="font-mono text-sm text-graphite pt-2 lg:col-span-1">{String(index + 1).padStart(2, '0')}</span>
+            <h3 class="heading-md text-2xl lg:text-3xl text-ink group-hover:text-rubric transition-colors duration-150 lg:col-span-5">
+              {service.title}
+            </h3>
+            <p class="col-start-2 lg:col-start-auto lg:col-span-4 text-graphite text-sm leading-relaxed">
+              {service.description}
+            </p>
+            <span class="col-start-2 lg:col-start-auto lg:col-span-2 font-mono text-xs uppercase tracking-[0.06em] text-graphite lg:text-right">
+              {service.features.slice(0, 2).join(' · ')}
+            </span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Apps — ruled list of real products -->
+  <section class="py-20 lg:py-28">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex items-baseline gap-4 mb-4">
+        <span class="font-mono text-xs uppercase tracking-[0.08em] text-graphite">02 — {p.appsSection.chip}</span>
+        <div class="flex-1 h-px bg-rule"></div>
+      </div>
+
+      <div class="grid lg:grid-cols-12 gap-6 mb-14 lg:mb-20">
+        <h2 class="lg:col-span-7 heading-lg text-4xl lg:text-5xl text-ink">
+          {p.appsSection.headline.before}<span class="gradient-text">{p.appsSection.headline.gradient}</span>{p.appsSection.headline.after}
+        </h2>
+        <p class="lg:col-span-5 text-graphite text-lg self-end">{p.appsSection.description}</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-x-10">
+        {config.apps.map((app) => {
+          const isLive = app.status === "live" && app.link;
+          const Tag = isLive ? "a" : "div";
+          return (
+            <Tag
+              {...(isLive ? { href: app.link!, target: "_blank", rel: "noopener noreferrer" } : {})}
+              class:list={["group border-t border-rule pt-6 pb-10", isLive && "cursor-pointer"]}
+            >
+              <div class="flex items-center gap-3 mb-4">
+                <img
+                  src={app.icon}
+                  alt=""
+                  width="52"
+                  height="52"
+                  loading="lazy"
+                  decoding="async"
+                  class="w-9 h-9 rounded-sm"
+                />
+                <h3 class:list={[
+                  "heading-md text-xl text-ink",
+                  isLive && "group-hover:text-rubric transition-colors duration-150",
+                ]}>{app.title}</h3>
+                {app.status === "coming-soon" && (
+                  <span class="font-mono text-[0.65rem] uppercase tracking-[0.08em] text-graphite border border-rule px-1.5 py-0.5">Coming Soon</span>
+                )}
+              </div>
+
+              <p class="text-graphite text-sm leading-relaxed mb-4">{app.description}</p>
+
+              {isLive && (
+                <span class="font-mono text-xs uppercase tracking-[0.06em] text-rubric">
+                  Open App &rarr;
+                </span>
+              )}
+            </Tag>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <!-- Philosophy -->
+  <section class="py-20 lg:py-28">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex items-baseline gap-4 mb-14 lg:mb-20">
+        <span class="font-mono text-xs uppercase tracking-[0.08em] text-graphite">03 — {p.philosophySection.chip}</span>
+        <div class="flex-1 h-px bg-rule"></div>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20">
+        <div>
+          <h2 class="heading-lg text-4xl lg:text-5xl text-ink mb-8">
             {p.philosophySection.headline.before}<br/>
             <span class="gradient-text">{p.philosophySection.headline.gradient}</span>{p.philosophySection.headline.after}
           </h2>
-          <p class="text-text-secondary text-lg leading-relaxed mb-8">{config.about.story}</p>
-          <a href={localePath("/about", locale)} class="btn-secondary inline-flex items-center gap-2">
+          <p class="text-graphite text-lg leading-relaxed mb-8">{config.about.story}</p>
+          <a href={localePath("/about", locale)} class="btn-secondary">
             {p.philosophySection.linkText}
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
           </a>
         </div>
 
-        <div class="space-y-4 reveal" style="transition-delay: 200ms">
+        <div>
           {config.about.values.map((value, index) => (
-            <div class="group card p-6">
-              <div class="flex items-start gap-4">
-                <div class="flex-shrink-0 w-11 h-11 rounded-xl bg-ink/5 border border-purple/20 flex items-center justify-center">
-                  <span class="heading-md text-purple text-sm">{String(index + 1).padStart(2, '0')}</span>
-                </div>
-                <div>
-                  <h3 class="heading-md text-lg text-off-white mb-1.5 group-hover:text-purple transition-colors duration-300">{value.title}</h3>
-                  <p class="text-text-muted text-sm leading-relaxed">{value.description}</p>
-                </div>
+            <div class="grid grid-cols-[auto_1fr] gap-5 py-6 border-t border-rule last:border-b">
+              <span class="font-mono text-sm text-graphite pt-1">{String(index + 1).padStart(2, '0')}</span>
+              <div>
+                <h3 class="heading-md text-lg text-ink mb-1.5">{value.title}</h3>
+                <p class="text-graphite text-sm leading-relaxed">{value.description}</p>
               </div>
             </div>
           ))}
@@ -234,20 +191,41 @@ const p = config.pages.home;
     </div>
   </section>
 
-  <!-- CTA Section -->
-  <section class="py-24 lg:py-32 relative overflow-hidden">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
-      <div class="relative rounded-3xl overflow-hidden reveal">
-        <div class="absolute inset-0 bg-ink"></div>
-        <div class="absolute inset-0"></div>
-
-        <div class="relative px-8 py-16 lg:px-16 lg:py-24 text-center">
-          <h2 class="heading-xl text-4xl lg:text-5xl xl:text-6xl text-white mb-6 whitespace-pre-line">{p.cta.headline}</h2>
-          <p class="text-white/70 text-lg max-w-2xl mx-auto mb-10">{p.cta.description}</p>
-          <a href={localePath("/contact", locale)} class="btn-primary">{p.cta.button}</a>
-        </div>
-      </div>
-    </div>
-  </section>
+  <CtaBlock
+    headline={p.cta.headline}
+    description={p.cta.description}
+    button={p.cta.button}
+    href={localePath("/contact", locale)}
+  />
 </Layout>
 
+<script>
+  // Live commit ticker — same data the agentic-coding page shows.
+  (async () => {
+    try {
+      const res = await fetch(`${import.meta.env.PUBLIC_API_URL}/github-stats`, { cache: 'no-store' });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data.commits_24h === 0 && data.commits_7d === 0) return;
+
+      const ticker = document.getElementById('commit-ticker');
+      const el24h = document.getElementById('ticker-24h');
+      const el7d = document.getElementById('ticker-7d');
+      const link = ticker?.querySelector('a');
+      if (!ticker || !el24h || !el7d) return;
+
+      const fmt = (n: number) =>
+        n >= 1_000_000 ? `${(n / 1_000_000).toFixed(1).replace(/\.0$/, '')}M`
+        : n >= 1_000 ? `${(n / 1_000).toFixed(1).replace(/\.0$/, '')}k`
+        : n.toString();
+
+      const commitsLabel = link?.dataset.i18nCommits || 'commits';
+      const linesLabel = link?.dataset.i18nLines || 'lines';
+      el24h.textContent = `${fmt(data.commits_24h)} ${commitsLabel} · ${fmt(data.lines_24h)} ${linesLabel}`;
+      el7d.textContent = `${fmt(data.commits_7d)} ${commitsLabel} · ${fmt(data.lines_7d)} ${linesLabel}`;
+      ticker.classList.remove('hidden');
+    } catch {
+      // Ticker stays hidden on error
+    }
+  })();
+</script>

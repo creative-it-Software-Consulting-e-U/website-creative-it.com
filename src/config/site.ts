@@ -48,7 +48,7 @@ const shared = {
           content: null,
           items: [
             { label: "Company", value: "creative-it Software Consulting e.U." },
-            { label: "Owner", value: "Georg Wieser" },
+            { label: "Owner", value: "Günther Wieser" },
             { label: "Address", value: "Am Gassl 25, A-3482 Gösing am Wagram, Austria" },
             { label: "Phone", value: "+43 660 4943737" },
             { label: "Email", value: "info@creative-it.com" },
@@ -105,7 +105,7 @@ const shared = {
           content: null,
           items: [
             { label: "Unternehmen", value: "creative-it Software Consulting e.U." },
-            { label: "Inhaber", value: "Georg Wieser" },
+            { label: "Inhaber", value: "Günther Wieser" },
             { label: "Adresse", value: "Am Gassl 25, A-3482 Gösing am Wagram, Österreich" },
             { label: "Telefon", value: "+43 660 4943737" },
             { label: "E-Mail", value: "info@creative-it.com" },
@@ -164,7 +164,7 @@ const shared = {
         {
           title: "1. Controller",
           paragraphs: [
-            "creative-it Software Consulting e.U., Georg Wieser, Am Gassl 25, A-3482 Gösing am Wagram, Austria. Email: info@creative-it.com, Phone: +43 660 4943737.",
+            "creative-it Software Consulting e.U., Günther Wieser, Am Gassl 25, A-3482 Gösing am Wagram, Austria. Email: info@creative-it.com, Phone: +43 660 4943737.",
           ],
         },
         {
@@ -268,7 +268,7 @@ const shared = {
         {
           title: "1. Verantwortlicher",
           paragraphs: [
-            "creative-it Software Consulting e.U., Georg Wieser, Am Gassl 25, A-3482 Gösing am Wagram, Österreich. E-Mail: info@creative-it.com, Telefon: +43 660 4943737.",
+            "creative-it Software Consulting e.U., Günther Wieser, Am Gassl 25, A-3482 Gösing am Wagram, Österreich. E-Mail: info@creative-it.com, Telefon: +43 660 4943737.",
           ],
         },
         {
@@ -365,9 +365,9 @@ const shared = {
 
 const content = {
   en: {
-    tagline: "Build. Grow. Matter.",
+    tagline: "AWS Serverless & Agentic AI Consulting",
     description:
-      "We build intelligent, serverless solutions on AWS — from AI agents to cloud architecture. GDPR-compliant, production-ready, at any scale.",
+      "I build serverless systems and AI agents on AWS — GDPR-compliant and production-ready. You talk directly to the person who does the work.",
 
     navigation: [
       { name: "Home", href: "/" },
@@ -394,7 +394,7 @@ const content = {
         slug: "aws-serverless",
         title: "AWS Serverless Architecture",
         description:
-          "Zero-ops infrastructure that scales automatically and costs only what you use. The serverless market is projected to grow from $28B to $92B — we help you capitalize on it.",
+          "Zero-ops infrastructure that scales automatically and costs only what you use. I design event-driven systems on Lambda, DynamoDB, and API Gateway that are production-ready from day one.",
         icon: "cloud",
         features: [
           "Serverless Architecture",
@@ -403,7 +403,7 @@ const content = {
           "Pay-per-use cost model",
         ],
         tagline: "Infrastructure that scales itself — so you can focus on building.",
-        longDescription: "Serverless architecture eliminates the need to provision, scale, or maintain servers. With core services like AWS Lambda, DynamoDB, and API Gateway, your applications respond to demand in real time — scaling from zero to millions of requests without manual intervention.\n\nWe design event-driven systems using Infrastructure as Code (AWS CDK), ensuring every deployment is reproducible, auditable, and version-controlled. From REST APIs to real-time data pipelines, our serverless architectures are built for production from day one.\n\nThe result: lower operational costs, faster time to market, and infrastructure that grows with your business — not against it.",
+        longDescription: "Serverless architecture eliminates the need to provision, scale, or maintain servers. With core services like AWS Lambda, DynamoDB, and API Gateway, your applications respond to demand in real time — scaling from zero to millions of requests without manual intervention.\n\nI design event-driven systems using Infrastructure as Code (AWS CDK), ensuring every deployment is reproducible, auditable, and version-controlled. From REST APIs to real-time data pipelines, my serverless architectures are built for production from day one.\n\nThe result: lower operational costs, faster time to market, and infrastructure that grows with your business — not against it.",
         benefits: [
           { title: "Zero Ops Overhead", description: "No servers to patch, scale, or monitor. AWS handles the infrastructure so your team focuses on features." },
           { title: "Pay Only for Usage", description: "No idle compute costs. You pay per request and per millisecond of execution — nothing more." },
@@ -420,7 +420,7 @@ const content = {
         slug: "agentic-ai",
         title: "Agentic AI & GDPR Compliance",
         description:
-          "Custom AI agents built on AWS Bedrock that automate workflows and augment your team. The agentic AI market is set to grow from $7.8B to $52B — we build solutions that are EU-compliant from day one.",
+          "Custom AI agents built on AWS Bedrock that automate workflows and augment your team — EU-compliant from day one, with your data staying in the EU.",
         icon: "brain",
         features: [
           "AWS Bedrock agent development",
@@ -429,7 +429,7 @@ const content = {
           "GDPR-compliant Agentic Coding",
         ],
         tagline: "AI agents that work for you — not against compliance.",
-        longDescription: "Agentic AI goes beyond simple chatbots. We build autonomous AI agents on AWS Bedrock that understand context, plan multi-step actions, and execute complex workflows — all while keeping your data within the EU.\n\nOur agents leverage Retrieval-Augmented Generation (RAG) to ground responses in your actual business data, reducing hallucinations and increasing accuracy. Combined with human-in-the-loop safeguards, you get AI that's powerful yet controllable.\n\nEvery solution is architected with GDPR compliance from the start: data residency in the EU (dedicated region like Frankfurt/eu-central-1, or across EU regions for cheaper and faster inference), no training on your data, full audit trails, and consent management built in.",
+        longDescription: "Agentic AI goes beyond simple chatbots. I build autonomous AI agents on AWS Bedrock that understand context, plan multi-step actions, and execute complex workflows — all while keeping your data within the EU.\n\nThe agents leverage Retrieval-Augmented Generation (RAG) to ground responses in your actual business data, reducing hallucinations and increasing accuracy. Combined with human-in-the-loop safeguards, you get AI that's powerful yet controllable.\n\nEvery solution is architected with GDPR compliance from the start: data residency in the EU (dedicated region like Frankfurt/eu-central-1, or across EU regions for cheaper and faster inference), no training on your data, full audit trails, and consent management built in.",
         benefits: [
           { title: "EU-Compliant by Design", description: "All data processed in AWS EU regions. No model training on your data. Full audit trails and consent management." },
           { title: "Grounded in Your Data", description: "RAG pipelines ensure AI responses are based on your actual documents and knowledge — not generic training data." },
@@ -446,7 +446,7 @@ const content = {
         slug: "fractional-cto",
         title: "Fractional CTO",
         description:
-          "C-level technology leadership at a fraction of the cost. Companies with strong tech leadership see up to 400% faster growth — get 80% of the value at 20% of the cost of a full-time CTO.",
+          "C-level technology leadership at a fraction of the cost: strategy, architecture decisions, and mentoring from someone who has built systems for 30+ years — a few days a month instead of a full-time salary.",
         icon: "ruler",
         features: [
           "Technology strategy & roadmap",
@@ -457,7 +457,7 @@ const content = {
         tagline: "C-level tech leadership without the full-time overhead.",
         longDescription: "Not every company needs a full-time CTO — but every company needs strategic technology leadership. As your Fractional CTO, I bring 30+ years of engineering experience to your leadership team on a flexible, part-time basis.\n\nFrom technology strategy and architecture decisions to team mentoring and vendor evaluation, I provide the guidance that turns technical investments into business outcomes. I've seen what works and what doesn't — across startups, scale-ups, and enterprise environments.\n\nThe engagement is tailored to your needs: a few days per month for ongoing advisory, or intensive sprints for critical decisions like technology migrations, team scaling, or product architecture.",
         benefits: [
-          { title: "80/20 Value Proposition", description: "Get 80% of the value of a full-time CTO at 20% of the cost. Strategic leadership without the full-time salary." },
+          { title: "Senior Advice, Part-Time", description: "Strategic technology leadership a few days per month — without the full-time salary." },
           { title: "30+ Years Experience", description: "Deep expertise across cloud architecture, AI, mobile, and enterprise systems — battle-tested in production." },
           { title: "Flexible Engagement", description: "Scale involvement up or down as your needs change. Advisory retainer or intensive project sprints." },
         ],
@@ -472,7 +472,7 @@ const content = {
         slug: "cloud-optimization",
         title: "Cost-Optimized Cloud & AI",
         description:
-          "Reduce your cloud spend by up to 70% through right-sizing, reserved capacity, and FinOps practices. We turn bloated infrastructure into lean, cost-efficient systems.",
+          "Reduce your cloud spend by up to 70% through right-sizing, reserved capacity, and FinOps practices. I turn bloated infrastructure into lean, cost-efficient systems.",
         icon: "code",
         features: [
           "AWS cost analysis & optimization",
@@ -481,7 +481,7 @@ const content = {
           "AI workload cost management",
         ],
         tagline: "Cut cloud costs by up to 70% — without cutting capabilities.",
-        longDescription: "Most companies overspend on cloud by 30-50%. We perform deep cost analysis of your AWS infrastructure, identify waste, and implement FinOps practices that deliver measurable savings — without sacrificing performance or reliability.\n\nOur approach combines right-sizing, reserved capacity planning, spot instance strategies, and serverless migration to eliminate idle compute costs. For AI workloads, we optimize model selection, batching strategies, and caching to keep inference costs under control.\n\nEvery engagement starts with a detailed cost analysis and ends with a clear savings roadmap — so you know exactly what to expect before committing.",
+        longDescription: "Most companies overspend on cloud by 30-50%. I perform a deep cost analysis of your AWS infrastructure, identify waste, and implement FinOps practices that deliver measurable savings — without sacrificing performance or reliability.\n\nMy approach combines right-sizing, reserved capacity planning, spot instance strategies, and serverless migration to eliminate idle compute costs. For AI workloads, I optimize model selection, batching strategies, and caching to keep inference costs under control.\n\nEvery engagement starts with a detailed cost analysis and ends with a clear savings roadmap — so you know exactly what to expect before committing.",
         benefits: [
           { title: "40-70% Cost Reduction", description: "Most clients see dramatic savings through right-sizing, reserved capacity, and eliminating idle resources." },
           { title: "FinOps Best Practices", description: "Implement cost visibility, accountability, and optimization as ongoing disciplines — not one-time fixes." },
@@ -523,29 +523,23 @@ const content = {
         {
           title: "Build",
           description:
-            "We architect serverless systems and AI agents that solve real problems — not theoretical ones.",
+            "I architect serverless systems and AI agents that solve real problems — not theoretical ones.",
         },
         {
           title: "Grow",
           description:
-            "We scale your AI capabilities and cloud infrastructure so your technology grows with your business.",
+            "I scale your AI capabilities and cloud infrastructure so your technology grows with your business.",
         },
         {
           title: "Matter",
           description:
-            "We deliver GDPR-compliant solutions with measurable ROI — because impact you can prove is impact that matters.",
+            "I deliver GDPR-compliant solutions with measurable ROI — because impact you can prove is impact that matters.",
         },
-      ],
-      stats: [
-        { value: "150+", label: "Projects Delivered" },
-        { value: "30+", label: "Years Experience" },
-        { value: "100%", label: "Satisfaction Rate" },
-        { value: "AWS", label: "& AI Certified" },
       ],
       whyChooseUs: {
         headline: "Specialist, Not Generalist",
         description:
-          "We don't try to do everything — we go deep on what matters most. When you work with creative-it, you get focused AWS and AI expertise that delivers results.",
+          "I don't try to do everything — I go deep on AWS serverless and agentic AI. When you work with creative-it, you work with one specialist, not a rotating team.",
         benefits: [
           {
             title: "Deep AWS & AI Expertise",
@@ -559,7 +553,7 @@ const content = {
           },
           {
             title: "Fractional Flexibility",
-            description: "C-level technology expertise without the full-time overhead — scale our involvement up or down as you need.",
+            description: "C-level technology expertise without the full-time overhead — scale my involvement up or down as you need.",
           },
         ],
         highlights: [
@@ -611,25 +605,25 @@ const content = {
         step: "01",
         title: "Discover",
         description:
-          "We dive deep into your challenges, goals, and vision to understand the full picture.",
+          "I dive deep into your challenges, goals, and vision to understand the full picture.",
       },
       {
         step: "02",
         title: "Design",
         description:
-          "We architect solutions that align with your objectives and scale with your growth.",
+          "I architect solutions that align with your objectives and scale with your growth.",
       },
       {
         step: "03",
         title: "Develop",
         description:
-          "We build with precision, keeping you informed and involved every step of the way.",
+          "I build with precision, keeping you informed and involved every step of the way.",
       },
       {
         step: "04",
         title: "Deliver",
         description:
-          "We deploy, optimize, and support—ensuring lasting success beyond launch.",
+          "I deploy, optimize, and support — ensuring lasting success beyond launch.",
       },
     ],
 
@@ -642,32 +636,32 @@ const content = {
       {
         question: "How do you ensure GDPR compliance for AI solutions?",
         answer:
-          "We build on AWS Bedrock, which processes data in the EU region (Frankfurt) and doesn't use your data for model training. All our AI architectures include data residency controls, consent management, and audit trails. We design for GDPR compliance from the start — it's not an afterthought.",
+          "I build on AWS Bedrock, which processes data in the EU region (Frankfurt) and doesn't use your data for model training. All my AI architectures include data residency controls, consent management, and audit trails. I design for GDPR compliance from the start — it's not an afterthought.",
       },
       {
         question: "What does a Fractional CTO engagement look like?",
         answer:
-          "A Fractional CTO engagement typically starts with a technology audit and strategy session. From there, we work with you on an ongoing basis — usually a few days per month — covering architecture decisions, team mentoring, vendor evaluation, and roadmap planning. You get C-level expertise without the full-time salary.",
+          "A Fractional CTO engagement typically starts with a technology audit and strategy session. From there, I work with you on an ongoing basis — usually a few days per month — covering architecture decisions, team mentoring, vendor evaluation, and roadmap planning. You get C-level expertise without the full-time salary.",
       },
       {
         question: "How much can serverless save compared to traditional infrastructure?",
         answer:
-          "Most clients see 40-70% cost reduction after migrating to serverless. The savings come from eliminating idle compute costs, reducing ops overhead, and paying only for actual usage. We provide a detailed cost analysis before any migration to quantify your specific savings potential.",
+          "Most clients see 40-70% cost reduction after migrating to serverless. The savings come from eliminating idle compute costs, reducing ops overhead, and paying only for actual usage. I provide a detailed cost analysis before any migration to quantify your specific savings potential.",
       },
       {
         question: "Do you work with international clients?",
         answer:
-          "Yes. We work with clients across Europe and beyond, with experience in cross-border data compliance, multi-region AWS deployments, and distributed team collaboration. Our GDPR expertise is particularly valuable for companies operating in or selling to the EU market.",
+          "Yes. I work with clients across Europe and beyond, with experience in cross-border data compliance and multi-region AWS deployments. My GDPR expertise is particularly valuable for companies operating in or selling to the EU market.",
       },
       {
         question: "What's the typical engagement timeline?",
         answer:
-          "It depends on the scope. A serverless architecture review takes 1-2 weeks. An AI agent MVP typically takes 4-8 weeks. A full cloud migration can span 2-6 months. During our free consultation, we'll map out a timeline tailored to your specific needs and priorities.",
+          "It depends on the scope. A serverless architecture review takes 1-2 weeks. An AI agent MVP typically takes 4-8 weeks. A full cloud migration can span 2-6 months. In a free initial call, I'll map out a timeline tailored to your specific needs and priorities.",
       },
     ],
 
     statsBanner: {
-      description: "Code changes made by our team of agentic coding agents",
+      description: "Code changes shipped by my agentic coding agents",
       last24h: "Last 24h",
       last7d: "Last 7d",
       learnMore: "Learn about agentic coding",
@@ -680,37 +674,35 @@ const content = {
     pages: {
       home: {
         chip: "AI Agents · Serverless · Cloud Architecture",
-        headline: { before: "Architect. ", gradient: "Automate.", after: " Accelerate." },
+        headline: { before: "AI agents write the code. I make sure it's the ", gradient: "right", after: " code." },
         ctaPrimary: "Book a Free Consultation",
-        ctaSecondary: "Explore Our Services",
+        ctaSecondary: "See what I do",
 
         servicesSection: {
-          chip: "Our Expertise",
-          headline: { before: "Four Pillars of ", gradient: "Technical Excellence", after: "" },
+          chip: "Services",
+          headline: { before: "What I ", gradient: "do", after: " — and what I deliberately don't." },
           description:
-            "From serverless architecture to agentic AI, we deliver specialized solutions that scale with your ambitions.",
+            "Four focused services: serverless architecture, AI agents, technology leadership, and cloud costs. For everything else, I'll point you to someone better suited.",
           linkText: "Learn more",
         },
 
         appsSection: {
-          chip: "Our Apps",
-          headline: { before: "Products We ", gradient: "Built", after: "" },
+          chip: "Products",
+          headline: { before: "Products I ", gradient: "built", after: "" },
           description:
             "Focused tools and applications that solve real problems with clean design and thoughtful engineering.",
-          linkText: "View all apps",
-          linkUrl: "https://apps.creative.it.com",
         },
 
         philosophySection: {
-          chip: "Our Philosophy",
-          headline: { before: "Three Words.", gradient: "Infinite Possibility.", after: "" },
-          linkText: "About Our Journey",
+          chip: "Philosophy",
+          headline: { before: "The person behind ", gradient: "creative-it", after: "." },
+          linkText: "Read my story",
         },
 
         cta: {
-          headline: "Ready to Architect\nYour Next Solution?",
+          headline: "You'll talk to the person\nwho does the work.",
           description:
-            "Let's discuss how serverless architecture and agentic AI can transform your business.",
+            "Tell me what you're building. I read every message myself and usually reply the same day.",
           button: "Schedule a Consultation",
         },
       },
@@ -721,24 +713,24 @@ const content = {
           description: "AWS Serverless & Agentic AI Architect — 30+ years of experience, specialized expertise",
         },
         hero: {
-          chip: "About Us",
+          chip: "About",
           headline: { before: "AWS Serverless & ", gradient: "Agentic AI", after: " Architect" },
         },
         storySection: {
-          chip: "Our Story",
-          headline: "Two Moments That Changed Everything",
+          chip: "My Story",
+          headline: "The domain since 1997. The craft since 1991.",
         },
         valuesSection: {
-          chip: "Our Values",
-          headline: { before: "Build. ", gradient: "Grow.", after: " Matter." },
+          chip: "Values",
+          headline: { before: "Three words I ", gradient: "work", after: " by." },
         },
         whySection: {
-          chip: "Why Choose Us",
+          chip: "Why creative-it",
         },
         cta: {
-          headline: "Let's Architect Together",
+          headline: "Write to me. I read every message myself.",
           description:
-            "Ready to work with a specialist who's invested in your success? Let's start a conversation.",
+            "No sales team, no account managers — your message lands directly with me, and I usually reply the same day.",
           button: "Get in Touch",
         },
       },
@@ -749,21 +741,21 @@ const content = {
           description: "AWS Serverless Architecture, Agentic AI, Fractional CTO & Cloud Cost Optimization",
         },
         hero: {
-          chip: "Our Expertise",
-          headline: { before: "Serverless & AI Solutions That ", gradient: "Deliver Results", after: "" },
+          chip: "Services",
+          headline: { before: "Four things I do ", gradient: "well", after: "." },
           description:
-            "Four specialized pillars — from serverless architecture to agentic AI, fractional CTO services to cloud cost optimization. Deep expertise, measurable outcomes.",
+            "Serverless architecture, AI agents, fractional CTO work, and cloud cost optimization. If your problem is outside these four, I'll say so — and point you to someone better.",
         },
         serviceButton: "Discuss Your Project",
         processSection: {
-          chip: "Our Process",
-          headline: "How We Work",
-          description: "A proven methodology that delivers results, every time.",
+          chip: "Process",
+          headline: "How I work",
+          description: "Four steps, no theater: understand, design, build, ship.",
         },
         cta: {
-          headline: "Let's Build Something Great",
+          headline: "Tell me about your project.",
           description:
-            "Ready to transform your ideas into reality? We're here to help you every step of the way.",
+            "A short call is enough to find out whether I'm the right person for it. If I'm not, I'll tell you.",
           button: "Start Your Project",
         },
       },
@@ -775,42 +767,42 @@ const content = {
         },
         hero: {
           chip: "Agentic Coding",
-          headline: { before: "Code at the Speed of ", gradient: "Thought", after: "" },
+          headline: { before: "This page shows what AI agents ", gradient: "actually", after: " ship." },
           description:
-            "We deploy teams of AI coding agents that work alongside our engineers — writing, reviewing, and shipping production code around the clock.",
+            "I work with AI coding agents that write, review, and ship production code around the clock. The numbers below come live from my GitHub organization — not from a slide deck.",
         },
         whatSection: {
           chip: "What Is It",
           headline: "AI Agents That Write Real Code",
           description:
-            "Agentic coding goes beyond autocomplete. Autonomous AI agents understand your codebase, plan implementations, write tests, and submit pull requests — just like a human developer. They handle the routine so our engineers focus on architecture, design, and the problems that matter.",
+            "Agentic coding goes beyond autocomplete. Autonomous AI agents understand your codebase, plan implementations, write tests, and submit pull requests — just like a human developer. They handle the routine so I can focus on architecture, design, and the problems that matter.",
           points: [
             { title: "Autonomous Execution", description: "Agents independently plan, implement, and verify multi-file changes across entire repositories." },
             { title: "Context-Aware", description: "They understand your project structure, coding conventions, and business logic — not just syntax." },
-            { title: "Human-in-the-Loop", description: "Every change is reviewed by senior engineers. Agents accelerate delivery; humans ensure quality." },
+            { title: "Human-in-the-Loop", description: "Every change is reviewed by me before it merges. Agents accelerate delivery; a human ensures quality." },
           ],
         },
         howSection: {
           chip: "Our Approach",
           headline: "How creative-it Uses Agentic Coding",
           description:
-            "We integrate AI agents directly into our development workflow. They're not a gimmick — they're full team members with assigned tasks, code review standards, and accountability.",
+            "I integrate AI agents directly into my development workflow. They're not a gimmick — they're team members with assigned tasks, code review standards, and accountability.",
           steps: [
-            { step: "01", title: "Task Assignment", description: "Agents receive well-scoped tasks from our project management system, just like any developer." },
+            { step: "01", title: "Task Assignment", description: "Agents receive well-scoped tasks from my project management system, just like any developer." },
             { step: "02", title: "Implementation", description: "Agents write code, create tests, and open pull requests with full context and documentation." },
-            { step: "03", title: "Review & Merge", description: "Senior engineers review every PR for quality, security, and alignment with project goals." },
+            { step: "03", title: "Review & Merge", description: "I review every PR for quality, security, and alignment with project goals." },
             { step: "04", title: "Continuous Learning", description: "Agents improve over time as they absorb project conventions and feedback patterns." },
           ],
         },
         benefitsSection: {
           chip: "Productivity Gains",
-          headline: { before: "Results That ", gradient: "Speak", after: "" },
+          headline: { before: "Live numbers, not ", gradient: "estimates", after: "." },
           description:
-            "The numbers from our live GitHub activity tell the story. Agentic coding isn't theoretical — it's shipping production code every day.",
+            "The numbers from my live GitHub activity tell the story. Agentic coding isn't theoretical — it's shipping production code every day.",
           benefits: [
             { value: "5–10x", label: "Faster Feature Delivery", description: "What used to take a week ships in a day. Agents handle boilerplate, tests, and repetitive refactors at machine speed." },
             { value: "24/7", label: "Development Velocity", description: "Agents don't sleep. They process tasks overnight so engineers wake up to completed pull requests." },
-            { value: "Higher", label: "Code Quality", description: "Every change comes with tests and documentation. Agents are thorough by default — no shortcuts, no tech debt." },
+            { value: "Higher", label: "Code Quality", description: "Every change comes with tests and documentation — and still goes through a human review before merge." },
             { value: "More", label: "Focus for Engineers", description: "With routine work handled, engineers spend their time on architecture, user experience, and creative problem-solving." },
           ],
         },
@@ -819,7 +811,7 @@ const content = {
           linesChanged24h: "Lines Changed (24h)",
           commits7d: "Commits (7d)",
           linesChanged7d: "Lines Changed (7d)",
-          liveDataNote: "Live data from our GitHub organization — updated in real time",
+          liveDataNote: "Live data from my GitHub organization — updated in real time",
           chartTitle: "7-Day Activity",
           legendCommits: "Commits",
           legendLines: "Lines Changed",
@@ -827,11 +819,11 @@ const content = {
         },
         storySection: {
           chip: "AI Narrative",
-          headline: "What We Built Today",
-          description: "This story is generated live by AI based on our actual GitHub activity — a different narrative every time.",
+          headline: "What the agents built today",
+          description: "This story is generated live by AI based on my actual GitHub activity — a different narrative every time.",
           refreshButton: "New Story",
           loadingText: "AI is writing today's story...",
-          fallback: "Our agents have been busy shipping code. Check the stats above to see the numbers.",
+          fallback: "The agents have been busy shipping code. Check the stats above to see the numbers.",
         },
         cta: {
           headline: "Ready to Ship Faster?",
@@ -901,7 +893,7 @@ const content = {
           chip: "AI Tech Advisor",
           headline: { before: "Describe Your Project. ", gradient: "Get Your Stack.", after: "" },
           description:
-            "Tell us about your project requirements and our AI will recommend a complete tech stack with architecture diagrams and reasoning.",
+            "Describe your project requirements and the AI recommends a complete tech stack with architecture diagrams and reasoning.",
         },
         inputSection: {
           promptLabel: "Describe your project",
@@ -927,9 +919,9 @@ const content = {
           refiningPlaceholder: "Ask a follow-up question about the recommendations...",
         },
         cta: {
-          headline: "Want Us to Build This?",
+          headline: "Want this built for real?",
           description:
-            "Our team can turn these recommendations into reality. Let's discuss your project.",
+            "I can turn these recommendations into reality. Let's discuss your project.",
           button: "Start a Conversation",
         },
       },
@@ -957,7 +949,7 @@ const content = {
         cta: {
           headline: "Bring AI Agents to Your Project",
           description:
-            "Let our team build intelligent agents tailored to your workflows and business processes.",
+            "I build intelligent agents tailored to your workflows and business processes.",
           button: "Start a Conversation",
         },
       },
@@ -969,7 +961,7 @@ const content = {
         },
         hero: {
           chip: "Behind the Scenes",
-          headline: { before: "How Our AI ", gradient: "Actually Works", after: "" },
+          headline: { before: "How this site's AI ", gradient: "actually", after: " works" },
           description:
             "Every AI feature on this site is powered by real AWS infrastructure. Explore the architecture, services, and technical flows behind each one.",
         },
@@ -1129,7 +1121,7 @@ const content = {
             icon: "code",
             link: "/agentic-coding",
             whatItDoes:
-              "Displays real-time GitHub statistics — commits, lines changed, and a 7-day activity chart — from our organization's repositories. An AI-generated narrative summarizes the day's development activity.",
+              "Displays real-time GitHub statistics — commits, lines changed, and a 7-day activity chart — from my organization's repositories. An AI-generated narrative summarizes the day's development activity.",
             howItWorks:
               "Two Lambda functions power this feature. The stats Lambda queries the GitHub API for commit and diff data across all org repos, caching results in DynamoDB with TTL. The story Lambda takes the stats and sends them to Claude, which generates a creative narrative about the day's coding activity.",
             techFlow: [
@@ -1189,7 +1181,7 @@ const content = {
         cta: {
           headline: "Want This for Your Product?",
           description:
-            "Every feature on this site is built with the same tools and patterns we use for clients. Let's build something intelligent together.",
+            "Every feature on this site is built with the same tools and patterns I use for client projects. Let's build something intelligent together.",
           button: "Start a Conversation",
         },
       },
@@ -1209,7 +1201,7 @@ const content = {
         cta: {
           headline: "Have a Project in Mind?",
           description:
-            "Let's discuss how we can bring these ideas to life for your business.",
+            "If one of these topics matters for your business, write to me.",
           button: "Get in Touch",
         },
       },
@@ -1220,16 +1212,16 @@ const content = {
           description: "Book a free consultation for AWS Serverless, Agentic AI, or Fractional CTO services",
         },
         hero: {
-          chip: "Contact Us",
-          headline: { before: "Let's Start ", gradient: "Architecting", after: "" },
+          chip: "Contact",
+          headline: { before: "Write to me. I answer ", gradient: "myself", after: "." },
           description:
-            "Whether you need serverless architecture, AI agents, or strategic technology leadership — let's discuss how we can help.",
+            "Whether serverless architecture, AI agents, or technology leadership: tell me where you stand. I usually reply the same day.",
         },
         infoHeadline: "Get in Touch",
         socialLabel: "Follow Us",
         form: {
           headline: "Send a Message",
-          description: "Fill out the form below and we'll get back to you shortly.",
+          description: "Or use the form — it lands in the same inbox.",
           nameLabel: "Name",
           namePlaceholder: "Your name",
           emailLabel: "Email",
@@ -1247,9 +1239,9 @@ const content = {
             { value: "other", label: "Other" },
           ],
           messageLabel: "Message",
-          messagePlaceholder: "Tell us about your project or inquiry...",
+          messagePlaceholder: "Tell me about your project or inquiry...",
           submitButton: "Send Message",
-          successMessage: "Thank you for your message! We'll be in touch soon.",
+          successMessage: "Thank you! Your message is in my inbox — I'll get back to you shortly.",
         },
         faqSection: {
           chip: "FAQ",
@@ -1261,7 +1253,7 @@ const content = {
     chatWidget: {
       buttonLabel: "Ask AI",
       headline: "Ask creative-it AI",
-      placeholder: "Ask about our services, process, or team...",
+      placeholder: "Ask about services, process, or availability...",
       talkToHuman: "Talk to a human",
       poweredBy: "Powered by AWS Bedrock",
     },
@@ -1289,9 +1281,9 @@ const content = {
   // ════════════════════════════════════════════════════════════════════════════
 
   de: {
-    tagline: "Build. Grow. Matter.",
+    tagline: "Beratung für AWS Serverless & Agentic AI",
     description:
-      "Wir bauen intelligente, serverlose Lösungen auf AWS — von KI-Agenten bis Cloud-Architektur. DSGVO-konform, produktionsreif, in jedem Maßstab.",
+      "Ich baue serverlose Systeme und KI-Agenten auf AWS — DSGVO-konform und produktionsreif. Sie sprechen direkt mit dem, der die Arbeit macht.",
 
     navigation: [
       { name: "Home", href: "/de" },
@@ -1318,7 +1310,7 @@ const content = {
         slug: "aws-serverless",
         title: "AWS Serverless Architektur",
         description:
-          "Zero-Ops-Infrastruktur, die automatisch skaliert und nur kostet, was Sie nutzen. Der Serverless-Markt wächst von $28 Mrd. auf $92 Mrd. — wir helfen Ihnen, davon zu profitieren.",
+          "Zero-Ops-Infrastruktur, die automatisch skaliert und nur kostet, was Sie nutzen. Ich entwerfe event-getriebene Systeme auf Lambda, DynamoDB und API Gateway, die ab dem ersten Tag produktionsreif sind.",
         icon: "cloud",
         features: [
           "Serverless-Architektur",
@@ -1327,7 +1319,7 @@ const content = {
           "Pay-per-Use Kostenmodell",
         ],
         tagline: "Infrastruktur, die sich selbst skaliert — damit Sie sich aufs Bauen konzentrieren können.",
-        longDescription: "Serverless-Architektur eliminiert die Notwendigkeit, Server bereitzustellen, zu skalieren oder zu warten. Mit Kerndiensten wie AWS Lambda, DynamoDB und API Gateway reagieren Ihre Anwendungen in Echtzeit auf Nachfrage — skalieren von null auf Millionen Anfragen ohne manuelle Eingriffe.\n\nWir entwerfen event-driven Systeme mit Infrastructure as Code (AWS CDK), wobei jedes Deployment reproduzierbar, auditierbar und versionskontrolliert ist. Von REST-APIs bis zu Echtzeit-Datenpipelines — unsere Serverless-Architekturen sind von Tag eins produktionsreif.\n\nDas Ergebnis: niedrigere Betriebskosten, schnellere Time-to-Market und Infrastruktur, die mit Ihrem Unternehmen wächst — nicht dagegen.",
+        longDescription: "Serverless-Architektur eliminiert die Notwendigkeit, Server bereitzustellen, zu skalieren oder zu warten. Mit Kerndiensten wie AWS Lambda, DynamoDB und API Gateway reagieren Ihre Anwendungen in Echtzeit auf Nachfrage — skalieren von null auf Millionen Anfragen ohne manuelle Eingriffe.\n\nIch entwerfe event-driven Systeme mit Infrastructure as Code (AWS CDK), wobei jedes Deployment reproduzierbar, auditierbar und versionskontrolliert ist. Von REST-APIs bis zu Echtzeit-Datenpipelines — meine Serverless-Architekturen sind von Tag eins produktionsreif.\n\nDas Ergebnis: niedrigere Betriebskosten, schnellere Time-to-Market und Infrastruktur, die mit Ihrem Unternehmen wächst — nicht dagegen.",
         benefits: [
           { title: "Zero Ops Overhead", description: "Keine Server zum Patchen, Skalieren oder Überwachen. AWS verwaltet die Infrastruktur, damit Ihr Team sich auf Features konzentriert." },
           { title: "Zahlen nur bei Nutzung", description: "Keine Leerlauf-Compute-Kosten. Sie zahlen pro Anfrage und pro Millisekunde Ausführung — nicht mehr." },
@@ -1344,7 +1336,7 @@ const content = {
         slug: "agentic-ai",
         title: "Agentic AI & DSGVO-Konformität",
         description:
-          "Maßgeschneiderte KI-Agenten auf AWS Bedrock, die Workflows automatisieren und Ihr Team verstärken. Der Agentic-AI-Markt wächst von $7,8 Mrd. auf $52 Mrd. — wir bauen Lösungen, die von Tag eins EU-konform sind.",
+          "Maßgeschneiderte KI-Agenten auf AWS Bedrock, die Workflows automatisieren und Ihr Team verstärken — von Tag eins EU-konform, Ihre Daten bleiben in der EU.",
         icon: "brain",
         features: [
           "AWS Bedrock Agentenentwicklung",
@@ -1353,7 +1345,7 @@ const content = {
           "DSGVO-konformes Agentic Coding",
         ],
         tagline: "KI-Agenten, die für Sie arbeiten — nicht gegen die Compliance.",
-        longDescription: "Agentic AI geht über einfache Chatbots hinaus. Wir bauen autonome KI-Agenten auf AWS Bedrock, die Kontext verstehen, mehrstufige Aktionen planen und komplexe Workflows ausführen — und dabei Ihre Daten innerhalb der EU halten.\n\nUnsere Agenten nutzen Retrieval-Augmented Generation (RAG), um Antworten in Ihren tatsächlichen Geschäftsdaten zu verankern, Halluzinationen zu reduzieren und die Genauigkeit zu erhöhen. Kombiniert mit Human-in-the-Loop-Sicherungen erhalten Sie KI, die leistungsfähig und dennoch kontrollierbar ist.\n\nJede Lösung wird von Anfang an DSGVO-konform entworfen: Datenresidenz in der EU (dedizierte Region wie Frankfurt/eu-central-1 oder EU-weit für günstigere und schnellere Inferenz), kein Training mit Ihren Daten, vollständige Audit-Trails und eingebautes Consent-Management.",
+        longDescription: "Agentic AI geht über einfache Chatbots hinaus. Ich baue autonome KI-Agenten auf AWS Bedrock, die Kontext verstehen, mehrstufige Aktionen planen und komplexe Workflows ausführen — und dabei Ihre Daten innerhalb der EU halten.\n\nDie Agenten nutzen Retrieval-Augmented Generation (RAG), um Antworten in Ihren tatsächlichen Geschäftsdaten zu verankern, Halluzinationen zu reduzieren und die Genauigkeit zu erhöhen. Kombiniert mit Human-in-the-Loop-Sicherungen erhalten Sie KI, die leistungsfähig und dennoch kontrollierbar ist.\n\nJede Lösung wird von Anfang an DSGVO-konform entworfen: Datenresidenz in der EU (dedizierte Region wie Frankfurt/eu-central-1 oder EU-weit für günstigere und schnellere Inferenz), kein Training mit Ihren Daten, vollständige Audit-Trails und eingebautes Consent-Management.",
         benefits: [
           { title: "EU-konform by Design", description: "Alle Daten werden in AWS EU-Regionen verarbeitet. Kein Modelltraining mit Ihren Daten. Vollständige Audit-Trails und Consent-Management." },
           { title: "In Ihren Daten verankert", description: "RAG-Pipelines stellen sicher, dass KI-Antworten auf Ihren tatsächlichen Dokumenten und Wissen basieren — nicht auf generischen Trainingsdaten." },
@@ -1370,7 +1362,7 @@ const content = {
         slug: "fractional-cto",
         title: "Fractional CTO",
         description:
-          "C-Level-Technologieführung zu einem Bruchteil der Kosten. Unternehmen mit starker Tech-Führung wachsen bis zu 400% schneller — erhalten Sie 80% des Wertes bei 20% der Kosten eines Vollzeit-CTOs.",
+          "C-Level-Technologieführung zu einem Bruchteil der Kosten: Strategie, Architekturentscheidungen und Mentoring von jemandem, der seit über 30 Jahren Systeme baut — ein paar Tage im Monat statt eines Vollzeit-Gehalts.",
         icon: "ruler",
         features: [
           "Technologiestrategie & Roadmap",
@@ -1381,7 +1373,7 @@ const content = {
         tagline: "C-Level Tech-Führung ohne Vollzeit-Overhead.",
         longDescription: "Nicht jedes Unternehmen braucht einen Vollzeit-CTO — aber jedes Unternehmen braucht strategische Technologieführung. Als Ihr Fractional CTO bringe ich über 30 Jahre Engineering-Erfahrung in Ihr Führungsteam ein — flexibel und in Teilzeit.\n\nVon Technologiestrategie und Architekturentscheidungen bis zu Team-Mentoring und Vendor-Evaluation: Ich biete die Begleitung, die technische Investitionen in Geschäftsergebnisse verwandelt. Ich habe gesehen, was funktioniert und was nicht — in Startups, Scale-ups und Enterprise-Umgebungen.\n\nDas Engagement wird auf Ihre Bedürfnisse zugeschnitten: einige Tage pro Monat für laufende Beratung oder intensive Sprints für kritische Entscheidungen wie Technologiemigrationen, Team-Skalierung oder Produktarchitektur.",
         benefits: [
-          { title: "80/20-Wertversprechen", description: "Erhalten Sie 80% des Wertes eines Vollzeit-CTOs bei 20% der Kosten. Strategische Führung ohne Vollzeit-Gehalt." },
+          { title: "Senior-Beratung in Teilzeit", description: "Strategische Technologieführung an ein paar Tagen pro Monat — ohne Vollzeit-Gehalt." },
           { title: "30+ Jahre Erfahrung", description: "Tiefe Expertise in Cloud-Architektur, KI, Mobile und Enterprise-Systemen — praxiserprobt in der Produktion." },
           { title: "Flexibles Engagement", description: "Skalieren Sie die Beteiligung nach Bedarf hoch oder runter. Beratungs-Retainer oder intensive Projekt-Sprints." },
         ],
@@ -1396,7 +1388,7 @@ const content = {
         slug: "cloud-optimization",
         title: "Kostenoptimierte Cloud & KI",
         description:
-          "Reduzieren Sie Ihre Cloud-Kosten um bis zu 70% durch Right-Sizing, reservierte Kapazitäten und FinOps-Praktiken. Wir verwandeln aufgeblähte Infrastruktur in schlanke, kosteneffiziente Systeme.",
+          "Reduzieren Sie Ihre Cloud-Kosten um bis zu 70% durch Right-Sizing, reservierte Kapazitäten und FinOps-Praktiken. Ich verwandle aufgeblähte Infrastruktur in schlanke, kosteneffiziente Systeme.",
         icon: "code",
         features: [
           "AWS-Kostenanalyse & Optimierung",
@@ -1405,7 +1397,7 @@ const content = {
           "KI-Workload Kostenmanagement",
         ],
         tagline: "Cloud-Kosten um bis zu 70% senken — ohne Leistung einzubüßen.",
-        longDescription: "Die meisten Unternehmen geben 30-50% zu viel für die Cloud aus. Wir führen eine tiefgehende Kostenanalyse Ihrer AWS-Infrastruktur durch, identifizieren Verschwendung und implementieren FinOps-Praktiken, die messbare Einsparungen liefern — ohne Leistung oder Zuverlässigkeit zu opfern.\n\nUnser Ansatz kombiniert Right-Sizing, reservierte Kapazitätsplanung, Spot-Instance-Strategien und Serverless-Migration, um Leerlauf-Compute-Kosten zu eliminieren. Für KI-Workloads optimieren wir Modellauswahl, Batching-Strategien und Caching, um Inferenzkosten unter Kontrolle zu halten.\n\nJedes Engagement beginnt mit einer detaillierten Kostenanalyse und endet mit einer klaren Einsparungs-Roadmap — damit Sie genau wissen, was Sie erwartet, bevor Sie sich committen.",
+        longDescription: "Die meisten Unternehmen geben 30-50% zu viel für die Cloud aus. Ich führe eine tiefgehende Kostenanalyse Ihrer AWS-Infrastruktur durch, identifiziere Verschwendung und implementiere FinOps-Praktiken, die messbare Einsparungen liefern — ohne Leistung oder Zuverlässigkeit zu opfern.\n\nMein Ansatz kombiniert Right-Sizing, reservierte Kapazitätsplanung, Spot-Instance-Strategien und Serverless-Migration, um Leerlauf-Compute-Kosten zu eliminieren. Für KI-Workloads optimiere ich Modellauswahl, Batching-Strategien und Caching, um Inferenzkosten unter Kontrolle zu halten.\n\nJedes Engagement beginnt mit einer detaillierten Kostenanalyse und endet mit einer klaren Einsparungs-Roadmap — damit Sie genau wissen, was Sie erwartet, bevor Sie sich committen.",
         benefits: [
           { title: "40-70% Kostenreduktion", description: "Die meisten Kunden sehen dramatische Einsparungen durch Right-Sizing, reservierte Kapazitäten und Eliminierung ungenutzter Ressourcen." },
           { title: "FinOps Best Practices", description: "Implementieren Sie Kostentransparenz, Verantwortlichkeit und Optimierung als laufende Disziplinen — nicht als einmalige Fixes." },
@@ -1447,29 +1439,23 @@ const content = {
         {
           title: "Build",
           description:
-            "Wir entwerfen Serverless-Systeme und KI-Agenten, die echte Probleme lösen — keine theoretischen.",
+            "Ich entwerfe Serverless-Systeme und KI-Agenten, die echte Probleme lösen — keine theoretischen.",
         },
         {
           title: "Grow",
           description:
-            "Wir skalieren Ihre KI-Fähigkeiten und Cloud-Infrastruktur, damit Ihre Technologie mit Ihrem Unternehmen wächst.",
+            "Ich skaliere Ihre KI-Fähigkeiten und Cloud-Infrastruktur, damit Ihre Technologie mit Ihrem Unternehmen wächst.",
         },
         {
           title: "Matter",
           description:
-            "Wir liefern DSGVO-konforme Lösungen mit messbarem ROI — denn Wirkung, die man belegen kann, ist Wirkung, die zählt.",
+            "Ich liefere DSGVO-konforme Lösungen mit messbarem ROI — denn Wirkung, die man belegen kann, ist Wirkung, die zählt.",
         },
-      ],
-      stats: [
-        { value: "150+", label: "Projekte geliefert" },
-        { value: "30+", label: "Jahre Erfahrung" },
-        { value: "100%", label: "Zufriedenheitsrate" },
-        { value: "AWS", label: "& KI-zertifiziert" },
       ],
       whyChooseUs: {
         headline: "Spezialist, kein Generalist",
         description:
-          "Wir versuchen nicht, alles zu machen — wir gehen dorthin, wo es am meisten zählt. Mit creative-it bekommen Sie fokussierte AWS- und KI-Expertise, die Ergebnisse liefert.",
+          "Ich versuche nicht, alles zu machen — ich gehe bei AWS Serverless und Agentic AI in die Tiefe. Wer mit creative-it arbeitet, arbeitet mit einem Spezialisten, nicht mit einem wechselnden Team.",
         benefits: [
           {
             title: "Tiefe AWS- & KI-Expertise",
@@ -1483,7 +1469,7 @@ const content = {
           },
           {
             title: "Fraktionale Flexibilität",
-            description: "C-Level-Technologie-Expertise ohne Vollzeit-Overhead — skalieren Sie unsere Beteiligung nach Bedarf.",
+            description: "C-Level-Technologie-Expertise ohne Vollzeit-Overhead — skalieren Sie meine Beteiligung nach Bedarf.",
           },
         ],
         highlights: [
@@ -1535,25 +1521,25 @@ const content = {
         step: "01",
         title: "Entdecken",
         description:
-          "Wir tauchen tief in Ihre Herausforderungen, Ziele und Vision ein, um das Gesamtbild zu verstehen.",
+          "Ich tauche tief in Ihre Herausforderungen, Ziele und Vision ein, um das Gesamtbild zu verstehen.",
       },
       {
         step: "02",
         title: "Entwerfen",
         description:
-          "Wir entwerfen Lösungen, die auf Ihre Ziele abgestimmt sind und mit Ihrem Wachstum skalieren.",
+          "Ich entwerfe Lösungen, die auf Ihre Ziele abgestimmt sind und mit Ihrem Wachstum skalieren.",
       },
       {
         step: "03",
         title: "Entwickeln",
         description:
-          "Wir bauen mit Präzision und halten Sie bei jedem Schritt informiert und eingebunden.",
+          "Ich baue mit Präzision und halte Sie bei jedem Schritt informiert und eingebunden.",
       },
       {
         step: "04",
         title: "Ausliefern",
         description:
-          "Wir deployen, optimieren und unterstützen — für nachhaltigen Erfolg über den Launch hinaus.",
+          "Ich deploye, optimiere und unterstütze — für nachhaltigen Erfolg über den Launch hinaus.",
       },
     ],
 
@@ -1566,32 +1552,32 @@ const content = {
       {
         question: "Wie stellen Sie die DSGVO-Konformität bei KI-Lösungen sicher?",
         answer:
-          "Wir bauen auf AWS Bedrock, das Daten in der EU-Region (Frankfurt) verarbeitet und Ihre Daten nicht für Modelltraining verwendet. Alle unsere KI-Architekturen beinhalten Datenresidenz-Kontrollen, Consent-Management und Audit-Trails. Wir designen für DSGVO-Konformität von Anfang an — es ist kein Nachgedanke.",
+          "Ich baue auf AWS Bedrock, das Daten in der EU-Region (Frankfurt) verarbeitet und Ihre Daten nicht für Modelltraining verwendet. Alle meine KI-Architekturen beinhalten Datenresidenz-Kontrollen, Consent-Management und Audit-Trails. Ich entwerfe für DSGVO-Konformität von Anfang an — sie ist kein Nachgedanke.",
       },
       {
         question: "Wie sieht ein Fractional-CTO-Engagement aus?",
         answer:
-          "Ein Fractional-CTO-Engagement beginnt typischerweise mit einem Technologie-Audit und einer Strategie-Session. Danach arbeiten wir fortlaufend mit Ihnen zusammen — meist einige Tage pro Monat — zu Architekturentscheidungen, Team-Mentoring, Vendor-Evaluation und Roadmap-Planung. Sie erhalten C-Level-Expertise ohne Vollzeit-Gehalt.",
+          "Ein Fractional-CTO-Engagement beginnt typischerweise mit einem Technologie-Audit und einer Strategie-Session. Danach arbeite ich fortlaufend mit Ihnen zusammen — meist einige Tage pro Monat — zu Architekturentscheidungen, Team-Mentoring, Vendor-Evaluation und Roadmap-Planung. Sie erhalten C-Level-Expertise ohne Vollzeit-Gehalt.",
       },
       {
         question: "Wie viel kann Serverless im Vergleich zu traditioneller Infrastruktur sparen?",
         answer:
-          "Die meisten Kunden sehen 40-70% Kostenreduktion nach der Migration auf Serverless. Die Einsparungen kommen durch den Wegfall von Leerlauf-Compute-Kosten, reduzierten Betriebsaufwand und Bezahlung nur für die tatsächliche Nutzung. Wir erstellen vor jeder Migration eine detaillierte Kostenanalyse, um Ihr spezifisches Einsparpotenzial zu quantifizieren.",
+          "Die meisten Kunden sehen 40-70% Kostenreduktion nach der Migration auf Serverless. Die Einsparungen kommen durch den Wegfall von Leerlauf-Compute-Kosten, reduzierten Betriebsaufwand und Bezahlung nur für die tatsächliche Nutzung. Ich erstelle vor jeder Migration eine detaillierte Kostenanalyse, um Ihr spezifisches Einsparpotenzial zu quantifizieren.",
       },
       {
         question: "Arbeiten Sie mit internationalen Kunden?",
         answer:
-          "Ja. Wir arbeiten mit Kunden in ganz Europa und darüber hinaus, mit Erfahrung in grenzüberschreitender Daten-Compliance, Multi-Region-AWS-Deployments und verteilter Teamzusammenarbeit. Unsere DSGVO-Expertise ist besonders wertvoll für Unternehmen, die in der EU tätig sind oder dorthin verkaufen.",
+          "Ja. Ich arbeite mit Kunden in ganz Europa und darüber hinaus, mit Erfahrung in grenzüberschreitender Daten-Compliance und Multi-Region-AWS-Deployments. Meine DSGVO-Expertise ist besonders wertvoll für Unternehmen, die in der EU tätig sind oder dorthin verkaufen.",
       },
       {
         question: "Wie sieht der typische Zeitrahmen eines Engagements aus?",
         answer:
-          "Das hängt vom Umfang ab. Ein Serverless-Architektur-Review dauert 1-2 Wochen. Ein KI-Agenten-MVP typischerweise 4-8 Wochen. Eine vollständige Cloud-Migration kann 2-6 Monate umfassen. In unserem kostenlosen Beratungsgespräch erstellen wir einen Zeitplan, der auf Ihre spezifischen Bedürfnisse und Prioritäten zugeschnitten ist.",
+          "Das hängt vom Umfang ab. Ein Serverless-Architektur-Review dauert 1-2 Wochen. Ein KI-Agenten-MVP typischerweise 4-8 Wochen. Eine vollständige Cloud-Migration kann 2-6 Monate umfassen. Im kostenlosen Erstgespräch erstelle ich einen Zeitplan, der auf Ihre spezifischen Bedürfnisse und Prioritäten zugeschnitten ist.",
       },
     ],
 
     statsBanner: {
-      description: "Code-Änderungen unseres Teams von KI-Coding-Agenten",
+      description: "Code-Änderungen meiner KI-Coding-Agenten",
       last24h: "Letzte 24h",
       last7d: "Letzte 7d",
       learnMore: "Mehr über Agentic Coding",
@@ -1604,37 +1590,35 @@ const content = {
     pages: {
       home: {
         chip: "KI-Agenten · Serverless · Cloud-Architektur",
-        headline: { before: "Architektur. ", gradient: "Automatisierung.", after: " Beschleunigung." },
+        headline: { before: "KI-Agenten schreiben den Code. Ich sorge dafür, dass es der ", gradient: "richtige", after: " ist." },
         ctaPrimary: "Kostenlose Beratung buchen",
-        ctaSecondary: "Unsere Expertise entdecken",
+        ctaSecondary: "Was ich mache",
 
         servicesSection: {
-          chip: "Unsere Expertise",
-          headline: { before: "Vier Säulen der ", gradient: "technischen Exzellenz", after: "" },
+          chip: "Leistungen",
+          headline: { before: "Was ich ", gradient: "mache", after: " — und was bewusst nicht." },
           description:
-            "Von Serverless-Architektur bis zu Agentic AI liefern wir spezialisierte Lösungen, die mit Ihren Ambitionen skalieren.",
+            "Vier fokussierte Leistungen: Serverless-Architektur, KI-Agenten, Technologieführung und Cloud-Kosten. Für alles andere empfehle ich Ihnen jemanden, der es besser kann.",
           linkText: "Mehr erfahren",
         },
 
         appsSection: {
-          chip: "Unsere Apps",
-          headline: { before: "Produkte, die wir ", gradient: "entwickelt haben", after: "" },
+          chip: "Produkte",
+          headline: { before: "Produkte, die ich ", gradient: "gebaut", after: " habe" },
           description:
             "Fokussierte Tools und Anwendungen, die echte Probleme mit klarem Design und durchdachtem Engineering lösen.",
-          linkText: "Alle Apps ansehen",
-          linkUrl: "https://apps.creative.it.com",
         },
 
         philosophySection: {
-          chip: "Unsere Philosophie",
-          headline: { before: "Drei Worte.", gradient: "Unendliche Möglichkeiten.", after: "" },
-          linkText: "Über unsere Reise",
+          chip: "Philosophie",
+          headline: { before: "Der Mensch hinter ", gradient: "creative-it", after: "." },
+          linkText: "Meine Geschichte lesen",
         },
 
         cta: {
-          headline: "Bereit, Ihre nächste\nLösung zu entwerfen?",
+          headline: "Sie reden mit dem,\nder die Arbeit macht.",
           description:
-            "Lassen Sie uns besprechen, wie Serverless-Architektur und Agentic AI Ihr Unternehmen transformieren können.",
+            "Erzählen Sie mir, was Sie bauen. Ich lese jede Nachricht selbst und antworte meist noch am selben Tag.",
           button: "Beratungsgespräch vereinbaren",
         },
       },
@@ -1649,20 +1633,20 @@ const content = {
           headline: { before: "AWS Serverless & ", gradient: "Agentic AI", after: " Architekt" },
         },
         storySection: {
-          chip: "Unsere Geschichte",
-          headline: "Zwei Momente, die alles veränderten",
+          chip: "Meine Geschichte",
+          headline: "Die Domain seit 1997. Das Handwerk seit 1991.",
         },
         valuesSection: {
-          chip: "Unsere Werte",
-          headline: { before: "Build. ", gradient: "Grow.", after: " Matter." },
+          chip: "Werte",
+          headline: { before: "Drei Worte, nach denen ich ", gradient: "arbeite", after: "." },
         },
         whySection: {
-          chip: "Warum wir",
+          chip: "Warum creative-it",
         },
         cta: {
-          headline: "Gemeinsam entwerfen",
+          headline: "Schreiben Sie mir. Ich lese jede Nachricht selbst.",
           description:
-            "Bereit, mit einem Spezialisten zu arbeiten, der in Ihren Erfolg investiert? Lassen Sie uns ins Gespräch kommen.",
+            "Kein Vertriebsteam, keine Account-Manager — Ihre Nachricht landet direkt bei mir, und ich antworte meist noch am selben Tag.",
           button: "Kontakt aufnehmen",
         },
       },
@@ -1673,21 +1657,21 @@ const content = {
           description: "AWS Serverless Architektur, Agentic AI, Fractional CTO & Cloud-Kostenoptimierung",
         },
         hero: {
-          chip: "Unsere Expertise",
-          headline: { before: "Serverless- & KI-Lösungen, die ", gradient: "Ergebnisse liefern", after: "" },
+          chip: "Leistungen",
+          headline: { before: "Vier Dinge, die ich ", gradient: "gut", after: " kann." },
           description:
-            "Vier spezialisierte Säulen — von Serverless-Architektur bis Agentic AI, Fractional-CTO-Services bis Cloud-Kostenoptimierung. Tiefe Expertise, messbare Ergebnisse.",
+            "Serverless-Architektur, KI-Agenten, Fractional-CTO-Arbeit und Cloud-Kostenoptimierung. Liegt Ihr Problem außerhalb dieser vier, sage ich es Ihnen — und empfehle jemanden, der es besser kann.",
         },
         serviceButton: "Projekt besprechen",
         processSection: {
-          chip: "Unser Prozess",
-          headline: "So arbeiten wir",
-          description: "Eine bewährte Methodik, die jedes Mal Ergebnisse liefert.",
+          chip: "Prozess",
+          headline: "So arbeite ich",
+          description: "Vier Schritte, kein Theater: verstehen, entwerfen, bauen, liefern.",
         },
         cta: {
-          headline: "Bauen wir etwas Großartiges",
+          headline: "Erzählen Sie mir von Ihrem Projekt.",
           description:
-            "Bereit, Ihre Ideen in die Realität umzusetzen? Wir begleiten Sie bei jedem Schritt.",
+            "Ein kurzes Gespräch genügt, um herauszufinden, ob ich der Richtige dafür bin. Wenn nicht, sage ich es Ihnen.",
           button: "Projekt starten",
         },
       },
@@ -1699,42 +1683,42 @@ const content = {
         },
         hero: {
           chip: "Agentic Coding",
-          headline: { before: "Programmieren in ", gradient: "Gedankengeschwindigkeit", after: "" },
+          headline: { before: "Diese Seite zeigt, was KI-Agenten ", gradient: "wirklich", after: " liefern." },
           description:
-            "Wir setzen Teams von KI-Coding-Agenten ein, die Seite an Seite mit unseren Ingenieuren arbeiten — rund um die Uhr Code schreiben, reviewen und ausliefern.",
+            "Ich arbeite mit KI-Coding-Agenten, die rund um die Uhr Produktionscode schreiben, reviewen und ausliefern. Die Zahlen unten kommen live aus meiner GitHub-Organisation — nicht von einer Folie.",
         },
         whatSection: {
           chip: "Was ist das",
           headline: "KI-Agenten, die echten Code schreiben",
           description:
-            "Agentic Coding geht über Autocomplete hinaus. Autonome KI-Agenten verstehen Ihre Codebasis, planen Implementierungen, schreiben Tests und erstellen Pull Requests — genau wie ein menschlicher Entwickler. Sie übernehmen die Routinearbeit, damit unsere Ingenieure sich auf Architektur, Design und die wirklich wichtigen Probleme konzentrieren können.",
+            "Agentic Coding geht über Autocomplete hinaus. Autonome KI-Agenten verstehen Ihre Codebasis, planen Implementierungen, schreiben Tests und erstellen Pull Requests — genau wie ein menschlicher Entwickler. Sie übernehmen die Routinearbeit, damit ich mich auf Architektur, Design und die wirklich wichtigen Probleme konzentrieren kann.",
           points: [
             { title: "Autonome Ausführung", description: "Agenten planen, implementieren und verifizieren eigenständig dateiübergreifende Änderungen in ganzen Repositories." },
             { title: "Kontextbewusst", description: "Sie verstehen Ihre Projektstruktur, Coding-Konventionen und Geschäftslogik — nicht nur Syntax." },
-            { title: "Mensch im Loop", description: "Jede Änderung wird von erfahrenen Ingenieuren geprüft. Agenten beschleunigen die Auslieferung; Menschen sichern die Qualität." },
+            { title: "Mensch im Loop", description: "Jede Änderung prüfe ich selbst, bevor sie gemergt wird. Agenten beschleunigen die Auslieferung; ein Mensch sichert die Qualität." },
           ],
         },
         howSection: {
           chip: "Unser Ansatz",
           headline: "Wie creative-it Agentic Coding einsetzt",
           description:
-            "Wir integrieren KI-Agenten direkt in unseren Entwicklungsworkflow. Sie sind kein Gimmick — sie sind vollwertige Teammitglieder mit zugewiesenen Aufgaben, Code-Review-Standards und Verantwortlichkeit.",
+            "Ich integriere KI-Agenten direkt in meinen Entwicklungsworkflow. Sie sind kein Gimmick — sie sind Teammitglieder mit zugewiesenen Aufgaben, Code-Review-Standards und Verantwortlichkeit.",
           steps: [
-            { step: "01", title: "Aufgabenzuweisung", description: "Agenten erhalten klar definierte Aufgaben aus unserem Projektmanagement-System, genau wie jeder Entwickler." },
+            { step: "01", title: "Aufgabenzuweisung", description: "Agenten erhalten klar definierte Aufgaben aus meinem Projektmanagement-System, genau wie jeder Entwickler." },
             { step: "02", title: "Implementierung", description: "Agenten schreiben Code, erstellen Tests und öffnen Pull Requests mit vollständigem Kontext und Dokumentation." },
-            { step: "03", title: "Review & Merge", description: "Erfahrene Ingenieure prüfen jeden PR auf Qualität, Sicherheit und Übereinstimmung mit den Projektzielen." },
+            { step: "03", title: "Review & Merge", description: "Ich prüfe jeden PR auf Qualität, Sicherheit und Übereinstimmung mit den Projektzielen." },
             { step: "04", title: "Kontinuierliches Lernen", description: "Agenten verbessern sich mit der Zeit, indem sie Projektkonventionen und Feedback-Muster aufnehmen." },
           ],
         },
         benefitsSection: {
           chip: "Produktivitätsgewinne",
-          headline: { before: "Ergebnisse, die ", gradient: "sprechen", after: "" },
+          headline: { before: "Echte Zahlen, keine ", gradient: "Schätzungen", after: "." },
           description:
-            "Die Zahlen aus unserer Live-GitHub-Aktivität erzählen die Geschichte. Agentic Coding ist nicht theoretisch — es liefert jeden Tag Produktionscode.",
+            "Die Zahlen aus meiner Live-GitHub-Aktivität erzählen die Geschichte. Agentic Coding ist nicht theoretisch — es liefert jeden Tag Produktionscode.",
           benefits: [
             { value: "5–10x", label: "Schnellere Feature-Auslieferung", description: "Was früher eine Woche dauerte, wird an einem Tag ausgeliefert. Agenten übernehmen Boilerplate, Tests und repetitive Refactorings in Maschinengeschwindigkeit." },
             { value: "24/7", label: "Entwicklungsgeschwindigkeit", description: "Agenten schlafen nicht. Sie verarbeiten Aufgaben über Nacht, sodass Ingenieure am Morgen fertige Pull Requests vorfinden." },
-            { value: "Höhere", label: "Codequalität", description: "Jede Änderung kommt mit Tests und Dokumentation. Agenten sind von Haus aus gründlich — keine Abkürzungen, keine technischen Schulden." },
+            { value: "Höhere", label: "Codequalität", description: "Jede Änderung kommt mit Tests und Dokumentation — und geht trotzdem durch ein menschliches Review vor dem Merge." },
             { value: "Mehr", label: "Fokus für Ingenieure", description: "Da Routinearbeit erledigt wird, verbringen Ingenieure ihre Zeit mit Architektur, User Experience und kreativem Problemlösen." },
           ],
         },
@@ -1743,7 +1727,7 @@ const content = {
           linesChanged24h: "Geänderte Zeilen (24h)",
           commits7d: "Commits (7d)",
           linesChanged7d: "Geänderte Zeilen (7d)",
-          liveDataNote: "Live-Daten aus unserer GitHub-Organisation — in Echtzeit aktualisiert",
+          liveDataNote: "Live-Daten aus meiner GitHub-Organisation — in Echtzeit aktualisiert",
           chartTitle: "7-Tage-Aktivität",
           legendCommits: "Commits",
           legendLines: "Geänderte Zeilen",
@@ -1751,11 +1735,11 @@ const content = {
         },
         storySection: {
           chip: "KI-Erzählung",
-          headline: "Was wir heute gebaut haben",
-          description: "Diese Geschichte wird live von KI basierend auf unserer tatsächlichen GitHub-Aktivität generiert — jedes Mal eine andere Erzählung.",
+          headline: "Was die Agenten heute gebaut haben",
+          description: "Diese Geschichte wird live von KI basierend auf meiner tatsächlichen GitHub-Aktivität generiert — jedes Mal eine andere Erzählung.",
           refreshButton: "Neue Geschichte",
           loadingText: "KI schreibt die heutige Geschichte...",
-          fallback: "Unsere Agenten waren fleißig beim Code-Ausliefern. Schauen Sie sich die Statistiken oben an, um die Zahlen zu sehen.",
+          fallback: "Die Agenten waren fleißig beim Code-Ausliefern. Die Zahlen stehen oben.",
         },
         cta: {
           headline: "Bereit, schneller zu liefern?",
@@ -1825,7 +1809,7 @@ const content = {
           chip: "KI Tech-Berater",
           headline: { before: "Projekt beschreiben. ", gradient: "Stack erhalten.", after: "" },
           description:
-            "Erzählen Sie uns von Ihren Projektanforderungen und unsere KI empfiehlt einen kompletten Tech-Stack mit Architekturdiagrammen und Begründung.",
+            "Beschreiben Sie Ihre Projektanforderungen und die KI empfiehlt einen kompletten Tech-Stack mit Architekturdiagrammen und Begründung.",
         },
         inputSection: {
           promptLabel: "Beschreiben Sie Ihr Projekt",
@@ -1851,9 +1835,9 @@ const content = {
           refiningPlaceholder: "Stellen Sie eine Rückfrage zu den Empfehlungen...",
         },
         cta: {
-          headline: "Sollen wir das bauen?",
+          headline: "Soll ich das bauen?",
           description:
-            "Unser Team kann diese Empfehlungen in die Realität umsetzen. Lassen Sie uns Ihr Projekt besprechen.",
+            "Ich kann diese Empfehlungen in die Realität umsetzen. Lassen Sie uns Ihr Projekt besprechen.",
           button: "Gespräch starten",
         },
       },
@@ -1881,7 +1865,7 @@ const content = {
         cta: {
           headline: "KI-Agenten für Ihr Projekt",
           description:
-            "Lassen Sie unser Team intelligente Agenten bauen, die auf Ihre Workflows und Geschäftsprozesse zugeschnitten sind.",
+            "Ich baue intelligente Agenten, die auf Ihre Workflows und Geschäftsprozesse zugeschnitten sind.",
           button: "Gespräch starten",
         },
       },
@@ -1893,7 +1877,7 @@ const content = {
         },
         hero: {
           chip: "Hinter den Kulissen",
-          headline: { before: "Wie unsere KI ", gradient: "wirklich funktioniert", after: "" },
+          headline: { before: "Wie die KI dieser Website ", gradient: "wirklich", after: " funktioniert" },
           description:
             "Jedes KI-Feature auf dieser Website wird von echter AWS-Infrastruktur angetrieben. Erkunden Sie die Architektur, Services und technischen Abläufe hinter jedem einzelnen.",
         },
@@ -2053,7 +2037,7 @@ const content = {
             icon: "code",
             link: "/de/agentic-coding",
             whatItDoes:
-              "Zeigt Echtzeit-GitHub-Statistiken — Commits, geänderte Zeilen und ein 7-Tage-Aktivitätsdiagramm — aus den Repositories unserer Organisation. Eine KI-generierte Erzählung fasst die Entwicklungsaktivität des Tages zusammen.",
+              "Zeigt Echtzeit-GitHub-Statistiken — Commits, geänderte Zeilen und ein 7-Tage-Aktivitätsdiagramm — aus den Repositories meiner Organisation. Eine KI-generierte Erzählung fasst die Entwicklungsaktivität des Tages zusammen.",
             howItWorks:
               "Zwei Lambda-Funktionen treiben dieses Feature an. Das Stats-Lambda fragt die GitHub-API nach Commit- und Diff-Daten über alle Org-Repos ab und cached die Ergebnisse in DynamoDB mit TTL. Das Story-Lambda nimmt die Statistiken und sendet sie an Claude, der eine kreative Erzählung über die Coding-Aktivität des Tages generiert.",
             techFlow: [
@@ -2113,7 +2097,7 @@ const content = {
         cta: {
           headline: "Wollen Sie das für Ihr Produkt?",
           description:
-            "Jedes Feature auf dieser Website wird mit den gleichen Tools und Mustern gebaut, die wir auch für Kunden verwenden. Lassen Sie uns gemeinsam etwas Intelligentes bauen.",
+            "Jedes Feature auf dieser Website wird mit den gleichen Tools und Mustern gebaut, die ich auch für Kundenprojekte verwende. Lassen Sie uns gemeinsam etwas Intelligentes bauen.",
           button: "Gespräch starten",
         },
       },
@@ -2133,7 +2117,7 @@ const content = {
         cta: {
           headline: "Haben Sie ein Projekt im Sinn?",
           description:
-            "Lassen Sie uns besprechen, wie wir diese Ideen für Ihr Unternehmen zum Leben erwecken können.",
+            "Wenn eines dieser Themen für Ihr Unternehmen relevant ist, schreiben Sie mir.",
           button: "Kontakt aufnehmen",
         },
       },
@@ -2145,15 +2129,15 @@ const content = {
         },
         hero: {
           chip: "Kontakt",
-          headline: { before: "Fangen wir an zu ", gradient: "entwerfen", after: "" },
+          headline: { before: "Schreiben Sie mir. Ich antworte ", gradient: "selbst", after: "." },
           description:
-            "Ob Serverless-Architektur, KI-Agenten oder strategische Technologieführung — lassen Sie uns besprechen, wie wir helfen können.",
+            "Ob Serverless-Architektur, KI-Agenten oder Technologieführung: Erzählen Sie mir, wo Sie stehen. Ich antworte meist noch am selben Tag.",
         },
         infoHeadline: "Kontakt aufnehmen",
         socialLabel: "Folgen Sie uns",
         form: {
           headline: "Nachricht senden",
-          description: "Füllen Sie das untenstehende Formular aus und wir melden uns in Kürze bei Ihnen.",
+          description: "Oder nutzen Sie das Formular — es landet im selben Postfach.",
           nameLabel: "Name",
           namePlaceholder: "Ihr Name",
           emailLabel: "E-Mail",
@@ -2171,9 +2155,9 @@ const content = {
             { value: "other", label: "Sonstiges" },
           ],
           messageLabel: "Nachricht",
-          messagePlaceholder: "Erzählen Sie uns von Ihrem Projekt oder Ihrer Anfrage...",
+          messagePlaceholder: "Erzählen Sie mir von Ihrem Projekt oder Ihrer Anfrage...",
           submitButton: "Nachricht senden",
-          successMessage: "Vielen Dank für Ihre Nachricht! Wir melden uns in Kürze bei Ihnen.",
+          successMessage: "Vielen Dank! Ihre Nachricht ist in meinem Postfach — ich melde mich in Kürze.",
         },
         faqSection: {
           chip: "FAQ",
@@ -2185,7 +2169,7 @@ const content = {
     chatWidget: {
       buttonLabel: "KI fragen",
       headline: "creative-it KI fragen",
-      placeholder: "Fragen Sie nach unseren Dienstleistungen, Prozessen oder dem Team...",
+      placeholder: "Fragen Sie nach Leistungen, Prozess oder Verfügbarkeit...",
       talkToHuman: "Mit einem Menschen sprechen",
       poweredBy: "Powered by AWS Bedrock",
     },

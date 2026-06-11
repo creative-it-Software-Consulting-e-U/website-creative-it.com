@@ -155,4 +155,9 @@ jobs:
 
       - name: Deploy (preview)
         if: github.ref == 'refs/heads/dev'
-        run: vercel deploy --prebuilt --token=$VERCEL_TOKEN
+        run: |
+          DEPLOY_URL=$(vercel deploy --prebuilt --token=$VERCEL_TOKEN)
+          echo "Preview deployed: $DEPLOY_URL"
+          # Stable dev domain — only this origin is on the API's CORS
+          # allowlist, so AI features need the site served from here.
+          vercel alias set "$DEPLOY_URL" hp.gw.dev.creative-it.com --token=$VERCEL_TOKEN

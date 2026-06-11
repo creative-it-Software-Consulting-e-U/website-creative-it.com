@@ -2,7 +2,7 @@
 title: "The Rise of Agentic Coding: Moving Beyond Electron and React Native"
 brief: "I remember, about 10 years ago, we wrote our first \"mobile\" application, we bundled our web application into an iOS and Android wrapper and were proud like gods! It was actually a nightmare as we were using BLE and other native functionality, but it was still better than writing our own native implementation of the web-based UI."
 publishedAt: 2026-01-27
-coverImage: https://raw.githubusercontent.com/creative-it-Software-Consulting-e-U/public-content-assets/main/assets/blog/2026-01-27-rise-of-agentic-coding-no-frameworks/must-code-now.jpg
+coverImage: "/blog-covers/the-rise-of-agentic-coding-moving-beyond-electron-.jpg"
 readTimeInMinutes: 3
 tags:
   - claude-code

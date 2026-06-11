@@ -1,0 +1,29 @@
+# creative-it
+
+> creative-it Software Consulting e.U. — AWS Serverless & Agentic AI consulting
+> by Günther Wieser, based in Gösing am Wagram, Austria. One specialist, not an
+> agency: serverless architecture, AI agents on AWS Bedrock (GDPR-compliant),
+> fractional CTO work, and cloud cost optimization.
+
+The site is bilingual: English at the root, German under /de/.
+
+## Services
+
+- [Services overview](https://www.creative-it.com/services/): the four services with scope and deliverables
+- [AWS Serverless Architecture](https://www.creative-it.com/services/aws-serverless/)
+- [Agentic AI & GDPR Compliance](https://www.creative-it.com/services/agentic-ai/)
+- [Fractional CTO](https://www.creative-it.com/services/fractional-cto/)
+- [Cost-Optimized Cloud & AI](https://www.creative-it.com/services/cloud-optimization/)
+
+## Background
+
+- [About](https://www.creative-it.com/about/): who runs creative-it (founder story, since 1997)
+- [Agentic Coding](https://www.creative-it.com/agentic-coding/): live GitHub statistics of AI coding agents shipping production code
+- [How It Works](https://www.creative-it.com/how-it-works/): architecture behind the site's AI features (AWS Bedrock, Lambda, DynamoDB)
+- [Blog](https://www.creative-it.com/blog/): articles on agentic coding, serverless, and GDPR-compliant AI
+- [RSS feed](https://www.creative-it.com/rss.xml)
+
+## Contact
+
+- [Contact](https://www.creative-it.com/contact/): email info@creative-it.com, phone +43-660-4943737
+- [Legal notice](https://www.creative-it.com/legal/)

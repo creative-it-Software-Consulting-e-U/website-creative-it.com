@@ -13,26 +13,45 @@ interface Props {
   title?: string;
   description?: string;
   locale?: Locale;
+  /** 'article' for blog posts; defaults to 'website' */
+  ogType?: string;
+  /** Absolute or root-relative URL overriding the default OG image */
+  ogImage?: string;
+  publishedTime?: Date;
+  modifiedTime?: Date;
+  /** Suppress hreflang alternates for pages without a translated counterpart */
+  noHreflang?: boolean;
 }
 
-const { title, description, locale: propLocale } = Astro.props;
+const {
+  title,
+  description,
+  locale: propLocale,
+  ogType = 'website',
+  ogImage,
+  publishedTime,
+  modifiedTime,
+  noHreflang = false,
+} = Astro.props;
 const locale = (propLocale || Astro.currentLocale || 'en') as Locale;
 const config = t(locale);
 const pageTitle = title ? `${title} | ${config.name}` : `${config.name} — ${config.tagline}`;
 const pageDescription = description || config.description;
-const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://creative-it.com').href;
+const siteBase = Astro.site || 'https://www.creative-it.com';
+const canonicalURL = new URL(Astro.url.pathname, siteBase).href;
+const ogImageURL = new URL(ogImage || '/og-image.png', siteBase).href;
 
-const hreflangAlternates = getHreflangAlternates(Astro.url.pathname);
+const hreflangAlternates = noHreflang ? [] : getHreflangAlternates(Astro.url.pathname);
 const ogLocale = locale === 'de' ? 'de_AT' : 'en_US';
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
-  "@id": "https://creative-it.com/#organization",
+  "@id": "https://www.creative-it.com/#organization",
   name: "creative-it Software Consulting e.U.",
   description: config.description,
-  url: "https://creative-it.com",
-  logo: "https://creative-it.com/favicon.png",
+  url: "https://www.creative-it.com",
+  logo: "https://www.creative-it.com/logo-only.webp",
   telephone: config.contact.phone,
   email: config.contact.email,
   founder: {
@@ -70,23 +89,27 @@ const jsonLd = {
     <meta name="generator" content={Astro.generator} />
 
     {hreflangAlternates.map((alt) => (
-      <link rel="alternate" hreflang={alt.hreflang} href={new URL(alt.href, Astro.site || 'https://creative-it.com').href} />
+      <link rel="alternate" hreflang={alt.hreflang} href={new URL(alt.href, siteBase).href} />
     ))}
+
+    <link rel="alternate" type="application/rss+xml" title="creative-it Blog" href="/rss.xml" />
 
     <!-- Open Graph -->
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDescription} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:url" content={canonicalURL} />
-    <meta property="og:image" content={new URL('/og-image.png', Astro.site || 'https://creative-it.com').href} />
+    <meta property="og:image" content={ogImageURL} />
     <meta property="og:locale" content={ogLocale} />
     <meta property="og:site_name" content={config.name} />
+    {publishedTime && <meta property="article:published_time" content={publishedTime.toISOString()} />}
+    {modifiedTime && <meta property="article:modified_time" content={modifiedTime.toISOString()} />}
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={pageDescription} />
-    <meta name="twitter:image" content={new URL('/og-image.png', Astro.site || 'https://creative-it.com').href} />
+    <meta name="twitter:image" content={ogImageURL} />
 
     <!-- JSON-LD Structured Data -->
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

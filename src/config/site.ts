@@ -208,10 +208,9 @@ const shared = {
           ],
         },
         {
-          title: "8. Google Fonts",
+          title: "8. Web Fonts",
           paragraphs: [
-            "This website uses Google Fonts by Google LLC (1600 Amphitheatre Parkway, Mountain View, CA 94043, USA) for consistent font display. When loading the page, fonts are retrieved from Google servers (fonts.googleapis.com, fonts.gstatic.com), during which your IP address is transmitted to Google.",
-            "The legal basis is our legitimate interest in an appealing presentation (Art. 6(1)(f) GDPR). Google is certified under the EU-US Data Privacy Framework.",
+            "This website uses the web fonts Newsreader, IBM Plex Sans, and IBM Plex Mono for consistent font display. All fonts are self-hosted and delivered directly from this website's server. No connection to third-party font services (such as Google Fonts) is established, and no data is transmitted to font providers.",
           ],
         },
         {
@@ -223,7 +222,7 @@ const shared = {
         {
           title: "10. Data Transfers to Third Countries",
           paragraphs: [
-            "Some of our service providers are based in the USA: Vercel Inc. (hosting) and Google LLC (Google Fonts). Data transfers are based on the EU-US Data Privacy Framework (Art. 45 GDPR) or Standard Contractual Clauses (Art. 46(2)(c) GDPR).",
+            "Our hosting provider Vercel Inc. is based in the USA. Data transfers are based on the EU-US Data Privacy Framework (Art. 45 GDPR) or Standard Contractual Clauses (Art. 46(2)(c) GDPR).",
             "AWS services (Bedrock, DynamoDB, SES) are operated in the EU region (Frankfurt).",
           ],
         },
@@ -312,10 +311,9 @@ const shared = {
           ],
         },
         {
-          title: "8. Google Fonts",
+          title: "8. Webfonts",
           paragraphs: [
-            "Diese Website verwendet Google Fonts der Google LLC (1600 Amphitheatre Parkway, Mountain View, CA 94043, USA) zur einheitlichen Darstellung von Schriftarten. Beim Laden der Seite werden Schriftarten von Google-Servern (fonts.googleapis.com, fonts.gstatic.com) abgerufen, wobei Ihre IP-Adresse an Google übermittelt wird.",
-            "Rechtsgrundlage ist unser berechtigtes Interesse an einer ansprechenden Darstellung (Art. 6 Abs. 1 lit. f DSGVO). Google ist unter dem EU-US Data Privacy Framework zertifiziert.",
+            "Diese Website verwendet die Schriftarten Newsreader, IBM Plex Sans und IBM Plex Mono zur einheitlichen Darstellung. Alle Schriftarten werden lokal gehostet und direkt vom Server dieser Website ausgeliefert. Es wird keine Verbindung zu Schriftdiensten Dritter (etwa Google Fonts) aufgebaut und es werden keine Daten an Schriftanbieter übermittelt.",
           ],
         },
         {
@@ -327,7 +325,7 @@ const shared = {
         {
           title: "10. Datenweitergabe an Drittländer",
           paragraphs: [
-            "Einige unserer Dienstleister haben ihren Sitz in den USA: Vercel Inc. (Hosting) und Google LLC (Google Fonts). Die Datenübermittlung erfolgt auf Grundlage des EU-US Data Privacy Frameworks (Art. 45 DSGVO) bzw. Standardvertragsklauseln (Art. 46 Abs. 2 lit. c DSGVO).",
+            "Unser Hosting-Anbieter Vercel Inc. hat seinen Sitz in den USA. Die Datenübermittlung erfolgt auf Grundlage des EU-US Data Privacy Frameworks (Art. 45 DSGVO) bzw. Standardvertragsklauseln (Art. 46 Abs. 2 lit. c DSGVO).",
             "AWS-Dienste (Bedrock, DynamoDB, SES) werden in der Region EU (Frankfurt) betrieben.",
           ],
         },
@@ -371,22 +369,22 @@ const content = {
 
     navigation: [
       { name: "Home", href: "/" },
-      { name: "Services", href: "/services", children: [
-        { name: "Overview", href: "/services" },
-        { name: "AWS Serverless", href: "/services/aws-serverless" },
-        { name: "Agentic AI", href: "/services/agentic-ai" },
-        { name: "Fractional CTO", href: "/services/fractional-cto" },
-        { name: "Cloud Optimization", href: "/services/cloud-optimization" },
+      { name: "Services", href: "/services/", children: [
+        { name: "Overview", href: "/services/" },
+        { name: "AWS Serverless", href: "/services/aws-serverless/" },
+        { name: "Agentic AI", href: "/services/agentic-ai/" },
+        { name: "Fractional CTO", href: "/services/fractional-cto/" },
+        { name: "Cloud Optimization", href: "/services/cloud-optimization/" },
       ]},
-      { name: "About", href: "/about" },
+      { name: "About", href: "/about/" },
       { name: "AI Lab", href: "#", children: [
-        { name: "AI Playground", href: "/ai-playground" },
-        { name: "Tech Advisor", href: "/tech-advisor" },
-        { name: "AI Agents", href: "/ai-agents" },
-        { name: "How It Works", href: "/how-it-works" },
+        { name: "AI Playground", href: "/ai-playground/" },
+        { name: "Tech Advisor", href: "/tech-advisor/" },
+        { name: "AI Agents", href: "/ai-agents/" },
+        { name: "How It Works", href: "/how-it-works/" },
       ]},
-      { name: "Blog", href: "/blog" },
-      { name: "Contact", href: "/contact" },
+      { name: "Blog", href: "/blog/" },
+      { name: "Contact", href: "/contact/" },
     ],
 
     services: [
@@ -1286,23 +1284,23 @@ const content = {
       "Ich baue serverlose Systeme und KI-Agenten auf AWS — DSGVO-konform und produktionsreif. Sie sprechen direkt mit dem, der die Arbeit macht.",
 
     navigation: [
-      { name: "Home", href: "/de" },
-      { name: "Services", href: "/de/services", children: [
-        { name: "Übersicht", href: "/de/services" },
-        { name: "AWS Serverless", href: "/de/services/aws-serverless" },
-        { name: "Agentic AI", href: "/de/services/agentic-ai" },
-        { name: "Fractional CTO", href: "/de/services/fractional-cto" },
-        { name: "Cloud-Optimierung", href: "/de/services/cloud-optimization" },
+      { name: "Home", href: "/de/" },
+      { name: "Services", href: "/de/services/", children: [
+        { name: "Übersicht", href: "/de/services/" },
+        { name: "AWS Serverless", href: "/de/services/aws-serverless/" },
+        { name: "Agentic AI", href: "/de/services/agentic-ai/" },
+        { name: "Fractional CTO", href: "/de/services/fractional-cto/" },
+        { name: "Cloud-Optimierung", href: "/de/services/cloud-optimization/" },
       ]},
-      { name: "Über uns", href: "/de/about" },
+      { name: "Über uns", href: "/de/about/" },
       { name: "KI-Labor", href: "#", children: [
-        { name: "AI Playground", href: "/de/ai-playground" },
-        { name: "Tech-Berater", href: "/de/tech-advisor" },
-        { name: "KI-Agenten", href: "/de/ai-agents" },
-        { name: "Technologie", href: "/de/how-it-works" },
+        { name: "AI Playground", href: "/de/ai-playground/" },
+        { name: "Tech-Berater", href: "/de/tech-advisor/" },
+        { name: "KI-Agenten", href: "/de/ai-agents/" },
+        { name: "Technologie", href: "/de/how-it-works/" },
       ]},
-      { name: "Blog", href: "/de/blog" },
-      { name: "Kontakt", href: "/de/contact" },
+      { name: "Blog", href: "/de/blog/" },
+      { name: "Kontakt", href: "/de/contact/" },
     ],
 
     services: [

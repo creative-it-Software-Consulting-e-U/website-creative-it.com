@@ -40,25 +40,32 @@ export function getAlternateLocale(locale: Locale): Locale {
   return locale === 'en' ? 'de' : 'en';
 }
 
+/** Canonical URLs end with a trailing slash (build.format 'directory'). */
+function ensureTrailingSlash(path: string): string {
+  return path.endsWith('/') ? path : `${path}/`;
+}
+
 /**
  * Build a locale-aware path.
  * EN paths have no prefix; DE paths get /de prefix.
+ * Always returns the canonical trailing-slash variant.
  */
 export function localePath(path: string, locale: Locale): string {
   const { base, suffix } = splitPathAndSuffix(path);
   const englishRoute = toEnglishRoute(base);
 
-  if (locale === 'en') return `${englishRoute}${suffix}`;
+  if (locale === 'en') return `${ensureTrailingSlash(englishRoute)}${suffix}`;
 
   const specialRoute = SPECIAL_ROUTES.find((route) => route.en === englishRoute);
-  if (specialRoute) return `${specialRoute.de}${suffix}`;
+  if (specialRoute) return `${ensureTrailingSlash(specialRoute.de)}${suffix}`;
 
-  return `${englishRoute === '/' ? '/de' : `/de${englishRoute}`}${suffix}`;
+  return `${ensureTrailingSlash(englishRoute === '/' ? '/de' : `/de${englishRoute}`)}${suffix}`;
 }
 
 /**
  * Generate hreflang alternate link data for the current page.
  * Returns entries for both locales + x-default (pointing to EN).
+ * URLs match the canonical trailing-slash variant.
  */
 export function getHreflangAlternates(pathname: string) {
   const enPath = localePath(pathname, 'en');

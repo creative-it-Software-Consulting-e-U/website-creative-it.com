@@ -2,7 +2,7 @@
 title: "Agentic Coding: Your Code Is Getting Worse Because…"
 brief: "…you're NOT using it. People ask me a lot if code quality has declined since I switched fully to agentic coding. Spoiler: it's the opposite. Let me tell you why."
 publishedAt: 2026-02-14
-coverImage: "https://raw.githubusercontent.com/creative-it-Software-Consulting-e-U/public-content-assets/main/assets/blog/2026-02-14-refactoring/refactoring-wtf.jpg"
+coverImage: "/blog-covers/agentic-coding-your-code-is-getting-worse-because.jpg"
 readTimeInMinutes: 3
 tags:
   - AI

@@ -2,7 +2,7 @@
 title: "Ensuring GDPR Compliance for Your OpenClaw AI Agent"
 brief: "Running OpenClaw in a business context? Here's how to make your entire inference pipeline GDPR-compliant using AWS Bedrock and EU Inference Profiles — with concrete IAM policies and config snippets."
 publishedAt: 2026-02-20
-coverImage: "https://raw.githubusercontent.com/creative-it-Software-Consulting-e-U/public-content-assets/main/assets/blog/2026-02-20-openclaw-gdpr-bedrock/openclaw-gdpr-bedrock.jpg"
+coverImage: "/blog-covers/ensuring-gdpr-compliance-for-your-openclaw-ai-agen.jpg"
 readTimeInMinutes: 5
 tags:
   - GDPR

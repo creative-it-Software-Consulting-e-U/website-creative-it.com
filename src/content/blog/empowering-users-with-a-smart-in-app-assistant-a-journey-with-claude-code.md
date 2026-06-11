@@ -2,7 +2,7 @@
 title: "Empowering Users with a Smart In-App Assistant: A Journey with Claude Code"
 brief: "Today, I worked on GeoHook, and what I achieved within an hour of coding using Claude Code is truly impressive. The first feature was adding BLE-support for triggering webhooks - what that means is that a specific BLE devices has to be near the phone when the trigger fires, or the webhook won't be called."
 publishedAt: 2026-01-30
-coverImage: "https://cdn.hashnode.com/res/hashnode/image/upload/v1769746014054/8b7ed9de-5cd3-4901-afa4-0878b6b89217.png"
+coverImage: "/blog-covers/empowering-users-with-a-smart-in-app-assistant-a-j.jpg"
 readTimeInMinutes: 4
 tags:
   - ClaudeCode

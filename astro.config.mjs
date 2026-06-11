@@ -7,7 +7,12 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://creative-it.com',
+  site: 'https://www.creative-it.com',
+  trailingSlash: 'always',
+
+  prefetch: {
+    prefetchAll: true,
+  },
 
   i18n: {
     defaultLocale: 'en',

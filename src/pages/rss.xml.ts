@@ -16,7 +16,7 @@ export async function GET(context: APIContext) {
       title: post.data.title,
       description: post.data.brief,
       pubDate: post.data.publishedAt,
-      link: `/blog/${post.id.replace(/\.md$/, '')}/`,
+      link: `/blog/${post.id}/`,
     })),
     customData: '<language>en</language>',
   });

@@ -27,7 +27,7 @@ function formatDate(date: Date): string {
 }
 
 function postUrl(post: { id: string }): string {
-  return `/blog/${post.id.replace(/\.md$/, "")}/`;
+  return `/blog/${post.id}/`;
 }
 
 // JSON-LD Blog schema
@@ -46,7 +46,7 @@ const blogSchema = {
     "@type": "BlogPosting",
     headline: post.data.title,
     description: post.data.brief,
-    url: `https://www.creative-it.com/blog/${post.id.replace(/\.md$/, "")}/`,
+    url: `https://www.creative-it.com/blog/${post.id}/`,
     datePublished: post.data.publishedAt.toISOString(),
     ...(post.data.coverImage && { image: post.data.coverImage }),
     author: {

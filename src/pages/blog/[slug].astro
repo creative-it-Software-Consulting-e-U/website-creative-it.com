@@ -8,13 +8,13 @@ import { siteConfig } from "../../config/site";
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
   return posts.map((post) => ({
-    params: { slug: post.id.replace(/\.md$/, "") },
+    params: { slug: post.id },
     props: { post },
   }));
 }
 
 const { post } = Astro.props;
-const slug = post.id.replace(/\.md$/, "");
+const slug = post.id;
 const { Content } = await render(post);
 
 const linkedService = post.data.service

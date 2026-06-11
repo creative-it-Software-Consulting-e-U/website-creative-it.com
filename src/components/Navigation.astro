@@ -22,7 +22,7 @@ const isActive = (item: { href: string; children?: { href: string }[] }) =>
   item.children?.some(child => currentPath === child.href);
 ---
 
-<header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-transparent" id="nav-header">
+<header class="fixed top-0 left-0 right-0 z-50 bg-paper border-b border-rule" id="nav-header">
   <nav class="max-w-7xl mx-auto px-6 lg:px-8">
     <div class="flex justify-between items-center h-16 lg:h-20">
       <!-- Logo -->
@@ -39,38 +39,36 @@ const isActive = (item: { href: string; children?: { href: string }[] }) =>
       </a>
 
       <!-- Desktop Navigation -->
-      <ul class="hidden lg:flex items-center gap-3 xl:gap-5">
-        {config.navigation.map((item) => (
-          <li class={item.children ? "relative group" : ""}>
+      <ul class="hidden lg:flex items-center gap-5 xl:gap-7">
+        {config.navigation.map((item, index) => (
+          <li class={item.children ? "relative" : ""} data-nav-dropdown={item.children ? "" : undefined}>
             {item.children ? (
               <>
-                <span
+                <button
+                  type="button"
+                  aria-expanded="false"
+                  aria-controls={`nav-dropdown-${index}`}
                   class:list={[
-                    "relative text-xs xl:text-sm font-medium transition-colors duration-200 whitespace-nowrap inline-flex items-center gap-1 cursor-default",
-                    isActive(item)
-                      ? "text-off-white"
-                      : "text-text-muted group-hover:text-off-white",
+                    "nav-dropdown-toggle font-mono text-[0.8125rem] uppercase tracking-[0.08em] transition-colors duration-150 whitespace-nowrap inline-flex items-center gap-1.5 cursor-pointer",
+                    isActive(item) ? "text-rubric" : "text-graphite hover:text-ink",
                   ]}
                 >
                   {item.name}
-                  <svg class="w-3 h-3 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="nav-dropdown-chevron w-3 h-3 transition-transform duration-150" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                   </svg>
-                  {isActive(item) && (
-                    <span class="absolute -bottom-1 left-0 w-full h-0.5 bg-rubric rounded-full"></span>
-                  )}
-                </span>
-                <div class="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 translate-y-1 group-hover:translate-y-0">
-                  <ul class="bg-surface border border-ink/10 rounded-xl py-2 px-1 min-w-[180px] shadow-xl shadow-black/10">
+                </button>
+                <div id={`nav-dropdown-${index}`} class="nav-dropdown-panel absolute top-full left-0 pt-3 hidden">
+                  <ul class="bg-paper border border-rule min-w-[230px] py-1.5 shadow-[0_8px_24px_rgba(28,27,26,0.08)]">
                     {item.children.map((child) => (
                       <li>
                         <a
                           href={child.href}
                           class:list={[
-                            "block px-4 py-2 text-sm rounded-lg transition-colors duration-150",
+                            "block px-4 py-2 font-mono text-[0.8125rem] uppercase tracking-[0.06em] transition-colors duration-150",
                             currentPath === child.href
-                              ? "text-off-white bg-ink/5"
-                              : "text-text-muted hover:text-off-white hover:bg-ink/5",
+                              ? "text-rubric"
+                              : "text-graphite hover:text-ink hover:bg-ink/[0.03]",
                           ]}
                         >
                           {child.name}
@@ -84,16 +82,11 @@ const isActive = (item: { href: string; children?: { href: string }[] }) =>
               <a
                 href={item.href}
                 class:list={[
-                  "relative text-xs xl:text-sm font-medium transition-colors duration-200 whitespace-nowrap",
-                  currentPath === item.href
-                    ? "text-off-white"
-                    : "text-text-muted hover:text-off-white",
+                  "font-mono text-[0.8125rem] uppercase tracking-[0.08em] transition-colors duration-150 whitespace-nowrap",
+                  currentPath === item.href ? "text-rubric" : "text-graphite hover:text-ink",
                 ]}
               >
                 {item.name}
-                {currentPath === item.href && (
-                  <span class="absolute -bottom-1 left-0 w-full h-0.5 bg-rubric rounded-full"></span>
-                )}
               </a>
             )}
           </li>
@@ -101,16 +94,15 @@ const isActive = (item: { href: string; children?: { href: string }[] }) =>
       </ul>
 
       <!-- Language Switcher + CTA (Desktop) -->
-      <div class="hidden lg:flex items-center gap-4">
+      <div class="hidden lg:flex items-center gap-5">
         <a
           href={switchPath}
-          class="lang-switch flex items-center gap-1.5 text-sm font-medium text-text-muted hover:text-off-white transition-colors duration-200"
+          class="lang-switch font-mono text-[0.8125rem] uppercase tracking-[0.08em] text-graphite hover:text-ink transition-colors duration-150"
           title={altLocale === 'de' ? 'Auf Deutsch wechseln' : 'Switch to English'}
         >
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3" /></svg>
           {switchLabel}
         </a>
-        <a href={contactPath} class="btn-glow text-sm">
+        <a href={contactPath} class="btn-glow text-sm !py-2.5 !px-5">
           {ctaLabel}
         </a>
       </div>
@@ -122,9 +114,9 @@ const isActive = (item: { href: string; children?: { href: string }[] }) =>
         aria-label="Toggle menu"
         aria-expanded="false"
       >
-        <span class="hamburger-line w-6 h-0.5 bg-off-white transition-all duration-300 origin-center"></span>
-        <span class="hamburger-line w-6 h-0.5 bg-off-white transition-all duration-300"></span>
-        <span class="hamburger-line w-6 h-0.5 bg-off-white transition-all duration-300 origin-center"></span>
+        <span class="hamburger-line w-6 h-0.5 bg-ink transition-all duration-300 origin-center"></span>
+        <span class="hamburger-line w-6 h-0.5 bg-ink transition-all duration-300"></span>
+        <span class="hamburger-line w-6 h-0.5 bg-ink transition-all duration-300 origin-center"></span>
       </button>
     </div>
   </nav>
@@ -132,28 +124,27 @@ const isActive = (item: { href: string; children?: { href: string }[] }) =>
   <!-- Mobile Menu -->
   <div
     id="mobile-menu"
-    class="lg:hidden fixed inset-0 bg-navy opacity-0 invisible pointer-events-none transition-all duration-500 flex items-center justify-center"
+    class="lg:hidden fixed inset-0 bg-paper opacity-0 invisible pointer-events-none transition-all duration-300 flex items-center justify-center"
   >
     <nav class="text-center">
-      <ul class="space-y-8">
+      <ul class="space-y-7">
         {config.navigation.map((item, index) => (
           <li
             class="mobile-nav-item opacity-0 translate-y-4"
-            style={`transition-delay: ${index * 100}ms`}
+            style={`transition-delay: ${index * 75}ms`}
           >
             {item.children ? (
               <>
                 <button
                   class:list={[
                     "mobile-dropdown-toggle heading-lg text-4xl sm:text-5xl transition-colors duration-300 inline-flex items-center gap-2",
-                    isActive(item)
-                      ? "gradient-text"
-                      : "text-off-white hover:text-purple",
+                    isActive(item) ? "text-rubric italic" : "text-ink",
                   ]}
                   data-dropdown={`mobile-dropdown-${index}`}
+                  aria-expanded="false"
                 >
                   {item.name}
-                  <svg class="w-6 h-6 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="w-6 h-6 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
@@ -164,15 +155,13 @@ const isActive = (item: { href: string; children?: { href: string }[] }) =>
                   {item.children.map((child, childIndex) => (
                     <li
                       class="opacity-0 translate-y-2 transition-all duration-300"
-                      style={`transition-delay: ${childIndex * 75}ms`}
+                      style={`transition-delay: ${childIndex * 50}ms`}
                     >
                       <a
                         href={child.href}
                         class:list={[
-                          "text-xl sm:text-2xl transition-colors duration-300",
-                          currentPath === child.href
-                            ? "gradient-text"
-                            : "text-text-muted hover:text-off-white",
+                          "font-mono text-base uppercase tracking-[0.06em] transition-colors duration-300",
+                          currentPath === child.href ? "text-rubric" : "text-graphite hover:text-ink",
                         ]}
                       >
                         {child.name}
@@ -186,9 +175,7 @@ const isActive = (item: { href: string; children?: { href: string }[] }) =>
                 href={item.href}
                 class:list={[
                   "heading-lg text-4xl sm:text-5xl transition-colors duration-300",
-                  currentPath === item.href
-                    ? "gradient-text"
-                    : "text-off-white hover:text-purple",
+                  currentPath === item.href ? "text-rubric italic" : "text-ink",
                 ]}
               >
                 {item.name}
@@ -198,17 +185,16 @@ const isActive = (item: { href: string; children?: { href: string }[] }) =>
         ))}
       </ul>
 
-      <div class="mt-8 mobile-nav-item opacity-0 translate-y-4" style={`transition-delay: ${config.navigation.length * 100}ms`}>
+      <div class="mt-8 mobile-nav-item opacity-0 translate-y-4" style={`transition-delay: ${config.navigation.length * 75}ms`}>
         <a
           href={switchPath}
-          class="lang-switch inline-flex items-center gap-2 text-lg text-text-muted hover:text-off-white transition-colors duration-200"
+          class="lang-switch inline-flex items-center gap-2 font-mono text-sm uppercase tracking-[0.08em] text-graphite hover:text-ink transition-colors duration-200"
         >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3" /></svg>
           {altLocale === 'de' ? 'Deutsch' : 'English'}
         </a>
       </div>
 
-      <div class="mt-6 mobile-nav-item opacity-0 translate-y-4" style={`transition-delay: ${(config.navigation.length + 1) * 100}ms`}>
+      <div class="mt-6 mobile-nav-item opacity-0 translate-y-4" style={`transition-delay: ${(config.navigation.length + 1) * 75}ms`}>
         <a href={contactPath} class="btn-glow">
           {ctaLabel}
         </a>
@@ -221,22 +207,56 @@ const isActive = (item: { href: string; children?: { href: string }[] }) =>
 <div class="h-16 lg:h-20"></div>
 
 <script>
-  const header = document.getElementById('nav-header');
   const button = document.getElementById('mobile-menu-button');
   const menu = document.getElementById('mobile-menu');
   const hamburgerLines = button?.querySelectorAll('.hamburger-line');
   const mobileNavItems = document.querySelectorAll('.mobile-nav-item');
   let isOpen = false;
 
-  window.addEventListener('scroll', () => {
-    const currentScroll = window.scrollY;
+  // Desktop dropdowns — click to open (keyboard accessible), close on
+  // outside click or Escape. Only one open at a time.
+  const dropdownToggles = document.querySelectorAll<HTMLButtonElement>('.nav-dropdown-toggle');
 
-    if (currentScroll > 50) {
-      header?.classList.add('bg-navy/95', 'border-ink/5');
-      header?.classList.remove('border-transparent');
-    } else {
-      header?.classList.remove('bg-navy/95', 'border-ink/5');
-      header?.classList.add('border-transparent');
+  function closeDropdown(toggle: HTMLButtonElement) {
+    const panel = document.getElementById(toggle.getAttribute('aria-controls') || '');
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.querySelector('.nav-dropdown-chevron')?.classList.remove('rotate-180');
+    panel?.classList.add('hidden');
+  }
+
+  function closeAllDropdowns() {
+    dropdownToggles.forEach(closeDropdown);
+  }
+
+  dropdownToggles.forEach((toggle) => {
+    toggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const wasOpen = toggle.getAttribute('aria-expanded') === 'true';
+      closeAllDropdowns();
+      if (!wasOpen) {
+        const panel = document.getElementById(toggle.getAttribute('aria-controls') || '');
+        toggle.setAttribute('aria-expanded', 'true');
+        toggle.querySelector('.nav-dropdown-chevron')?.classList.add('rotate-180');
+        panel?.classList.remove('hidden');
+      }
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!(e.target as Element)?.closest('[data-nav-dropdown]')) {
+      closeAllDropdowns();
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const openToggle = Array.from(dropdownToggles).find(
+        (t) => t.getAttribute('aria-expanded') === 'true'
+      );
+      if (openToggle) {
+        closeAllDropdowns();
+        openToggle.focus();
+      }
     }
   });
 
@@ -259,7 +279,7 @@ const isActive = (item: { href: string; children?: { href: string }[] }) =>
         setTimeout(() => {
           item.classList.remove('opacity-0', 'translate-y-4');
           item.classList.add('opacity-100', 'translate-y-0');
-        }, index * 100);
+        }, index * 75);
       });
     } else {
       menu?.classList.add('opacity-0', 'invisible', 'pointer-events-none');
@@ -286,8 +306,9 @@ const isActive = (item: { href: string; children?: { href: string }[] }) =>
           li.classList.remove('opacity-100', 'translate-y-0');
         });
       });
-      document.querySelectorAll('.mobile-dropdown-toggle svg').forEach(svg => {
-        svg.classList.remove('rotate-180');
+      document.querySelectorAll('.mobile-dropdown-toggle').forEach(t => {
+        t.setAttribute('aria-expanded', 'false');
+        t.querySelector('svg')?.classList.remove('rotate-180');
       });
     }
   });
@@ -302,6 +323,7 @@ const isActive = (item: { href: string; children?: { href: string }[] }) =>
 
       const isExpanded = dropdown.classList.contains('max-h-96');
       const chevron = toggle.querySelector('svg');
+      toggle.setAttribute('aria-expanded', (!isExpanded).toString());
 
       if (isExpanded) {
         dropdown.classList.remove('max-h-96');
@@ -319,7 +341,7 @@ const isActive = (item: { href: string; children?: { href: string }[] }) =>
           setTimeout(() => {
             li.classList.remove('opacity-0', 'translate-y-2');
             li.classList.add('opacity-100', 'translate-y-0');
-          }, i * 75);
+          }, i * 50);
         });
       }
     });
@@ -378,6 +400,6 @@ const isActive = (item: { href: string; children?: { href: string }[] }) =>
 
 <style>
   .mobile-nav-item {
-    transition: opacity 0.5s ease, transform 0.5s ease;
+    transition: opacity 0.4s ease, transform 0.4s ease;
   }
 </style>

@@ -10,6 +10,7 @@
   },
   "overrides": {
     "vite": "^7.3.2",
+    "esbuild": "^0.28.1",
     "@vercel/routing-utils": {
       "path-to-regexp": "6.3.0"
     },

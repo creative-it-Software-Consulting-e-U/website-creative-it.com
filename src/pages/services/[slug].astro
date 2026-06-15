@@ -27,7 +27,7 @@ const serviceSchema = {
 };
 ---
 
-<Layout title={`${service.title} | creative-it`} description={service.description}>
+<Layout title={service.title} description={service.description}>
   <Breadcrumbs
     items={[
       { name: "Services", href: localePath("/services", "en") },

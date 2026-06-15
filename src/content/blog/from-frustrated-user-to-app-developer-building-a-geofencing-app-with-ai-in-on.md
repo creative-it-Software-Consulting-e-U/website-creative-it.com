@@ -2,6 +2,7 @@
 title: "From Frustrated User to App Developer: Building a Geofencing App with AI in One Weekend"
 brief: "I always wanted to set this up in my home automation: when we arrive home after dark, I want the lights on my driveway and parking space to be lit already. Sounds easy, right? It isn't. We have a driveway surrounded by neighbours and nature — neither in our ownership — so there's no chance to install motion detectors."
 publishedAt: 2026-02-12
+metaDescription: "How I built GeoHook — a geofencing app that triggers home-automation webhooks — in one weekend with agentic AI coding, from frustrated user to shipped app."
 coverImage: "/blog-covers/from-frustrated-user-to-app-developer-building-a-g.webp"
 readTimeInMinutes: 4
 tags:

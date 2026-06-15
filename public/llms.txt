@@ -1,29 +1,47 @@
 # creative-it
 
-> creative-it Software Consulting e.U. — AWS Serverless & Agentic AI consulting
-> by Günther Wieser, based in Gösing am Wagram, Austria. One specialist, not an
-> agency: serverless architecture, AI agents on AWS Bedrock (GDPR-compliant),
-> fractional CTO work, and cloud cost optimization.
-
-The site is bilingual: English at the root, German under /de/.
+> creative-it Software Consulting e.U. is an AWS Serverless and Agentic AI
+> consultancy run by Günther Wieser, based in Gösing am Wagram, Austria.
+> One specialist, not an agency: serverless architecture on AWS Lambda,
+> DynamoDB and API Gateway; GDPR-compliant AI agents on AWS Bedrock;
+> fractional CTO work; and cloud cost optimization. Nearly 35 years of
+> software development experience. The site is bilingual: English at the
+> root, German under /de/.
 
 ## Services
 
 - [Services overview](https://www.creative-it.com/services/): the four services with scope and deliverables
-- [AWS Serverless Architecture](https://www.creative-it.com/services/aws-serverless/)
-- [Agentic AI & GDPR Compliance](https://www.creative-it.com/services/agentic-ai/)
-- [Fractional CTO](https://www.creative-it.com/services/fractional-cto/)
-- [Cost-Optimized Cloud & AI](https://www.creative-it.com/services/cloud-optimization/)
+- [AWS Serverless Architecture](https://www.creative-it.com/services/aws-serverless/): event-driven systems on Lambda, DynamoDB and API Gateway — zero-ops, production-ready
+- [Agentic AI & GDPR Compliance](https://www.creative-it.com/services/agentic-ai/): custom AI agents on AWS Bedrock with EU data residency, GDPR-compliant by design
+- [Fractional CTO](https://www.creative-it.com/services/fractional-cto/): C-level technology strategy and architecture for a few days per month
+- [Cost-Optimized Cloud & AI](https://www.creative-it.com/services/cloud-optimization/): FinOps, right-sizing and reserved capacity — typical savings 40–70%
 
-## Background
+## Background & Proof
 
-- [About](https://www.creative-it.com/about/): who runs creative-it (founder story, since 1997)
-- [Agentic Coding](https://www.creative-it.com/agentic-coding/): live GitHub statistics of AI coding agents shipping production code
-- [How It Works](https://www.creative-it.com/how-it-works/): architecture behind the site's AI features (AWS Bedrock, Lambda, DynamoDB)
-- [Blog](https://www.creative-it.com/blog/): articles on agentic coding, serverless, and GDPR-compliant AI
+- [About Günther Wieser](https://www.creative-it.com/about/): founder story — software since 1991, this company since 1997, serverless since 2016, agentic coding since 2025
+- [Agentic Coding (live stats)](https://www.creative-it.com/agentic-coding/): real GitHub metrics of AI coding agents shipping production code at creative-it
+- [How the site's AI works](https://www.creative-it.com/how-it-works/): architecture behind the site's own AI features (AWS Bedrock, Lambda, DynamoDB, RAG)
+- [Tech Stack Advisor](https://www.creative-it.com/tech-advisor/): AI tool that recommends an AWS architecture for your project
+- [AI Agent Visualizer](https://www.creative-it.com/ai-agents/): interactive demo of multi-phase agentic reasoning on AWS Bedrock
+
+## Blog
+
+- [Agentic Coding: Your Code Is Getting Worse Because…](https://www.creative-it.com/blog/agentic-coding-your-code-is-getting-worse-because/) (2026-02-14): why agentic coding improves code quality rather than degrading it
+- [Ensuring GDPR Compliance for Your OpenClaw AI Agent](https://www.creative-it.com/blog/ensuring-gdpr-compliance-for-your-openclaw-ai-agent/) (2026-02-20): AWS Bedrock EU Inference Profiles, IAM policies and data residency for GDPR-compliant AI
+- [Empowering Users with a Smart In-App Assistant](https://www.creative-it.com/blog/empowering-users-with-a-smart-in-app-assistant-a-journey-with-claude-code/) (2026-01-30): building a RAG-backed in-app assistant with AWS Bedrock
+- [From Frustrated User to App Developer](https://www.creative-it.com/blog/from-frustrated-user-to-app-developer-building-a-geofencing-app-with-ai-in-on/) (2026-02-12): an agentic coding case study — the GeoHook geofencing app
+- [The Rise of Agentic Coding](https://www.creative-it.com/blog/the-rise-of-agentic-coding-moving-beyond-electron-and-react-native/) (2026-01-27): why agentic coding changes cross-platform development economics
+- [Blog index](https://www.creative-it.com/blog/): all articles on agentic coding, AWS serverless and GDPR-compliant AI
 - [RSS feed](https://www.creative-it.com/rss.xml)
 
-## Contact
+## Contact & Identity
 
 - [Contact](https://www.creative-it.com/contact/): email info@creative-it.com, phone +43-660-4943737
+- [LinkedIn](https://www.linkedin.com/company/35435836): company page
+- [GitHub](https://github.com/orgs/creative-it-Software-Consulting-e-U/): organization and agentic coding activity
+- [X / Twitter](https://x.com/creative_it_at): @creative_it_at
 - [Legal notice](https://www.creative-it.com/legal/)
+
+## Optional
+
+- [German version](https://www.creative-it.com/de/): full German version of every page

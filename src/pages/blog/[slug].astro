@@ -17,6 +17,10 @@ const { post } = Astro.props;
 const slug = post.id;
 const { Content } = await render(post);
 
+const metaDescription = post.data.metaDescription ?? post.data.brief;
+const postUrl = `https://www.creative-it.com/blog/${slug}/`;
+const modified = post.data.updatedAt ?? post.data.publishedAt;
+
 const linkedService = post.data.service
   ? siteConfig.services.find((s) => s.slug === post.data.service)
   : null;
@@ -33,23 +37,37 @@ function formatDate(date: Date): string {
 const postSchema = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
+  "@id": postUrl,
   headline: post.data.title,
-  description: post.data.brief,
-  url: `https://www.creative-it.com/blog/${slug}/`,
+  description: metaDescription,
+  url: postUrl,
+  mainEntityOfPage: { "@type": "WebPage", "@id": postUrl },
+  inLanguage: "en",
   datePublished: post.data.publishedAt.toISOString(),
-  ...(post.data.coverImage && { image: post.data.coverImage }),
+  dateModified: modified.toISOString(),
+  ...(post.data.tags.length > 0 && { keywords: post.data.tags.join(", ") }),
+  ...(post.data.coverImage && {
+    image: {
+      "@type": "ImageObject",
+      url: `https://www.creative-it.com${post.data.coverImage}`,
+    },
+  }),
   author: {
     "@type": "Person",
+    "@id": "https://www.creative-it.com/#person",
     name: "Günther Wieser",
     url: "https://www.creative-it.com/about/",
   },
   publisher: {
     "@type": "Organization",
+    "@id": "https://www.creative-it.com/#organization",
     name: "creative-it Software Consulting e.U.",
-    url: "https://www.creative-it.com",
+    url: "https://www.creative-it.com/",
     logo: {
       "@type": "ImageObject",
       url: "https://www.creative-it.com/logo-only.webp",
+      width: 504,
+      height: 548,
     },
   },
 };
@@ -57,10 +75,11 @@ const postSchema = {
 
 <Layout
   title={post.data.title}
-  description={post.data.brief}
+  description={metaDescription}
   ogType="article"
   ogImage={post.data.coverImage || undefined}
   publishedTime={post.data.publishedAt}
+  modifiedTime={modified}
   noHreflang
 >
   <Breadcrumbs
@@ -85,11 +104,12 @@ const postSchema = {
             alt={post.data.title}
             class="w-full h-auto"
             loading="eager"
+            fetchpriority="high"
           />
         </div>
       )}
 
-      <div class="flex items-center gap-3 text-sm text-text-muted mb-4">
+      <div class="flex flex-wrap items-center gap-3 text-sm text-text-muted mb-4">
         <time datetime={post.data.publishedAt.toISOString().slice(0, 10)}>
           {formatDate(post.data.publishedAt)}
         </time>
@@ -99,6 +119,8 @@ const postSchema = {
             <span>{post.data.readTimeInMinutes} min read</span>
           </>
         )}
+        <span class="w-1 h-1 rounded-full bg-text-muted"></span>
+        <span>By <a href="/about/" class="text-text-secondary hover:text-cyan transition-colors underline underline-offset-2">Günther Wieser</a></span>
       </div>
 
       <h1 class="heading-xl text-4xl lg:text-5xl text-off-white mb-6">

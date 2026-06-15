@@ -26,6 +26,19 @@ const serviceSchema = {
   })),
 };
 
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: config.faq.map((item) => ({
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: item.answer,
+    },
+  })),
+};
+
 const serviceAnchor = (title: string) =>
   title.toLowerCase().replace(/[\s-]+/g, '-').replace(/[^a-z0-9-]/g, '');
 ---
@@ -33,6 +46,7 @@ const serviceAnchor = (title: string) =>
 <Layout title={p.meta.title} description={p.meta.description}>
   <Breadcrumbs items={[{ name: p.meta.title }]} locale={locale} />
   <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
 
   <!-- Hero -->
   <section class="relative py-16 lg:py-24">

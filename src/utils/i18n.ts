@@ -54,6 +54,12 @@ export function localePath(path: string, locale: Locale): string {
   const { base, suffix } = splitPathAndSuffix(path);
   const englishRoute = toEnglishRoute(base);
 
+  // Blog posts have no German translation. Point the DE language switcher at the
+  // blog index instead of constructing a /de/blog/<slug>/ URL that 404s.
+  if (locale === 'de' && englishRoute.startsWith('/blog/')) {
+    return ensureTrailingSlash('/de/blog');
+  }
+
   if (locale === 'en') return `${ensureTrailingSlash(englishRoute)}${suffix}`;
 
   const specialRoute = SPECIAL_ROUTES.find((route) => route.en === englishRoute);

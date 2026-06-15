@@ -2,6 +2,7 @@
 title: "Empowering Users with a Smart In-App Assistant: A Journey with Claude Code"
 brief: "Today, I worked on GeoHook, and what I achieved within an hour of coding using Claude Code is truly impressive. The first feature was adding BLE-support for triggering webhooks - what that means is that a specific BLE devices has to be near the phone when the trigger fires, or the webhook won't be called."
 publishedAt: 2026-01-30
+metaDescription: "Building a smart, RAG-backed in-app assistant for GeoHook with Claude Code on AWS Bedrock — from idea to a working feature in about an hour."
 coverImage: "/blog-covers/empowering-users-with-a-smart-in-app-assistant-a-j.jpg"
 readTimeInMinutes: 4
 tags:

@@ -22,7 +22,7 @@ const why = config.about.whyChooseUs;
             <span>{p.hero.chip}</span>
           </div>
           <h1 class="heading-xl text-5xl lg:text-6xl text-ink mb-8 animate-fade-in-up opacity-0" style="animation-delay: 0.2s; animation-fill-mode: forwards;">
-            Hi!
+            {locale === 'de' ? 'Hi, ich bin Günther Wieser.' : "Hi, I'm Günther Wieser."}
           </h1>
           <div class="space-y-5 max-w-[68ch] animate-fade-in-up opacity-0" style="animation-delay: 0.3s; animation-fill-mode: forwards;">
             {config.about.essenz.map((paragraph: string) => (

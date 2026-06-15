@@ -2,6 +2,7 @@
 title: "Agentic Coding: Your Code Is Getting Worse Because…"
 brief: "…you're NOT using it. People ask me a lot if code quality has declined since I switched fully to agentic coding. Spoiler: it's the opposite. Let me tell you why."
 publishedAt: 2026-02-14
+metaDescription: "People ask if my code quality dropped since I went all-in on agentic coding. The opposite is true — here's why agentic coding makes code better, not worse."
 coverImage: "/blog-covers/agentic-coding-your-code-is-getting-worse-because.jpg"
 readTimeInMinutes: 3
 tags:

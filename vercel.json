@@ -7,8 +7,8 @@
       "destination": "https://www.creative-it.com/:path",
       "permanent": true
     },
-    { "source": "/legal/de", "destination": "/de/legal/", "permanent": true },
-    { "source": "/privacy/de", "destination": "/de/privacy/", "permanent": true }
+    { "source": "/legal/de/", "destination": "/de/legal/", "permanent": true },
+    { "source": "/privacy/de/", "destination": "/de/privacy/", "permanent": true }
   ],
   "headers": [
     {

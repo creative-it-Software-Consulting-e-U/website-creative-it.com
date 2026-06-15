@@ -102,6 +102,8 @@ const postSchema = {
           <img
             src={post.data.coverImage}
             alt={post.data.title}
+            width={post.data.coverWidth}
+            height={post.data.coverHeight}
             class="w-full h-auto"
             loading="eager"
             fetchpriority="high"

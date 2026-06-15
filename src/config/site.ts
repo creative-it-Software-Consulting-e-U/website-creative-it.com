@@ -41,7 +41,7 @@ const shared = {
       chip: "Legal Notice",
       headline: { before: "Legal ", gradient: "Notice", after: "" },
       switchLabel: "Auf Deutsch lesen",
-      switchHref: "/legal/de",
+      switchHref: "/de/legal/",
       sections: [
         {
           title: "Information according to E-Commerce Act (ECG) and Media Act",
@@ -142,7 +142,7 @@ const shared = {
         },
         {
           title: "Datenschutz",
-          content: "Ausführliche Informationen zur Verarbeitung personenbezogener Daten auf dieser Website finden Sie in unserer vollständigen Datenschutzerklärung unter /privacy/de.",
+          content: "Ausführliche Informationen zur Verarbeitung personenbezogener Daten auf dieser Website finden Sie in unserer vollständigen Datenschutzerklärung unter /de/privacy/.",
           items: [],
         },
       ],
@@ -158,7 +158,7 @@ const shared = {
       chip: "Privacy Policy",
       headline: { before: "Privacy ", gradient: "Policy", after: "" },
       switchLabel: "Auf Deutsch lesen",
-      switchHref: "/privacy/de",
+      switchHref: "/de/privacy/",
       lastUpdated: "February 2025",
       sections: [
         {
@@ -401,6 +401,7 @@ const content = {
           "Pay-per-use cost model",
         ],
         tagline: "Infrastructure that scales itself — so you can focus on building.",
+        definition: "AWS serverless architecture runs your application without provisioning or managing servers. Compute happens in AWS Lambda functions that start on demand, data lives in managed services like DynamoDB, and traffic flows through API Gateway — each scaling automatically from zero to millions of requests and billed only for what you actually use. I design these systems event-driven and define every resource as code with the AWS CDK, so deployments are reproducible and auditable. It fits teams that want production-grade APIs, data pipelines, or integrations without the cost and overhead of always-on servers, and that value fast iteration over managing infrastructure.",
         longDescription: "Serverless architecture eliminates the need to provision, scale, or maintain servers. With core services like AWS Lambda, DynamoDB, and API Gateway, your applications respond to demand in real time — scaling from zero to millions of requests without manual intervention.\n\nI design event-driven systems using Infrastructure as Code (AWS CDK), ensuring every deployment is reproducible, auditable, and version-controlled. From REST APIs to real-time data pipelines, my serverless architectures are built for production from day one.\n\nThe result: lower operational costs, faster time to market, and infrastructure that grows with your business — not against it.",
         benefits: [
           { title: "Zero Ops Overhead", description: "No servers to patch, scale, or monitor. AWS handles the infrastructure so your team focuses on features." },
@@ -427,6 +428,7 @@ const content = {
           "GDPR-compliant Agentic Coding",
         ],
         tagline: "AI agents that work for you — not against compliance.",
+        definition: "An AI agent is software that perceives context, plans multiple steps, and carries out a task on its own — well beyond a single chatbot reply. I build agents on AWS Bedrock that ground their answers in your own documents through retrieval-augmented generation (RAG), keep a human in the loop for critical decisions, and run entirely within the EU. Every architecture is GDPR-compliant by design: inference stays in EU regions, your data is never used to train models, and audit trails and consent handling are built in. It suits companies that want to automate document-heavy or knowledge-heavy workflows without sending data outside the EU.",
         longDescription: "Agentic AI goes beyond simple chatbots. I build autonomous AI agents on AWS Bedrock that understand context, plan multi-step actions, and execute complex workflows — all while keeping your data within the EU.\n\nThe agents leverage Retrieval-Augmented Generation (RAG) to ground responses in your actual business data, reducing hallucinations and increasing accuracy. Combined with human-in-the-loop safeguards, you get AI that's powerful yet controllable.\n\nEvery solution is architected with GDPR compliance from the start: data residency in the EU (dedicated region like Frankfurt/eu-central-1, or across EU regions for cheaper and faster inference), no training on your data, full audit trails, and consent management built in.",
         benefits: [
           { title: "EU-Compliant by Design", description: "All data processed in AWS EU regions. No model training on your data. Full audit trails and consent management." },
@@ -453,6 +455,7 @@ const content = {
           "Vendor evaluation & due diligence",
         ],
         tagline: "C-level tech leadership without the full-time overhead.",
+        definition: "A fractional CTO is an experienced technology leader who works with you a few days a month instead of as a full-time hire. I help founders and teams make the architecture decisions that are expensive to get wrong: choosing a tech stack, designing for scale and cost, setting up cloud and security foundations, evaluating vendors, and mentoring engineers. You get senior, hands-on judgement — drawn from decades of building production systems — without the cost of a full-time C-level salary. It fits early-stage startups without a CTO, and growing teams that need senior direction for a specific phase or decision.",
         longDescription: "Not every company needs a full-time CTO — but every company needs strategic technology leadership. As your Fractional CTO, I bring 30+ years of engineering experience to your leadership team on a flexible, part-time basis.\n\nFrom technology strategy and architecture decisions to team mentoring and vendor evaluation, I provide the guidance that turns technical investments into business outcomes. I've seen what works and what doesn't — across startups, scale-ups, and enterprise environments.\n\nThe engagement is tailored to your needs: a few days per month for ongoing advisory, or intensive sprints for critical decisions like technology migrations, team scaling, or product architecture.",
         benefits: [
           { title: "Senior Advice, Part-Time", description: "Strategic technology leadership a few days per month — without the full-time salary." },
@@ -479,6 +482,7 @@ const content = {
           "AI workload cost management",
         ],
         tagline: "Cut cloud costs by up to 70% — without cutting capabilities.",
+        definition: "Cloud cost optimization is the practice of cutting your AWS bill without cutting capability. I review where the money actually goes, then right-size compute, move idle or over-provisioned resources to pay-per-use or reserved models, and apply FinOps practices so cost stays visible and under control as you grow. For AI and serverless workloads I also tune model tiers, inference regions, and data-access patterns that quietly drive spend. The work starts with a concrete assessment of your current architecture and usage, so every change is measured against real numbers rather than guesswork. It fits teams whose cloud bill is growing faster than their usage.",
         longDescription: "Most companies overspend on cloud by 30-50%. I perform a deep cost analysis of your AWS infrastructure, identify waste, and implement FinOps practices that deliver measurable savings — without sacrificing performance or reliability.\n\nMy approach combines right-sizing, reserved capacity planning, spot instance strategies, and serverless migration to eliminate idle compute costs. For AI workloads, I optimize model selection, batching strategies, and caching to keep inference costs under control.\n\nEvery engagement starts with a detailed cost analysis and ends with a clear savings roadmap — so you know exactly what to expect before committing.",
         benefits: [
           { title: "40-70% Cost Reduction", description: "Most clients see dramatic savings through right-sizing, reserved capacity, and eliminating idle resources." },
@@ -1319,6 +1323,7 @@ const content = {
           "Pay-per-Use Kostenmodell",
         ],
         tagline: "Infrastruktur, die sich selbst skaliert — damit Sie sich aufs Bauen konzentrieren können.",
+        definition: "AWS-Serverless-Architektur betreibt Ihre Anwendung, ohne dass Sie Server bereitstellen oder warten. Die Rechenlast läuft in AWS-Lambda-Funktionen, die bei Bedarf starten, Daten liegen in verwalteten Diensten wie DynamoDB, und der Traffic läuft über das API Gateway — alles skaliert automatisch von null bis zu Millionen Anfragen und wird nur nach tatsächlicher Nutzung abgerechnet. Ich entwerfe diese Systeme ereignisgesteuert und definiere jede Ressource als Code mit dem AWS CDK, sodass Deployments reproduzierbar und nachvollziehbar sind. Das passt zu Teams, die produktionsreife APIs, Datenpipelines oder Integrationen wollen — ohne die Kosten und den Aufwand dauerhaft laufender Server.",
         longDescription: "Serverless-Architektur eliminiert die Notwendigkeit, Server bereitzustellen, zu skalieren oder zu warten. Mit Kerndiensten wie AWS Lambda, DynamoDB und API Gateway reagieren Ihre Anwendungen in Echtzeit auf Nachfrage — skalieren von null auf Millionen Anfragen ohne manuelle Eingriffe.\n\nIch entwerfe event-driven Systeme mit Infrastructure as Code (AWS CDK), wobei jedes Deployment reproduzierbar, auditierbar und versionskontrolliert ist. Von REST-APIs bis zu Echtzeit-Datenpipelines — meine Serverless-Architekturen sind von Tag eins produktionsreif.\n\nDas Ergebnis: niedrigere Betriebskosten, schnellere Time-to-Market und Infrastruktur, die mit Ihrem Unternehmen wächst — nicht dagegen.",
         benefits: [
           { title: "Zero Ops Overhead", description: "Keine Server zum Patchen, Skalieren oder Überwachen. AWS verwaltet die Infrastruktur, damit Ihr Team sich auf Features konzentriert." },
@@ -1345,6 +1350,7 @@ const content = {
           "DSGVO-konformes Agentic Coding",
         ],
         tagline: "KI-Agenten, die für Sie arbeiten — nicht gegen die Compliance.",
+        definition: "Ein KI-Agent ist Software, die Kontext erfasst, mehrere Schritte plant und eine Aufgabe selbstständig ausführt — weit mehr als eine einzelne Chatbot-Antwort. Ich baue Agenten auf AWS Bedrock, die ihre Antworten über Retrieval-Augmented Generation (RAG) in Ihren eigenen Dokumenten verankern, bei kritischen Entscheidungen den Menschen einbinden und vollständig innerhalb der EU laufen. Jede Architektur ist DSGVO-konform konzipiert: Die Inferenz bleibt in EU-Regionen, Ihre Daten werden nicht zum Training verwendet, und Audit-Trails sowie Einwilligungsverwaltung sind eingebaut. Das eignet sich für Unternehmen, die dokumenten- oder wissensintensive Abläufe automatisieren wollen, ohne Daten aus der EU zu geben.",
         longDescription: "Agentic AI geht über einfache Chatbots hinaus. Ich baue autonome KI-Agenten auf AWS Bedrock, die Kontext verstehen, mehrstufige Aktionen planen und komplexe Workflows ausführen — und dabei Ihre Daten innerhalb der EU halten.\n\nDie Agenten nutzen Retrieval-Augmented Generation (RAG), um Antworten in Ihren tatsächlichen Geschäftsdaten zu verankern, Halluzinationen zu reduzieren und die Genauigkeit zu erhöhen. Kombiniert mit Human-in-the-Loop-Sicherungen erhalten Sie KI, die leistungsfähig und dennoch kontrollierbar ist.\n\nJede Lösung wird von Anfang an DSGVO-konform entworfen: Datenresidenz in der EU (dedizierte Region wie Frankfurt/eu-central-1 oder EU-weit für günstigere und schnellere Inferenz), kein Training mit Ihren Daten, vollständige Audit-Trails und eingebautes Consent-Management.",
         benefits: [
           { title: "EU-konform by Design", description: "Alle Daten werden in AWS EU-Regionen verarbeitet. Kein Modelltraining mit Ihren Daten. Vollständige Audit-Trails und Consent-Management." },
@@ -1371,6 +1377,7 @@ const content = {
           "Vendor-Evaluation & Due Diligence",
         ],
         tagline: "C-Level Tech-Führung ohne Vollzeit-Overhead.",
+        definition: "Ein Fractional CTO ist eine erfahrene technische Leitung, die einige Tage im Monat mit Ihnen arbeitet statt in Vollzeit. Ich helfe Gründerinnen und Teams bei den Architekturentscheidungen, deren Fehler später teuer werden: Tech-Stack-Wahl, Auslegung auf Skalierung und Kosten, Cloud- und Security-Grundlagen, Anbieterbewertung und Mentoring von Entwicklern. Sie bekommen erfahrenes, praxisnahes Urteilsvermögen aus Jahrzehnten im Bau von Produktivsystemen — ohne ein volles C-Level-Gehalt. Das passt zu frühphasigen Startups ohne CTO und zu wachsenden Teams, die für eine bestimmte Phase oder Entscheidung erfahrene Orientierung brauchen.",
         longDescription: "Nicht jedes Unternehmen braucht einen Vollzeit-CTO — aber jedes Unternehmen braucht strategische Technologieführung. Als Ihr Fractional CTO bringe ich über 30 Jahre Engineering-Erfahrung in Ihr Führungsteam ein — flexibel und in Teilzeit.\n\nVon Technologiestrategie und Architekturentscheidungen bis zu Team-Mentoring und Vendor-Evaluation: Ich biete die Begleitung, die technische Investitionen in Geschäftsergebnisse verwandelt. Ich habe gesehen, was funktioniert und was nicht — in Startups, Scale-ups und Enterprise-Umgebungen.\n\nDas Engagement wird auf Ihre Bedürfnisse zugeschnitten: einige Tage pro Monat für laufende Beratung oder intensive Sprints für kritische Entscheidungen wie Technologiemigrationen, Team-Skalierung oder Produktarchitektur.",
         benefits: [
           { title: "Senior-Beratung in Teilzeit", description: "Strategische Technologieführung an ein paar Tagen pro Monat — ohne Vollzeit-Gehalt." },
@@ -1397,6 +1404,7 @@ const content = {
           "KI-Workload Kostenmanagement",
         ],
         tagline: "Cloud-Kosten um bis zu 70% senken — ohne Leistung einzubüßen.",
+        definition: "Cloud-Kostenoptimierung senkt Ihre AWS-Rechnung, ohne Leistung zu streichen. Ich schaue nach, wohin das Geld tatsächlich fließt, passe dann die Rechenkapazität richtig an, überführe ungenutzte oder überdimensionierte Ressourcen in nutzungsbasierte oder reservierte Modelle und etabliere FinOps-Praktiken, damit Kosten sichtbar und steuerbar bleiben, während Sie wachsen. Bei KI- und Serverless-Workloads optimiere ich zusätzlich Modellstufen, Inferenz-Regionen und Datenzugriffsmuster, die im Stillen die Kosten treiben. Die Arbeit beginnt mit einer konkreten Analyse Ihrer aktuellen Architektur und Nutzung, sodass jede Änderung an echten Zahlen gemessen wird — nicht an Vermutungen. Das passt zu Teams, deren Cloud-Rechnung schneller wächst als ihre Nutzung.",
         longDescription: "Die meisten Unternehmen geben 30-50% zu viel für die Cloud aus. Ich führe eine tiefgehende Kostenanalyse Ihrer AWS-Infrastruktur durch, identifiziere Verschwendung und implementiere FinOps-Praktiken, die messbare Einsparungen liefern — ohne Leistung oder Zuverlässigkeit zu opfern.\n\nMein Ansatz kombiniert Right-Sizing, reservierte Kapazitätsplanung, Spot-Instance-Strategien und Serverless-Migration, um Leerlauf-Compute-Kosten zu eliminieren. Für KI-Workloads optimiere ich Modellauswahl, Batching-Strategien und Caching, um Inferenzkosten unter Kontrolle zu halten.\n\nJedes Engagement beginnt mit einer detaillierten Kostenanalyse und endet mit einer klaren Einsparungs-Roadmap — damit Sie genau wissen, was Sie erwartet, bevor Sie sich committen.",
         benefits: [
           { title: "40-70% Kostenreduktion", description: "Die meisten Kunden sehen dramatische Einsparungen durch Right-Sizing, reservierte Kapazitäten und Eliminierung ungenutzter Ressourcen." },

@@ -1,8 +1,8 @@
 import type { Locale } from '../config/site';
 
 const SPECIAL_ROUTES = [
-  { en: '/legal', de: '/legal/de' },
-  { en: '/privacy', de: '/privacy/de' },
+  { en: '/legal', de: '/de/legal' },
+  { en: '/privacy', de: '/de/privacy' },
 ] as const;
 
 function normalizePath(path: string): string {

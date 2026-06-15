@@ -30,6 +30,21 @@ try {
   // Fall back to build date for all URLs if the blog dir can't be read.
 }
 
+// Lazy-load + async-decode all markdown body images (they are below the fold).
+function rehypeLazyImages() {
+  return (tree) => {
+    const visit = (node) => {
+      if (node.type === 'element' && node.tagName === 'img') {
+        node.properties = node.properties || {};
+        if (!node.properties.loading) node.properties.loading = 'lazy';
+        if (!node.properties.decoding) node.properties.decoding = 'async';
+      }
+      if (node.children) node.children.forEach(visit);
+    };
+    visit(tree);
+  };
+}
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://www.creative-it.com',
@@ -52,6 +67,7 @@ export default defineConfig({
       theme: 'github-dark',
       wrap: true,
     },
+    rehypePlugins: [rehypeLazyImages],
   },
 
   vite: {

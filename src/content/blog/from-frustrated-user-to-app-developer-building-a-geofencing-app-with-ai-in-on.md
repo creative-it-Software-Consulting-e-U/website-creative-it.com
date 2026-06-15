@@ -4,6 +4,8 @@ brief: "I always wanted to set this up in my home automation: when we arrive hom
 publishedAt: 2026-02-12
 metaDescription: "How I built GeoHook — a geofencing app that triggers home-automation webhooks — in one weekend with agentic AI coding, from frustrated user to shipped app."
 coverImage: "/blog-covers/from-frustrated-user-to-app-developer-building-a-g.webp"
+coverWidth: 1200
+coverHeight: 630
 readTimeInMinutes: 4
 tags:
   - iOS

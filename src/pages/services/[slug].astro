@@ -16,14 +16,22 @@ const { service } = Astro.props;
 const serviceSchema = {
   "@context": "https://schema.org",
   "@type": "Service",
+  "@id": `https://www.creative-it.com/services/${service.slug}/#service`,
   name: service.title,
   description: service.description,
   url: `https://www.creative-it.com/services/${service.slug}/`,
-  provider: {
-    "@type": "Organization",
-    name: "creative-it Software Consulting e.U.",
-    url: "https://www.creative-it.com",
-  },
+  areaServed: ["AT", "DE", "EU"],
+  provider: { "@id": "https://www.creative-it.com/#organization" },
+};
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: siteConfig.faq.map((item) => ({
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: { "@type": "Answer", text: item.answer },
+  })),
 };
 ---
 
@@ -36,6 +44,7 @@ const serviceSchema = {
     locale="en"
   />
   <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
 
   <!-- Hero -->
   <section class="relative py-20 lg:py-32 overflow-hidden">
@@ -68,6 +77,16 @@ const serviceSchema = {
         <p class="text-lg text-text-secondary leading-relaxed animate-fade-in-up opacity-0" style="animation-delay: 0.3s; animation-fill-mode: forwards;">
           {service.description}
         </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Definition — self-contained, AI-citable answer -->
+  <section class="py-12 lg:py-16">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl reveal">
+        <h2 class="heading-md text-2xl lg:text-3xl text-off-white mb-5">What is {service.title}?</h2>
+        <p class="text-text-secondary text-lg leading-relaxed">{service.definition}</p>
       </div>
     </div>
   </section>
@@ -134,6 +153,37 @@ const serviceSchema = {
             <div class="flex items-start gap-4">
               <div class="w-2 h-2 rounded-full bg-purple mt-2.5 flex-shrink-0"></div>
               <span class="text-text-secondary text-lg">{useCase}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Proof — real production product -->
+  <section class="py-16 lg:py-24">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl reveal">
+        <h2 class="heading-lg text-3xl lg:text-4xl text-off-white mb-6">Proof, not just promises</h2>
+        <p class="text-text-secondary text-lg leading-relaxed">
+          I run my own products on the same AWS serverless stack I build for clients.
+          <a href="https://geohook.creative-it.com" target="_blank" rel="noopener noreferrer" class="text-cyan hover:text-cyan-bright underline underline-offset-2">GeoHook</a>
+          — a live geofencing-to-webhook service — is built end to end on AWS Lambda, DynamoDB, and API Gateway and deployed as Infrastructure as Code. It's a working example of the architecture, reliability, and cost model described on this page.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-16 lg:py-24 bg-surface relative overflow-hidden">
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl reveal">
+        <h2 class="heading-lg text-3xl lg:text-4xl text-off-white mb-8">Frequently Asked Questions</h2>
+        <div class="space-y-6">
+          {siteConfig.faq.map((item: { question: string; answer: string }) => (
+            <div>
+              <h3 class="heading-md text-lg text-off-white mb-2">{item.question}</h3>
+              <p class="text-text-muted leading-relaxed">{item.answer}</p>
             </div>
           ))}
         </div>

@@ -1,0 +1,301 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import CtaBlock from "../CtaBlock.astro";
+import TitleBlock from "../TitleBlock.astro";
+import { t, type Locale } from "../../config/site";
+import { localePath } from "../../utils/i18n";
+const locale = (Astro.currentLocale || 'en') as Locale;
+const config = t(locale);
+const p = config.pages.modelCompare;
+const sectionLabel = locale === 'de' ? 'Modell-Vergleich' : 'Model Comparison';
+---
+
+<Layout title={p.meta.title} description={p.meta.description}>
+  <!-- Hero -->
+  <section class="relative py-20 lg:py-28 overflow-hidden">
+    <div class="absolute inset-0">
+      <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[250px] md:w-[800px] md:h-[500px]"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl">
+        <div class="chip mb-4 animate-fade-in-up opacity-0" style="animation-delay: 0.1s; animation-fill-mode: forwards;">
+          <span class="w-1.5 h-1.5 rounded-full bg-purple animate-pulse"></span>
+          <span>{p.hero.chip}</span>
+        </div>
+        <h1 class="heading-xl text-5xl lg:text-6xl xl:text-7xl text-off-white mb-6 animate-fade-in-up opacity-0" style="animation-delay: 0.2s; animation-fill-mode: forwards;">
+          {p.hero.headline.before}<span class="gradient-text">{p.hero.headline.gradient}</span>{p.hero.headline.after}
+        </h1>
+        <p class="text-lg lg:text-xl text-text-secondary leading-relaxed animate-fade-in-up opacity-0" style="animation-delay: 0.3s; animation-fill-mode: forwards;">
+          {p.hero.description}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Compare -->
+  <section class="pb-24 lg:pb-32 relative">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="mb-10 lg:mb-12 reveal">
+        <TitleBlock no="01" title={sectionLabel} locale={locale} />
+      </div>
+
+      <!-- Input Panel -->
+      <div class="card-elevated p-6 lg:p-8 reveal">
+        <label for="compare-prompt" class="label text-text-muted mb-3 block">{p.inputSection.promptLabel}</label>
+        <textarea
+          id="compare-prompt"
+          class="w-full h-24 bg-navy/60 border border-ink/[0.08] rounded-none px-4 py-3 text-off-white placeholder-text-muted resize-none focus:outline-none focus:border-indigo focus:shadow-[0_0_0_3px_rgba(28,27,26,0.12)] transition-all duration-200"
+          placeholder={p.inputSection.promptPlaceholder}
+          maxlength={p.inputSection.charLimit}
+        ></textarea>
+        <div class="flex items-center justify-between mt-2 mb-4">
+          <span id="char-count" class="text-xs text-text-muted">0 / {p.inputSection.charLimit}</span>
+          <span id="remaining-requests" class="text-xs text-text-muted"></span>
+        </div>
+
+        <!-- Example Chips -->
+        <div class="mb-6">
+          <div class="flex flex-wrap gap-2">
+            {p.examples.map((example) => (
+              <button
+                class="example-chip font-mono text-xs bg-purple/10 border border-purple/20 text-purple px-3 py-1.5 hover:bg-purple/20 hover:border-purple/30 transition-colors duration-200 cursor-pointer text-left"
+                data-prompt={example}
+              >
+                {example.length > 55 ? example.slice(0, 55) + "..." : example}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+          <button
+            id="generate-btn"
+            class="btn-glow sm:w-auto w-full"
+            data-generating-label={p.inputSection.generatingButton}
+          >
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 4v16m6-16v16M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6z" /></svg>
+            <span id="generate-btn-text">{p.inputSection.generateButton}</span>
+          </button>
+          <p class="text-xs text-text-muted">{p.note}</p>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div
+        id="compare-results"
+        class="hidden grid md:grid-cols-3 gap-4 mt-6 reveal"
+        data-label-waiting={p.resultLabels.waiting}
+        data-label-running={p.resultLabels.running}
+        data-label-error={p.resultLabels.error}
+        data-label-truncated={p.resultLabels.truncated}
+        data-label-latency={p.resultLabels.latency}
+        data-label-tokens={p.resultLabels.tokens}
+        data-label-cost={p.resultLabels.cost}
+      ></div>
+
+      <div id="compare-empty" class="card p-10 mt-6 text-center reveal">
+        <svg class="w-12 h-12 text-text-muted/30 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 4v16m6-16v16M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6z" /></svg>
+        <p class="text-sm text-text-muted">{p.emptyState}</p>
+      </div>
+
+      <!-- Powered by AWS Bedrock badge -->
+      <div class="flex justify-center items-center gap-3 mt-6 reveal">
+        <div class="chip text-xs">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L3 7v10l9 5 9-5V7l-9-5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M12 22V12M3 7l9 5 9-5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+          Powered by AWS Bedrock
+        </div>
+        <a href={localePath("/how-it-works#model-compare", locale)} class="text-xs text-text-muted hover:text-purple transition-colors duration-200">How it works &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <CtaBlock
+    headline={p.cta.headline}
+    description={p.cta.description}
+    button={p.cta.button}
+    href={localePath("/contact", locale)}
+  />
+</Layout>
+
+<script>
+  const API_URL = import.meta.env.PUBLIC_MODEL_COMPARE_URL;
+  const CHAR_LIMIT = 1000;
+
+  const promptEl = document.getElementById('compare-prompt') as HTMLTextAreaElement;
+  const charCountEl = document.getElementById('char-count')!;
+  const remainingEl = document.getElementById('remaining-requests')!;
+  const generateBtn = document.getElementById('generate-btn') as HTMLButtonElement;
+  const generateBtnText = document.getElementById('generate-btn-text')!;
+  const resultsGrid = document.getElementById('compare-results')!;
+  const emptyState = document.getElementById('compare-empty')!;
+  const exampleChips = document.querySelectorAll('.example-chip');
+
+  const idleLabel = generateBtnText.textContent ?? 'Compare Models';
+  const generatingLabel = generateBtn.dataset.generatingLabel ?? 'Comparing...';
+  const labels = {
+    waiting: resultsGrid.dataset.labelWaiting ?? 'Waiting...',
+    running: resultsGrid.dataset.labelRunning ?? 'Generating...',
+    error: resultsGrid.dataset.labelError ?? 'Model call failed',
+    truncated: resultsGrid.dataset.labelTruncated ?? 'Output truncated',
+    latency: resultsGrid.dataset.labelLatency ?? 'Latency',
+    tokens: resultsGrid.dataset.labelTokens ?? 'Tokens in/out',
+    cost: resultsGrid.dataset.labelCost ?? 'Cost',
+  };
+
+  let isGenerating = false;
+
+  promptEl.addEventListener('input', () => {
+    charCountEl.textContent = `${promptEl.value.length} / ${CHAR_LIMIT}`;
+  });
+
+  exampleChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      promptEl.value = (chip as HTMLElement).dataset.prompt ?? '';
+      charCountEl.textContent = `${promptEl.value.length} / ${CHAR_LIMIT}`;
+      promptEl.focus();
+    });
+  });
+
+  promptEl.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      if (!isGenerating) generate();
+    }
+  });
+
+  function slug(model: string): string {
+    return model.replace(/[^a-zA-Z0-9]/g, '-');
+  }
+
+  function buildColumn(model: { model: string; label: string; vendor: string }) {
+    const col = document.createElement('div');
+    col.className = 'card p-5 flex flex-col min-h-[320px]';
+    col.id = `col-${slug(model.model)}`;
+    col.innerHTML = `
+      <div class="flex items-baseline justify-between gap-2 mb-1">
+        <h3 class="heading-md text-sm text-off-white">${model.label}</h3>
+        <span class="font-mono text-[10px] text-text-muted uppercase">${model.vendor}</span>
+      </div>
+      <p class="col-status text-xs text-text-muted mb-3">${labels.waiting}</p>
+      <div class="col-text flex-1 text-xs text-text-secondary leading-relaxed whitespace-pre-wrap overflow-auto max-h-[400px] border-t border-ink/[0.06] pt-3"></div>
+      <div class="col-metrics hidden mt-4 pt-3 border-t border-ink/[0.06] grid grid-cols-3 gap-2">
+        <div>
+          <p class="font-mono text-[10px] text-text-muted uppercase">${labels.latency}</p>
+          <p class="col-latency text-xs text-off-white"></p>
+        </div>
+        <div>
+          <p class="font-mono text-[10px] text-text-muted uppercase">${labels.tokens}</p>
+          <p class="col-tokens text-xs text-off-white"></p>
+        </div>
+        <div>
+          <p class="font-mono text-[10px] text-text-muted uppercase">${labels.cost}</p>
+          <p class="col-cost text-xs text-off-white"></p>
+        </div>
+      </div>
+    `;
+    return col;
+  }
+
+  function formatCost(costUsd: number): string {
+    return `$${costUsd < 0.001 ? costUsd.toFixed(5) : costUsd.toFixed(4)}`;
+  }
+
+  function handleEvent(evt: any) {
+    if (evt.type === 'start' && Array.isArray(evt.models)) {
+      resultsGrid.innerHTML = '';
+      for (const model of evt.models) {
+        const col = buildColumn(model);
+        col.querySelector('.col-status')!.textContent = labels.running;
+        resultsGrid.appendChild(col);
+      }
+      resultsGrid.classList.remove('hidden');
+      emptyState.classList.add('hidden');
+      return;
+    }
+
+    if (evt.type === 'result') {
+      const col = document.getElementById(`col-${slug(evt.model)}`);
+      if (!col) return;
+      const status = col.querySelector('.col-status')!;
+      const text = col.querySelector('.col-text')!;
+
+      if (evt.error) {
+        status.textContent = labels.error;
+        status.classList.add('text-red-400');
+        return;
+      }
+
+      status.textContent = evt.truncated ? labels.truncated : '';
+      text.textContent = evt.text ?? '';
+      col.querySelector('.col-metrics')!.classList.remove('hidden');
+      col.querySelector('.col-latency')!.textContent = `${((evt.latencyMs ?? 0) / 1000).toFixed(2)}s`;
+      col.querySelector('.col-tokens')!.textContent = `${evt.inputTokens ?? 0} / ${evt.outputTokens ?? 0}`;
+      col.querySelector('.col-cost')!.textContent = formatCost(evt.costUsd ?? 0);
+    }
+  }
+
+  async function generate() {
+    const prompt = promptEl.value.trim();
+    if (!prompt || isGenerating || !API_URL) return;
+
+    isGenerating = true;
+    generateBtn.disabled = true;
+    generateBtnText.textContent = generatingLabel;
+    generateBtn.classList.add('opacity-70');
+
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt }),
+      });
+
+      const remaining = res.headers.get('X-Remaining-Requests');
+      if (remaining !== null) {
+        remainingEl.textContent = `${remaining} / 10`;
+      }
+
+      if (!res.ok) {
+        const err = await res.text();
+        let message = 'Request failed. Please try again.';
+        try { const parsed = JSON.parse(err); message = parsed.error || message; } catch {}
+        throw new Error(message);
+      }
+
+      const reader = res.body?.getReader();
+      if (!reader) throw new Error('Streaming not supported');
+
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        let idx;
+        while ((idx = buffer.indexOf('\n')) >= 0) {
+          const line = buffer.slice(0, idx).trim();
+          buffer = buffer.slice(idx + 1);
+          if (!line) continue;
+          try { handleEvent(JSON.parse(line)); } catch {}
+        }
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'An error occurred';
+      resultsGrid.classList.remove('hidden');
+      emptyState.classList.add('hidden');
+      resultsGrid.innerHTML = `<div class="card p-6 md:col-span-3"><p class="text-sm text-red-400">${message.replace(/</g, '&lt;')}</p></div>`;
+    } finally {
+      isGenerating = false;
+      generateBtn.disabled = false;
+      generateBtnText.textContent = idleLabel;
+      generateBtn.classList.remove('opacity-70');
+    }
+  }
+
+  generateBtn.addEventListener('click', generate);
+</script>

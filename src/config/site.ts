@@ -159,7 +159,7 @@ const shared = {
       headline: { before: "Privacy ", gradient: "Policy", after: "" },
       switchLabel: "Auf Deutsch lesen",
       switchHref: "/de/privacy/",
-      lastUpdated: "February 2025",
+      lastUpdated: "July 2026",
       sections: [
         {
           title: "1. Controller",
@@ -196,7 +196,7 @@ const shared = {
         {
           title: "6. AI-Powered Services",
           paragraphs: [
-            "Our website offers several AI-powered features (including AI Playground, Tech Advisor, Knowledge Bot, Website Remix, Live Translation, Agent Visualizer, and Commit Story). When you use these services, your text inputs are transmitted to Amazon Bedrock (AWS) for processing by AI models.",
+            "Our website offers several AI-powered features (including AI Playground, Tech Advisor, Cloud Cost Check, EU AI Act Check, Model Compare, Knowledge Bot, Website Remix, Live Translation, Agent Visualizer, and Commit Story). When you use these services, your text inputs are transmitted to Amazon Bedrock (AWS) for processing by AI models.",
             "Processing takes place in the AWS EU region (Frankfurt, eu-central-1). No text inputs are permanently stored or used for training purposes. Usage is based on your consent (Art. 6(1)(a) GDPR), which you grant by actively using the services.",
           ],
         },
@@ -262,7 +262,7 @@ const shared = {
       headline: { before: "Datenschutz", gradient: "erklärung", after: "" },
       switchLabel: "Read in English",
       switchHref: "/privacy",
-      lastUpdated: "Februar 2025",
+      lastUpdated: "Juli 2026",
       sections: [
         {
           title: "1. Verantwortlicher",
@@ -299,7 +299,7 @@ const shared = {
         {
           title: "6. KI-gestützte Dienste",
           paragraphs: [
-            "Unsere Website bietet mehrere KI-gestützte Funktionen an (u.\u00A0a. AI Playground, Tech Advisor, Knowledge Bot, Website Remix, Live Translation, Agent Visualizer und Commit Story). Wenn Sie diese Dienste nutzen, werden Ihre Texteingaben an Amazon Bedrock (AWS) zur Verarbeitung durch KI-Modelle übermittelt.",
+            "Unsere Website bietet mehrere KI-gestützte Funktionen an (u.\u00A0a. AI Playground, Tech Advisor, Cloud-Kosten-Check, EU-AI-Act-Check, Modell-Vergleich, Knowledge Bot, Website Remix, Live Translation, Agent Visualizer und Commit Story). Wenn Sie diese Dienste nutzen, werden Ihre Texteingaben an Amazon Bedrock (AWS) zur Verarbeitung durch KI-Modelle übermittelt.",
             "Die Verarbeitung erfolgt in der AWS-Region EU (Frankfurt, eu-central-1). Es werden keine Texteingaben dauerhaft gespeichert oder für Trainingszwecke verwendet. Die Nutzung erfolgt auf Grundlage Ihrer Einwilligung (Art. 6 Abs. 1 lit. a DSGVO), die Sie durch aktive Nutzung der Dienste erteilen.",
           ],
         },
@@ -380,6 +380,9 @@ const content = {
       { name: "AI Lab", href: "#", children: [
         { name: "AI Playground", href: "/ai-playground/" },
         { name: "Tech Advisor", href: "/tech-advisor/" },
+        { name: "Cloud Cost Check", href: "/cost-check/" },
+        { name: "EU AI Act Check", href: "/ai-act-check/" },
+        { name: "Model Compare", href: "/model-compare/" },
         { name: "AI Agents", href: "/ai-agents/" },
         { name: "How It Works", href: "/how-it-works/" },
       ]},
@@ -930,6 +933,140 @@ const content = {
         },
       },
 
+      costCheck: {
+        meta: {
+          title: "Cloud Cost Check",
+          description: "Describe your system and get an AI-powered AWS cost estimate with serverless savings potential",
+        },
+        hero: {
+          chip: "Cloud Cost Check",
+          headline: { before: "What Does Your Cloud ", gradient: "Really Cost?", after: "" },
+          description:
+            "Describe your system or architecture and the AI estimates realistic monthly AWS costs — including what a serverless redesign could save.",
+        },
+        inputSection: {
+          promptLabel: "Describe your system",
+          promptPlaceholder: "Web shop on 2 EC2 t3.large behind a load balancer, MySQL on RDS, ~50k visitors/month...",
+          generateButton: "Estimate Costs",
+          generatingButton: "Estimating...",
+          charLimit: 2000,
+        },
+        examples: [
+          "Web shop on 2 EC2 instances with RDS MySQL and 50k visitors per month",
+          "Nightly batch pipeline processing 20 GB of CSV files on a dedicated server",
+          "REST API with 1M requests/month, Node.js on ECS Fargate, PostgreSQL",
+          "Company website with contact form and newsletter, currently on shared hosting",
+        ],
+        previewSection: {
+          emptyState: "Describe your system to get an AWS cost estimate with savings potential",
+        },
+        conversation: {
+          newAnalysisButton: "New Estimate",
+          refiningLabel: "Follow-up",
+          refiningPlaceholder: "Ask a follow-up question about the estimate...",
+        },
+        disclaimer:
+          "Estimates are based on AWS eu-central-1 list prices and typical usage assumptions — actual costs depend on your real workload.",
+        cta: {
+          headline: "Want the real numbers?",
+          description:
+            "I offer a free detailed cost analysis based on your actual AWS billing data.",
+          button: "Request Free Analysis",
+        },
+      },
+
+      aiActCheck: {
+        meta: {
+          title: "EU AI Act Check",
+          description: "Describe your AI use case and get an instant EU AI Act risk classification with obligations",
+        },
+        hero: {
+          chip: "EU AI Act Check",
+          headline: { before: "Which Risk Class Is ", gradient: "Your AI?", after: "" },
+          description:
+            "Describe your AI use case and get a first assessment under the EU AI Act — risk classification, obligations, and GDPR touchpoints.",
+        },
+        inputSection: {
+          promptLabel: "Describe your AI use case",
+          promptPlaceholder: "We want to use an LLM chatbot for customer support that can access order data...",
+          generateButton: "Classify",
+          generatingButton: "Classifying...",
+          charLimit: 2000,
+        },
+        examples: [
+          "Chatbot for customer support with access to order data",
+          "CV screening tool that pre-ranks job applicants",
+          "Predictive maintenance for industrial machines",
+          "AI-generated product descriptions for an online shop",
+        ],
+        previewSection: {
+          emptyState: "Describe your AI use case to get a first EU AI Act assessment",
+        },
+        riskLabels: {
+          prohibited: "Prohibited",
+          high: "High Risk",
+          limited: "Limited Risk",
+          minimal: "Minimal Risk",
+          unclear: "Unclear",
+        },
+        conversation: {
+          newAnalysisButton: "New Assessment",
+          refiningLabel: "Follow-up",
+          refiningPlaceholder: "Ask a follow-up question about the assessment...",
+        },
+        disclaimer:
+          "This is an automated first assessment for orientation purposes — not legal advice.",
+        cta: {
+          headline: "Need compliant AI?",
+          description:
+            "I build AI solutions that are GDPR- and AI-Act-aware by design — on European infrastructure.",
+          button: "Start a Conversation",
+        },
+      },
+
+      modelCompare: {
+        meta: {
+          title: "Model Compare",
+          description: "Send one prompt to multiple AI models on Amazon Bedrock and compare answers, latency, and cost side by side",
+        },
+        hero: {
+          chip: "Model Compare",
+          headline: { before: "One Prompt. ", gradient: "Three Models.", after: "" },
+          description:
+            "Send the same prompt to multiple AI models on Amazon Bedrock and compare their answers, latency, token usage, and cost side by side.",
+        },
+        inputSection: {
+          promptLabel: "Your prompt",
+          promptPlaceholder: "Explain the difference between REST and GraphQL in three sentences...",
+          generateButton: "Compare Models",
+          generatingButton: "Comparing...",
+          charLimit: 1000,
+        },
+        examples: [
+          "Explain the difference between REST and GraphQL in three sentences",
+          "Write a short product description for an ergonomic office chair",
+          "Summarize: why do serverless architectures reduce operational costs?",
+          "Suggest five names for a bakery specializing in sourdough bread",
+        ],
+        emptyState: "Enter a prompt to compare the models side by side",
+        resultLabels: {
+          waiting: "Waiting...",
+          running: "Generating...",
+          error: "Model call failed",
+          truncated: "Output truncated at token limit",
+          latency: "Latency",
+          tokens: "Tokens in/out",
+          cost: "Cost",
+        },
+        note: "Costs are approximate on-demand list prices per call. Answers are limited to 512 output tokens.",
+        cta: {
+          headline: "Which model fits your use case?",
+          description:
+            "Choosing the right model saves real money at scale. I help you benchmark and decide.",
+          button: "Start a Conversation",
+        },
+      },
+
       aiAgents: {
         meta: {
           title: "AI Agents",
@@ -1143,6 +1280,78 @@ const content = {
               { name: "API Gateway", role: "Stats and story endpoints" },
             ],
           },
+          {
+            id: "cost-check",
+            title: "Cloud Cost Check",
+            subtitle: "What does your cloud really cost?",
+            icon: "calculator",
+            link: "/cost-check",
+            whatItDoes:
+              "Describe any system — cloud-based or on-premise — and get a realistic monthly AWS cost estimate as ranges, plus what a serverless redesign of the same workload would cost and save.",
+            howItWorks:
+              "A Lambda function sends your description to Claude via Bedrock with a cost-consultant system prompt grounded in eu-central-1 list prices. The model states its assumptions explicitly, estimates per-service costs, and calculates the serverless savings potential. The response streams back token-by-token.",
+            techFlow: [
+              "User describes their system and workload",
+              "Lambda forwards the description to Bedrock with cost-analysis instructions",
+              "Claude derives assumptions (traffic, storage, region) and lists them transparently",
+              "Per-service estimates and a serverless comparison stream back as markdown",
+              "Follow-up questions refine the estimate using conversation context",
+            ],
+            awsServices: [
+              { name: "Amazon Bedrock", role: "Cost reasoning with Claude" },
+              { name: "AWS Lambda", role: "Streaming request handler" },
+              { name: "Amazon DynamoDB", role: "Per-IP rate limiting" },
+              { name: "CloudFront", role: "Streaming edge endpoint" },
+            ],
+          },
+          {
+            id: "ai-act-check",
+            title: "EU AI Act Check",
+            subtitle: "Which risk class is your AI?",
+            icon: "scale",
+            link: "/ai-act-check",
+            whatItDoes:
+              "Describe an AI use case and get a first assessment under the EU AI Act (Regulation (EU) 2024/1689): risk classification with the relevant articles, your obligations, GDPR touchpoints, and practical next steps.",
+            howItWorks:
+              "The Lambda sends your use case to Claude with a compliance-analyst system prompt. The model starts its response with a machine-readable risk marker that the frontend turns into a colored badge, followed by the streamed assessment. Every response ends with a not-legal-advice note.",
+            techFlow: [
+              "User describes their AI use case",
+              "Lambda forwards it to Bedrock with AI-Act-classification instructions",
+              "Claude classifies the case (prohibited / high / limited / minimal / unclear)",
+              "A ---RISK--- marker at the start of the stream drives the badge in the UI",
+              "Obligations, GDPR touchpoints, and next steps stream back as markdown",
+            ],
+            awsServices: [
+              { name: "Amazon Bedrock", role: "Regulatory reasoning with Claude" },
+              { name: "AWS Lambda", role: "Streaming request handler" },
+              { name: "Amazon DynamoDB", role: "Per-IP rate limiting" },
+              { name: "CloudFront", role: "Streaming edge endpoint" },
+            ],
+          },
+          {
+            id: "model-compare",
+            title: "Model Compare",
+            subtitle: "One prompt. Three models.",
+            icon: "columns",
+            link: "/model-compare",
+            whatItDoes:
+              "Sends the same prompt to three models on Amazon Bedrock — Claude Sonnet 4, Claude 3 Haiku, and Amazon Nova Lite — and shows their answers side by side with latency, token usage, and approximate cost per call.",
+            howItWorks:
+              "The Lambda uses Bedrock's Converse API, which normalizes requests across model vendors, and invokes all models in parallel. Each result is written to the response as a newline-delimited JSON event the moment that model finishes, so the fastest model appears first in the UI.",
+            techFlow: [
+              "User enters a single prompt",
+              "Lambda invokes all three models in parallel via the Converse API",
+              "Each model's latency and token usage are measured per call",
+              "Cost is computed from on-demand list prices per 1K tokens",
+              "Results stream back as NDJSON events and fill their column as they arrive",
+            ],
+            awsServices: [
+              { name: "Amazon Bedrock", role: "Multi-model inference via Converse API" },
+              { name: "AWS Lambda", role: "Parallel invocation + NDJSON streaming" },
+              { name: "Amazon DynamoDB", role: "Per-IP rate limiting" },
+              { name: "CloudFront", role: "Streaming edge endpoint" },
+            ],
+          },
         ],
         architectureSection: {
           chip: "Architecture",
@@ -1302,6 +1511,9 @@ const content = {
       { name: "KI-Labor", href: "#", children: [
         { name: "AI Playground", href: "/de/ai-playground/" },
         { name: "Tech-Berater", href: "/de/tech-advisor/" },
+        { name: "Cloud-Kosten-Check", href: "/de/cost-check/" },
+        { name: "EU-AI-Act-Check", href: "/de/ai-act-check/" },
+        { name: "Modell-Vergleich", href: "/de/model-compare/" },
         { name: "KI-Agenten", href: "/de/ai-agents/" },
         { name: "Technologie", href: "/de/how-it-works/" },
       ]},
@@ -1852,6 +2064,140 @@ const content = {
         },
       },
 
+      costCheck: {
+        meta: {
+          title: "Cloud-Kosten-Check",
+          description: "Beschreiben Sie Ihr System und erhalten Sie eine KI-gestützte AWS-Kostenschätzung mit Serverless-Einsparpotenzial",
+        },
+        hero: {
+          chip: "Cloud-Kosten-Check",
+          headline: { before: "Was kostet Ihre Cloud ", gradient: "wirklich?", after: "" },
+          description:
+            "Beschreiben Sie Ihr System oder Ihre Architektur und die KI schätzt realistische monatliche AWS-Kosten — inklusive Einsparpotenzial durch einen Serverless-Umbau.",
+        },
+        inputSection: {
+          promptLabel: "Beschreiben Sie Ihr System",
+          promptPlaceholder: "Webshop auf 2 EC2 t3.large hinter einem Load Balancer, MySQL auf RDS, ca. 50.000 Besucher/Monat...",
+          generateButton: "Kosten schätzen",
+          generatingButton: "Wird geschätzt...",
+          charLimit: 2000,
+        },
+        examples: [
+          "Webshop auf 2 EC2-Instanzen mit RDS MySQL und 50.000 Besuchern pro Monat",
+          "Nächtliche Batch-Pipeline, die 20 GB CSV-Dateien auf einem dedizierten Server verarbeitet",
+          "REST-API mit 1 Mio. Requests/Monat, Node.js auf ECS Fargate, PostgreSQL",
+          "Firmenwebsite mit Kontaktformular und Newsletter, aktuell auf Shared Hosting",
+        ],
+        previewSection: {
+          emptyState: "Beschreiben Sie Ihr System, um eine AWS-Kostenschätzung mit Einsparpotenzial zu erhalten",
+        },
+        conversation: {
+          newAnalysisButton: "Neue Schätzung",
+          refiningLabel: "Rückfrage",
+          refiningPlaceholder: "Stellen Sie eine Rückfrage zur Schätzung...",
+        },
+        disclaimer:
+          "Schätzungen basieren auf AWS-Listenpreisen (eu-central-1) und typischen Nutzungsannahmen — tatsächliche Kosten hängen von Ihrer realen Last ab.",
+        cta: {
+          headline: "Sie wollen echte Zahlen?",
+          description:
+            "Ich biete eine kostenlose Detail-Analyse auf Basis Ihrer tatsächlichen AWS-Abrechnungsdaten.",
+          button: "Kostenlose Analyse anfragen",
+        },
+      },
+
+      aiActCheck: {
+        meta: {
+          title: "EU-AI-Act-Check",
+          description: "Beschreiben Sie Ihren KI-Anwendungsfall und erhalten Sie sofort eine EU-AI-Act-Risikoeinstufung mit Pflichten",
+        },
+        hero: {
+          chip: "EU-AI-Act-Check",
+          headline: { before: "In welche ", gradient: "Risikoklasse", after: " fällt Ihre KI?" },
+          description:
+            "Beschreiben Sie Ihren KI-Anwendungsfall und erhalten Sie eine Ersteinschätzung nach dem EU AI Act — Risikoeinstufung, Pflichten und DSGVO-Berührungspunkte.",
+        },
+        inputSection: {
+          promptLabel: "Beschreiben Sie Ihren KI-Anwendungsfall",
+          promptPlaceholder: "Wir wollen einen LLM-Chatbot für den Kundensupport einsetzen, der auf Bestelldaten zugreifen kann...",
+          generateButton: "Einstufen",
+          generatingButton: "Wird eingestuft...",
+          charLimit: 2000,
+        },
+        examples: [
+          "Chatbot für den Kundensupport mit Zugriff auf Bestelldaten",
+          "CV-Screening-Tool, das Bewerbungen vorsortiert",
+          "Predictive Maintenance für Industriemaschinen",
+          "KI-generierte Produktbeschreibungen für einen Onlineshop",
+        ],
+        previewSection: {
+          emptyState: "Beschreiben Sie Ihren KI-Anwendungsfall für eine erste EU-AI-Act-Einschätzung",
+        },
+        riskLabels: {
+          prohibited: "Verboten",
+          high: "Hochrisiko",
+          limited: "Begrenztes Risiko",
+          minimal: "Minimales Risiko",
+          unclear: "Unklar",
+        },
+        conversation: {
+          newAnalysisButton: "Neue Einschätzung",
+          refiningLabel: "Rückfrage",
+          refiningPlaceholder: "Stellen Sie eine Rückfrage zur Einschätzung...",
+        },
+        disclaimer:
+          "Dies ist eine automatisierte Ersteinschätzung zur Orientierung — keine Rechtsberatung.",
+        cta: {
+          headline: "KI compliant umsetzen?",
+          description:
+            "Ich baue KI-Lösungen, die DSGVO und AI Act von Anfang an mitdenken — auf europäischer Infrastruktur.",
+          button: "Gespräch starten",
+        },
+      },
+
+      modelCompare: {
+        meta: {
+          title: "Modell-Vergleich",
+          description: "Schicken Sie einen Prompt an mehrere KI-Modelle auf Amazon Bedrock und vergleichen Sie Antworten, Latenz und Kosten",
+        },
+        hero: {
+          chip: "Modell-Vergleich",
+          headline: { before: "Ein Prompt. ", gradient: "Drei Modelle.", after: "" },
+          description:
+            "Schicken Sie denselben Prompt an mehrere KI-Modelle auf Amazon Bedrock und vergleichen Sie Antworten, Latenz, Token-Verbrauch und Kosten nebeneinander.",
+        },
+        inputSection: {
+          promptLabel: "Ihr Prompt",
+          promptPlaceholder: "Erkläre den Unterschied zwischen REST und GraphQL in drei Sätzen...",
+          generateButton: "Modelle vergleichen",
+          generatingButton: "Wird verglichen...",
+          charLimit: 1000,
+        },
+        examples: [
+          "Erkläre den Unterschied zwischen REST und GraphQL in drei Sätzen",
+          "Schreibe eine kurze Produktbeschreibung für einen ergonomischen Bürostuhl",
+          "Fasse zusammen: Warum senken Serverless-Architekturen die Betriebskosten?",
+          "Schlage fünf Namen für eine Bäckerei mit Sauerteig-Spezialisierung vor",
+        ],
+        emptyState: "Geben Sie einen Prompt ein, um die Modelle nebeneinander zu vergleichen",
+        resultLabels: {
+          waiting: "Wartet...",
+          running: "Generiert...",
+          error: "Modellaufruf fehlgeschlagen",
+          truncated: "Ausgabe am Token-Limit abgeschnitten",
+          latency: "Latenz",
+          tokens: "Tokens ein/aus",
+          cost: "Kosten",
+        },
+        note: "Kosten sind ungefähre On-Demand-Listenpreise pro Aufruf. Antworten sind auf 512 Output-Tokens begrenzt.",
+        cta: {
+          headline: "Welches Modell passt zu Ihrem Use Case?",
+          description:
+            "Die richtige Modellwahl spart bei Skalierung echtes Geld. Ich helfe beim Benchmarken und Entscheiden.",
+          button: "Gespräch starten",
+        },
+      },
+
       aiAgents: {
         meta: {
           title: "KI-Agenten",
@@ -2063,6 +2409,78 @@ const content = {
               { name: "Amazon DynamoDB", role: "Stats-Caching mit TTL" },
               { name: "AWS Lambda", role: "GitHub-API-Integration + Story-Generierung" },
               { name: "API Gateway", role: "Stats- und Story-Endpunkte" },
+            ],
+          },
+          {
+            id: "cost-check",
+            title: "Cloud-Kosten-Check",
+            subtitle: "Was kostet Ihre Cloud wirklich?",
+            icon: "calculator",
+            link: "/cost-check",
+            whatItDoes:
+              "Beschreiben Sie ein beliebiges System — Cloud oder On-Premise — und erhalten Sie eine realistische monatliche AWS-Kostenschätzung als Spannen, plus was ein Serverless-Umbau derselben Last kosten und sparen würde.",
+            howItWorks:
+              "Eine Lambda-Funktion schickt Ihre Beschreibung mit einem Kostenberater-System-Prompt auf Basis von eu-central-1-Listenpreisen an Claude via Bedrock. Das Modell legt seine Annahmen explizit offen, schätzt Kosten pro Service und berechnet das Serverless-Einsparpotenzial. Die Antwort streamt Token für Token zurück.",
+            techFlow: [
+              "Nutzer beschreibt System und Last",
+              "Lambda leitet die Beschreibung mit Kostenanalyse-Anweisungen an Bedrock weiter",
+              "Claude leitet Annahmen ab (Traffic, Storage, Region) und listet sie transparent auf",
+              "Schätzungen pro Service und ein Serverless-Vergleich streamen als Markdown zurück",
+              "Rückfragen verfeinern die Schätzung im Gesprächskontext",
+            ],
+            awsServices: [
+              { name: "Amazon Bedrock", role: "Kosten-Reasoning mit Claude" },
+              { name: "AWS Lambda", role: "Streaming-Request-Handler" },
+              { name: "Amazon DynamoDB", role: "Rate Limiting pro IP" },
+              { name: "CloudFront", role: "Streaming-Edge-Endpunkt" },
+            ],
+          },
+          {
+            id: "ai-act-check",
+            title: "EU-AI-Act-Check",
+            subtitle: "In welche Risikoklasse fällt Ihre KI?",
+            icon: "scale",
+            link: "/ai-act-check",
+            whatItDoes:
+              "Beschreiben Sie einen KI-Anwendungsfall und erhalten Sie eine Ersteinschätzung nach dem EU AI Act (Verordnung (EU) 2024/1689): Risikoeinstufung mit den relevanten Artikeln, Ihre Pflichten, DSGVO-Berührungspunkte und praktische nächste Schritte.",
+            howItWorks:
+              "Die Lambda schickt Ihren Anwendungsfall mit einem Compliance-Analyst-System-Prompt an Claude. Das Modell beginnt seine Antwort mit einem maschinenlesbaren Risiko-Marker, den das Frontend in ein farbiges Badge übersetzt, gefolgt von der gestreamten Einschätzung. Jede Antwort endet mit einem Hinweis, dass es sich nicht um Rechtsberatung handelt.",
+            techFlow: [
+              "Nutzer beschreibt den KI-Anwendungsfall",
+              "Lambda leitet ihn mit AI-Act-Klassifizierungs-Anweisungen an Bedrock weiter",
+              "Claude stuft den Fall ein (verboten / hoch / begrenzt / minimal / unklar)",
+              "Ein ---RISK----Marker am Streamanfang steuert das Badge in der UI",
+              "Pflichten, DSGVO-Berührungspunkte und nächste Schritte streamen als Markdown zurück",
+            ],
+            awsServices: [
+              { name: "Amazon Bedrock", role: "Regulatorisches Reasoning mit Claude" },
+              { name: "AWS Lambda", role: "Streaming-Request-Handler" },
+              { name: "Amazon DynamoDB", role: "Rate Limiting pro IP" },
+              { name: "CloudFront", role: "Streaming-Edge-Endpunkt" },
+            ],
+          },
+          {
+            id: "model-compare",
+            title: "Modell-Vergleich",
+            subtitle: "Ein Prompt. Drei Modelle.",
+            icon: "columns",
+            link: "/model-compare",
+            whatItDoes:
+              "Schickt denselben Prompt an drei Modelle auf Amazon Bedrock — Claude Sonnet 4, Claude 3 Haiku und Amazon Nova Lite — und zeigt die Antworten nebeneinander mit Latenz, Token-Verbrauch und ungefähren Kosten pro Aufruf.",
+            howItWorks:
+              "Die Lambda nutzt Bedrocks Converse API, die Requests über Modellanbieter hinweg normalisiert, und ruft alle Modelle parallel auf. Jedes Ergebnis wird in dem Moment als zeilengetrenntes JSON-Event in die Antwort geschrieben, in dem das Modell fertig ist — das schnellste Modell erscheint also zuerst in der UI.",
+            techFlow: [
+              "Nutzer gibt einen einzelnen Prompt ein",
+              "Lambda ruft alle drei Modelle parallel über die Converse API auf",
+              "Latenz und Token-Verbrauch werden pro Aufruf gemessen",
+              "Kosten werden aus On-Demand-Listenpreisen pro 1K Tokens berechnet",
+              "Ergebnisse streamen als NDJSON-Events zurück und füllen ihre Spalte beim Eintreffen",
+            ],
+            awsServices: [
+              { name: "Amazon Bedrock", role: "Multi-Modell-Inferenz via Converse API" },
+              { name: "AWS Lambda", role: "Parallele Aufrufe + NDJSON-Streaming" },
+              { name: "Amazon DynamoDB", role: "Rate Limiting pro IP" },
+              { name: "CloudFront", role: "Streaming-Edge-Endpunkt" },
             ],
           },
         ],

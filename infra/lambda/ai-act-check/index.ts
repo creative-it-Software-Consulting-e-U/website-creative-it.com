@@ -1,0 +1,277 @@
+import {
+  BedrockRuntimeClient,
+  InvokeModelWithResponseStreamCommand,
+} from "@aws-sdk/client-bedrock-runtime";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClient, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { createHash } from "crypto";
+
+const bedrock = new BedrockRuntimeClient({});
+const ddb = DynamoDBDocumentClient.from(new DynamoDBClient({}));
+
+const TABLE_NAME = process.env.TABLE_NAME!;
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS ?? "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+const MODEL_ID = "eu.anthropic.claude-sonnet-4-20250514-v1:0";
+const RATE_LIMIT = 10;
+const MAX_PROMPT_LENGTH = 2000;
+
+function hashIp(ip: string): string {
+  return createHash("sha256").update(ip).digest("hex").slice(0, 16);
+}
+
+function getDateKey(): string {
+  return `DATE#${new Date().toISOString().slice(0, 10)}`;
+}
+
+function buildCorsHeaders(requestOrigin?: string): Record<string, string> {
+  const allowedOrigin = requestOrigin && ALLOWED_ORIGINS.includes(requestOrigin)
+    ? requestOrigin
+    : ALLOWED_ORIGINS[0];
+
+  return allowedOrigin
+    ? {
+        "Access-Control-Allow-Origin": allowedOrigin,
+        "Access-Control-Allow-Methods": "POST,OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Expose-Headers": "X-Remaining-Requests",
+        Vary: "Origin",
+      }
+    : {};
+}
+
+async function checkRateLimit(ip: string): Promise<{ allowed: boolean; remaining: number }> {
+  const pk = `RATELIMIT#AIACT#${hashIp(ip)}`;
+  const hourTs = getDateKey();
+  const ttl = Math.floor(Date.now() / 1000) + 2 * 24 * 60 * 60;
+
+  const result = await ddb.send(
+    new UpdateCommand({
+      TableName: TABLE_NAME,
+      Key: { pk, hour_ts: hourTs },
+      UpdateExpression: "ADD #count :inc SET #ttl = if_not_exists(#ttl, :ttl)",
+      ExpressionAttributeNames: { "#count": "count", "#ttl": "ttl" },
+      ExpressionAttributeValues: { ":inc": 1, ":ttl": ttl },
+      ReturnValues: "ALL_NEW",
+    })
+  );
+
+  const count = (result.Attributes?.count as number) ?? 1;
+  const remaining = Math.max(0, RATE_LIMIT - count);
+  return { allowed: count <= RATE_LIMIT, remaining };
+}
+
+const SYSTEM_PROMPT = `You are an EU AI Act compliance analyst at creative-it, a software consulting company. Given a description of an AI use case, product, or system, classify it under the EU AI Act (Regulation (EU) 2024/1689) and outline the resulting obligations.
+
+Your response MUST start with exactly one marker line (nothing before it), choosing one of:
+---RISK:prohibited---
+---RISK:high---
+---RISK:limited---
+---RISK:minimal---
+---RISK:unclear---
+
+Then structure your response as follows:
+
+## Classification
+[Which risk category applies and why, citing the relevant provisions — e.g. Art. 5 (prohibited practices), Annex III (high-risk areas), Art. 50 (transparency obligations). If the user is building or providing a general-purpose AI model, also address the GPAI obligations in Chapter V.]
+
+## Your Obligations
+- [Concrete obligations that follow from the classification: risk management, data governance, technical documentation, human oversight, transparency notices, CE marking, registration, etc. — only those that actually apply]
+
+## GDPR Touchpoints
+- [Where the use case additionally touches the GDPR: legal basis, DPIA, automated decision-making under Art. 22, data minimization, etc.]
+
+## Next Steps
+- [Practical, prioritized next steps]
+
+Rules:
+- Respond in the same language as the user's description (German or English)
+- If the description is too vague to classify, use ---RISK:unclear--- and state precisely what information is missing
+- Distinguish the user's likely role (provider, deployer, importer, distributor) and say which role you assumed
+- Use bullet lists only — never markdown tables
+- Be precise about what is NOT required as well — avoid over-compliance scaremongering
+- ALWAYS end with this exact note (translated to the response language): this is an automated first assessment for orientation purposes and not legal advice
+- When handling follow-up questions, keep the marker line at the start of every response, updating it if the classification changes`;
+
+// @ts-expect-error — awslambda global type for streaming handler
+export const handler = awslambda.streamifyResponse(
+  async (
+    event: {
+      requestContext: { http: { method: string; sourceIp: string } };
+      headers: Record<string, string>;
+      body?: string;
+      isBase64Encoded?: boolean;
+    },
+    responseStream: NodeJS.WritableStream
+  ) => {
+    const method = event.requestContext.http.method;
+    const origin = event.headers?.origin ?? event.headers?.Origin;
+    const corsHeaders = buildCorsHeaders(origin);
+
+    const baseHeaders: Record<string, string> = {
+      ...corsHeaders,
+      "Content-Type": "text/plain; charset=utf-8",
+      "Cache-Control": "no-cache",
+    };
+
+    if (method === "OPTIONS") {
+      // @ts-expect-error — awslambda HttpResponseStream type
+      responseStream = awslambda.HttpResponseStream.from(responseStream, {
+        statusCode: 204,
+        headers: corsHeaders,
+      });
+      responseStream.end();
+      return;
+    }
+
+    if (method !== "POST") {
+      // @ts-expect-error — awslambda HttpResponseStream type
+      responseStream = awslambda.HttpResponseStream.from(responseStream, {
+        statusCode: 405,
+        headers: { ...baseHeaders, "Content-Type": "application/json" },
+      });
+      responseStream.write(JSON.stringify({ error: "Method not allowed" }));
+      responseStream.end();
+      return;
+    }
+
+    let prompt: string;
+    let messages: Array<{ role: string; content: string }> | undefined;
+    try {
+      const bodyStr = event.isBase64Encoded
+        ? Buffer.from(event.body ?? "", "base64").toString("utf-8")
+        : event.body ?? "{}";
+      const data = JSON.parse(bodyStr);
+      prompt = data.prompt;
+      messages = data.messages;
+    } catch {
+      // @ts-expect-error — awslambda HttpResponseStream type
+      responseStream = awslambda.HttpResponseStream.from(responseStream, {
+        statusCode: 400,
+        headers: { ...baseHeaders, "Content-Type": "application/json" },
+      });
+      responseStream.write(JSON.stringify({ error: "Invalid JSON body" }));
+      responseStream.end();
+      return;
+    }
+
+    if (!prompt || typeof prompt !== "string" || !prompt.trim()) {
+      // @ts-expect-error — awslambda HttpResponseStream type
+      responseStream = awslambda.HttpResponseStream.from(responseStream, {
+        statusCode: 400,
+        headers: { ...baseHeaders, "Content-Type": "application/json" },
+      });
+      responseStream.write(JSON.stringify({ error: "prompt is required" }));
+      responseStream.end();
+      return;
+    }
+
+    if (prompt.length > MAX_PROMPT_LENGTH) {
+      // @ts-expect-error — awslambda HttpResponseStream type
+      responseStream = awslambda.HttpResponseStream.from(responseStream, {
+        statusCode: 400,
+        headers: { ...baseHeaders, "Content-Type": "application/json" },
+      });
+      responseStream.write(
+        JSON.stringify({ error: `prompt exceeds maximum length of ${MAX_PROMPT_LENGTH} characters` })
+      );
+      responseStream.end();
+      return;
+    }
+
+    if (messages) {
+      if (!Array.isArray(messages) || messages.length > 20) {
+        // @ts-expect-error — awslambda HttpResponseStream type
+        responseStream = awslambda.HttpResponseStream.from(responseStream, {
+          statusCode: 400,
+          headers: { ...baseHeaders, "Content-Type": "application/json" },
+        });
+        responseStream.write(JSON.stringify({ error: "messages must be an array with at most 20 entries" }));
+        responseStream.end();
+        return;
+      }
+      for (const msg of messages) {
+        if (!msg.role || !msg.content || !["user", "assistant"].includes(msg.role)) {
+          // @ts-expect-error — awslambda HttpResponseStream type
+          responseStream = awslambda.HttpResponseStream.from(responseStream, {
+            statusCode: 400,
+            headers: { ...baseHeaders, "Content-Type": "application/json" },
+          });
+          responseStream.write(JSON.stringify({ error: "each message must have role (user|assistant) and content" }));
+          responseStream.end();
+          return;
+        }
+      }
+    }
+
+    const ip = event.headers?.["x-forwarded-for"]?.split(",").pop()?.trim()
+      ?? event.requestContext.http.sourceIp;
+    const { allowed, remaining } = await checkRateLimit(ip);
+    baseHeaders["X-Remaining-Requests"] = String(remaining);
+
+    if (!allowed) {
+      // @ts-expect-error — awslambda HttpResponseStream type
+      responseStream = awslambda.HttpResponseStream.from(responseStream, {
+        statusCode: 429,
+        headers: { ...baseHeaders, "Content-Type": "application/json" },
+      });
+      responseStream.write(
+        JSON.stringify({ error: "Rate limit exceeded. Try again tomorrow.", remaining: 0 })
+      );
+      responseStream.end();
+      return;
+    }
+
+    try {
+      const bedrockMessages = messages && messages.length > 0
+        ? messages
+        : [{ role: "user", content: `Classify this AI use case under the EU AI Act and outline the obligations:\n\n${prompt.trim()}` }];
+
+      const bedrockResponse = await bedrock.send(
+        new InvokeModelWithResponseStreamCommand({
+          modelId: MODEL_ID,
+          contentType: "application/json",
+          accept: "application/json",
+          body: JSON.stringify({
+            anthropic_version: "bedrock-2023-05-31",
+            max_tokens: 4096,
+            system: SYSTEM_PROMPT,
+            messages: bedrockMessages,
+          }),
+        })
+      );
+
+      // @ts-expect-error — awslambda HttpResponseStream type
+      responseStream = awslambda.HttpResponseStream.from(responseStream, {
+        statusCode: 200,
+        headers: baseHeaders,
+      });
+
+      if (bedrockResponse.body) {
+        for await (const event of bedrockResponse.body) {
+          if (event.chunk?.bytes) {
+            const parsed = JSON.parse(new TextDecoder().decode(event.chunk.bytes));
+            if (parsed.type === "content_block_delta" && parsed.delta?.text) {
+              responseStream.write(parsed.delta.text);
+            }
+          }
+        }
+      }
+
+      responseStream.end();
+    } catch (err) {
+      console.error("Bedrock error:", err);
+      // @ts-expect-error — awslambda HttpResponseStream type
+      responseStream = awslambda.HttpResponseStream.from(responseStream, {
+        statusCode: 500,
+        headers: { ...baseHeaders, "Content-Type": "application/json" },
+      });
+      responseStream.write(
+        JSON.stringify({ error: "Failed to generate the assessment. Please try again." })
+      );
+      responseStream.end();
+    }
+  }
+);

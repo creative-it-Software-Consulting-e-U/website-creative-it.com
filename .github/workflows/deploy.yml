@@ -18,6 +18,9 @@ jobs:
       agent_visualizer_url: ${{ steps.resolve-urls.outputs.agent_visualizer_url }}
       website_remix_url: ${{ steps.resolve-urls.outputs.website_remix_url }}
       live_translation_url: ${{ steps.resolve-urls.outputs.live_translation_url }}
+      cost_check_url: ${{ steps.resolve-urls.outputs.cost_check_url }}
+      ai_act_check_url: ${{ steps.resolve-urls.outputs.ai_act_check_url }}
+      model_compare_url: ${{ steps.resolve-urls.outputs.model_compare_url }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -75,6 +78,9 @@ jobs:
           echo "agent_visualizer_url=$(jq -r '.ContactApiStack.AgentVisualizerUrl // empty' cdk-outputs.json)" >> "$GITHUB_OUTPUT"
           echo "website_remix_url=$(jq -r '.ContactApiStack.WebsiteRemixUrl // empty' cdk-outputs.json)" >> "$GITHUB_OUTPUT"
           echo "live_translation_url=$(jq -r '.ContactApiStack.LiveTranslationUrl // empty' cdk-outputs.json)" >> "$GITHUB_OUTPUT"
+          echo "cost_check_url=$(jq -r '.ContactApiStack.CostCheckUrl // empty' cdk-outputs.json)" >> "$GITHUB_OUTPUT"
+          echo "ai_act_check_url=$(jq -r '.ContactApiStack.AiActCheckUrl // empty' cdk-outputs.json)" >> "$GITHUB_OUTPUT"
+          echo "model_compare_url=$(jq -r '.ContactApiStack.ModelCompareUrl // empty' cdk-outputs.json)" >> "$GITHUB_OUTPUT"
         working-directory: infra
 
       - name: Resolve API URLs
@@ -87,6 +93,9 @@ jobs:
             echo "agent_visualizer_url=${{ steps.cdk-deploy.outputs.agent_visualizer_url }}" >> "$GITHUB_OUTPUT"
             echo "website_remix_url=${{ steps.cdk-deploy.outputs.website_remix_url }}" >> "$GITHUB_OUTPUT"
             echo "live_translation_url=${{ steps.cdk-deploy.outputs.live_translation_url }}" >> "$GITHUB_OUTPUT"
+            echo "cost_check_url=${{ steps.cdk-deploy.outputs.cost_check_url }}" >> "$GITHUB_OUTPUT"
+            echo "ai_act_check_url=${{ steps.cdk-deploy.outputs.ai_act_check_url }}" >> "$GITHUB_OUTPUT"
+            echo "model_compare_url=${{ steps.cdk-deploy.outputs.model_compare_url }}" >> "$GITHUB_OUTPUT"
           else
             if [ "${{ github.ref }}" = "refs/heads/main" ]; then
               AI_DOMAIN="ai.creative-it.com"
@@ -99,6 +108,9 @@ jobs:
             echo "agent_visualizer_url=https://${AI_DOMAIN}/agent-visualizer" >> "$GITHUB_OUTPUT"
             echo "website_remix_url=https://${AI_DOMAIN}/website-remix" >> "$GITHUB_OUTPUT"
             echo "live_translation_url=https://${AI_DOMAIN}/live-translation" >> "$GITHUB_OUTPUT"
+            echo "cost_check_url=https://${AI_DOMAIN}/cost-check" >> "$GITHUB_OUTPUT"
+            echo "ai_act_check_url=https://${AI_DOMAIN}/ai-act-check" >> "$GITHUB_OUTPUT"
+            echo "model_compare_url=https://${AI_DOMAIN}/model-compare" >> "$GITHUB_OUTPUT"
           fi
 
   deploy-vercel:
@@ -136,6 +148,9 @@ jobs:
           PUBLIC_AGENT_VISUALIZER_URL: ${{ needs.deploy-cdk.outputs.agent_visualizer_url }}
           PUBLIC_WEBSITE_REMIX_URL: ${{ needs.deploy-cdk.outputs.website_remix_url }}
           PUBLIC_LIVE_TRANSLATION_URL: ${{ needs.deploy-cdk.outputs.live_translation_url }}
+          PUBLIC_COST_CHECK_URL: ${{ needs.deploy-cdk.outputs.cost_check_url }}
+          PUBLIC_AI_ACT_CHECK_URL: ${{ needs.deploy-cdk.outputs.ai_act_check_url }}
+          PUBLIC_MODEL_COMPARE_URL: ${{ needs.deploy-cdk.outputs.model_compare_url }}
 
       - name: Build (preview)
         if: github.ref == 'refs/heads/dev'
@@ -148,6 +163,9 @@ jobs:
           PUBLIC_AGENT_VISUALIZER_URL: ${{ needs.deploy-cdk.outputs.agent_visualizer_url }}
           PUBLIC_WEBSITE_REMIX_URL: ${{ needs.deploy-cdk.outputs.website_remix_url }}
           PUBLIC_LIVE_TRANSLATION_URL: ${{ needs.deploy-cdk.outputs.live_translation_url }}
+          PUBLIC_COST_CHECK_URL: ${{ needs.deploy-cdk.outputs.cost_check_url }}
+          PUBLIC_AI_ACT_CHECK_URL: ${{ needs.deploy-cdk.outputs.ai_act_check_url }}
+          PUBLIC_MODEL_COMPARE_URL: ${{ needs.deploy-cdk.outputs.model_compare_url }}
 
       - name: Deploy (production)
         if: github.ref == 'refs/heads/main'

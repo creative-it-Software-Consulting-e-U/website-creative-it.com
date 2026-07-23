@@ -597,6 +597,202 @@ export class ContactApiStack extends cdk.Stack {
 
     githubStatsTable.grantReadWriteData(agentVisualizerHandler);
 
+    // ── Cost Check Lambda (Bedrock streaming) ───────────────────────────
+    const costCheckHandler = new lambdaNode.NodejsFunction(
+      this,
+      "CostCheckHandler",
+      {
+        runtime: lambda.Runtime.NODEJS_22_X,
+        architecture: lambda.Architecture.ARM_64,
+        memorySize: 512,
+        timeout: cdk.Duration.seconds(60),
+        entry: path.join(
+          __dirname,
+          "..",
+          "lambda",
+          "cost-check",
+          "index.ts"
+        ),
+        handler: "handler",
+        bundling: {
+          format: lambdaNode.OutputFormat.ESM,
+          mainFields: ["module", "main"],
+          externalModules: [
+            "@aws-sdk/client-dynamodb",
+            "@aws-sdk/lib-dynamodb",
+          ],
+        },
+        environment: {
+          TABLE_NAME: githubStatsTable.tableName,
+          ALLOWED_ORIGINS: config.allowedOrigins.join(","),
+        },
+      }
+    );
+
+    const costCheckUrl = costCheckHandler.addFunctionUrl({
+      authType: lambda.FunctionUrlAuthType.NONE,
+      invokeMode: lambda.InvokeMode.RESPONSE_STREAM,
+      cors: {
+        allowedOrigins: config.allowedOrigins,
+        allowedMethods: [lambda.HttpMethod.POST],
+        allowedHeaders: ["Content-Type"],
+        exposedHeaders: ["X-Remaining-Requests"],
+        maxAge: cdk.Duration.hours(1),
+      },
+    });
+
+    costCheckHandler.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ["bedrock:InvokeModelWithResponseStream"],
+        resources: [
+          `arn:aws:bedrock:*:${this.account}:inference-profile/eu.anthropic.claude-sonnet-4-20250514-v1:0`,
+          "arn:aws:bedrock:eu-*::foundation-model/anthropic.claude-sonnet-4-20250514-v1:0",
+        ],
+      })
+    );
+
+    costCheckHandler.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: [
+          "aws-marketplace:ViewSubscriptions",
+          "aws-marketplace:Subscribe",
+        ],
+        resources: ["*"],
+      })
+    );
+
+    githubStatsTable.grantReadWriteData(costCheckHandler);
+
+    // ── AI Act Check Lambda (Bedrock streaming) ─────────────────────────
+    const aiActCheckHandler = new lambdaNode.NodejsFunction(
+      this,
+      "AiActCheckHandler",
+      {
+        runtime: lambda.Runtime.NODEJS_22_X,
+        architecture: lambda.Architecture.ARM_64,
+        memorySize: 512,
+        timeout: cdk.Duration.seconds(60),
+        entry: path.join(
+          __dirname,
+          "..",
+          "lambda",
+          "ai-act-check",
+          "index.ts"
+        ),
+        handler: "handler",
+        bundling: {
+          format: lambdaNode.OutputFormat.ESM,
+          mainFields: ["module", "main"],
+          externalModules: [
+            "@aws-sdk/client-dynamodb",
+            "@aws-sdk/lib-dynamodb",
+          ],
+        },
+        environment: {
+          TABLE_NAME: githubStatsTable.tableName,
+          ALLOWED_ORIGINS: config.allowedOrigins.join(","),
+        },
+      }
+    );
+
+    const aiActCheckUrl = aiActCheckHandler.addFunctionUrl({
+      authType: lambda.FunctionUrlAuthType.NONE,
+      invokeMode: lambda.InvokeMode.RESPONSE_STREAM,
+      cors: {
+        allowedOrigins: config.allowedOrigins,
+        allowedMethods: [lambda.HttpMethod.POST],
+        allowedHeaders: ["Content-Type"],
+        exposedHeaders: ["X-Remaining-Requests"],
+        maxAge: cdk.Duration.hours(1),
+      },
+    });
+
+    aiActCheckHandler.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ["bedrock:InvokeModelWithResponseStream"],
+        resources: [
+          `arn:aws:bedrock:*:${this.account}:inference-profile/eu.anthropic.claude-sonnet-4-20250514-v1:0`,
+          "arn:aws:bedrock:eu-*::foundation-model/anthropic.claude-sonnet-4-20250514-v1:0",
+        ],
+      })
+    );
+
+    aiActCheckHandler.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: [
+          "aws-marketplace:ViewSubscriptions",
+          "aws-marketplace:Subscribe",
+        ],
+        resources: ["*"],
+      })
+    );
+
+    githubStatsTable.grantReadWriteData(aiActCheckHandler);
+
+    // ── Model Compare Lambda (parallel Converse calls, NDJSON stream) ───
+    const modelCompareHandler = new lambdaNode.NodejsFunction(
+      this,
+      "ModelCompareHandler",
+      {
+        runtime: lambda.Runtime.NODEJS_22_X,
+        architecture: lambda.Architecture.ARM_64,
+        memorySize: 512,
+        timeout: cdk.Duration.seconds(60),
+        entry: path.join(
+          __dirname,
+          "..",
+          "lambda",
+          "model-compare",
+          "index.ts"
+        ),
+        handler: "handler",
+        bundling: {
+          format: lambdaNode.OutputFormat.ESM,
+          mainFields: ["module", "main"],
+          externalModules: [
+            "@aws-sdk/client-dynamodb",
+            "@aws-sdk/lib-dynamodb",
+          ],
+        },
+        environment: {
+          TABLE_NAME: githubStatsTable.tableName,
+          ALLOWED_ORIGINS: config.allowedOrigins.join(","),
+        },
+      }
+    );
+
+    const modelCompareUrl = modelCompareHandler.addFunctionUrl({
+      authType: lambda.FunctionUrlAuthType.NONE,
+      invokeMode: lambda.InvokeMode.RESPONSE_STREAM,
+      cors: {
+        allowedOrigins: config.allowedOrigins,
+        allowedMethods: [lambda.HttpMethod.POST],
+        allowedHeaders: ["Content-Type"],
+        exposedHeaders: ["X-Remaining-Requests"],
+        maxAge: cdk.Duration.hours(1),
+      },
+    });
+
+    // Invokes several models (Anthropic + Amazon) via the Converse API
+    modelCompareHandler.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ["bedrock:InvokeModel", "bedrock:GetInferenceProfile"],
+        resources: ["*"],
+      })
+    );
+
+    modelCompareHandler.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: [
+          "aws-marketplace:ViewSubscriptions",
+          "aws-marketplace:Subscribe",
+        ],
+        resources: ["*"],
+      })
+    );
+
+    githubStatsTable.grantReadWriteData(modelCompareHandler);
+
     // ── Knowledge Bot Infrastructure (S3 Embeddings + In-Lambda RAG) ────
 
     // S3 bucket for pre-computed embeddings (built locally / in CI from
@@ -904,6 +1100,18 @@ function handler(event) {
             origin: fnOrigin(liveTranslationUrl),
             ...aiBehaviorDefaults,
           },
+          "/cost-check": {
+            origin: fnOrigin(costCheckUrl),
+            ...aiBehaviorDefaults,
+          },
+          "/ai-act-check": {
+            origin: fnOrigin(aiActCheckUrl),
+            ...aiBehaviorDefaults,
+          },
+          "/model-compare": {
+            origin: fnOrigin(modelCompareUrl),
+            ...aiBehaviorDefaults,
+          },
         },
       }
     );
@@ -971,6 +1179,21 @@ function handler(event) {
     new cdk.CfnOutput(this, "KnowledgeBotUrl", {
       value: `https://${aiDomainName}/knowledge-bot`,
       description: "Knowledge Bot via CloudFront",
+    });
+
+    new cdk.CfnOutput(this, "CostCheckUrl", {
+      value: `https://${aiDomainName}/cost-check`,
+      description: "Cloud Cost Check via CloudFront",
+    });
+
+    new cdk.CfnOutput(this, "AiActCheckUrl", {
+      value: `https://${aiDomainName}/ai-act-check`,
+      description: "EU AI Act Check via CloudFront",
+    });
+
+    new cdk.CfnOutput(this, "ModelCompareUrl", {
+      value: `https://${aiDomainName}/model-compare`,
+      description: "Model Compare via CloudFront",
     });
 
     new cdk.CfnOutput(this, "AiDistributionDomain", {

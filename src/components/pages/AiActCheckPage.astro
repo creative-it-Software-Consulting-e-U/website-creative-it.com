@@ -1,0 +1,356 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import CtaBlock from "../CtaBlock.astro";
+import TitleBlock from "../TitleBlock.astro";
+import { t, type Locale } from "../../config/site";
+import { localePath } from "../../utils/i18n";
+const locale = (Astro.currentLocale || 'en') as Locale;
+const config = t(locale);
+const p = config.pages.aiActCheck;
+const sectionLabel = locale === 'de' ? 'Risiko-Einstufung' : 'Risk Assessment';
+---
+
+<Layout title={p.meta.title} description={p.meta.description}>
+  <!-- Hero -->
+  <section class="relative py-20 lg:py-28 overflow-hidden">
+    <div class="absolute inset-0">
+      <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[250px] md:w-[800px] md:h-[500px]"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl">
+        <div class="chip mb-4 animate-fade-in-up opacity-0" style="animation-delay: 0.1s; animation-fill-mode: forwards;">
+          <span class="w-1.5 h-1.5 rounded-full bg-purple animate-pulse"></span>
+          <span>{p.hero.chip}</span>
+        </div>
+        <h1 class="heading-xl text-5xl lg:text-6xl xl:text-7xl text-off-white mb-6 animate-fade-in-up opacity-0" style="animation-delay: 0.2s; animation-fill-mode: forwards;">
+          {p.hero.headline.before}<span class="gradient-text">{p.hero.headline.gradient}</span>{p.hero.headline.after}
+        </h1>
+        <p class="text-lg lg:text-xl text-text-secondary leading-relaxed animate-fade-in-up opacity-0" style="animation-delay: 0.3s; animation-fill-mode: forwards;">
+          {p.hero.description}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI Act Check -->
+  <section class="pb-24 lg:pb-32 relative">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="mb-10 lg:mb-12 reveal">
+        <TitleBlock no="01" title={sectionLabel} locale={locale} />
+      </div>
+      <div class="grid lg:grid-cols-2 gap-6 reveal">
+        <!-- Input Panel -->
+        <div class="card-elevated p-6 lg:p-8 flex flex-col">
+          <label for="aiact-prompt" class="label text-text-muted mb-3">{p.inputSection.promptLabel}</label>
+          <textarea
+            id="aiact-prompt"
+            class="w-full h-40 bg-navy/60 border border-ink/[0.08] rounded-none px-4 py-3 text-off-white placeholder-text-muted resize-none focus:outline-none focus:border-indigo focus:shadow-[0_0_0_3px_rgba(28,27,26,0.12)] transition-all duration-200"
+            placeholder={p.inputSection.promptPlaceholder}
+            maxlength={p.inputSection.charLimit}
+          ></textarea>
+          <div class="flex items-center justify-between mt-2 mb-4">
+            <span id="char-count" class="text-xs text-text-muted">0 / {p.inputSection.charLimit}</span>
+            <span id="remaining-requests" class="text-xs text-text-muted"></span>
+          </div>
+
+          <!-- Example Chips -->
+          <div class="mb-6">
+            <p class="text-xs text-text-muted mb-3">{locale === 'de' ? 'Beschreiben Sie oben frei Ihren Anwendungsfall — oder lassen Sie sich inspirieren:' : 'Describe your use case above — or get inspired:'}</p>
+            <div class="flex flex-wrap gap-2">
+              {p.examples.map((example) => (
+                <button
+                  class="example-chip font-mono text-xs bg-purple/10 border border-purple/20 text-purple px-3 py-1.5 hover:bg-purple/20 hover:border-purple/30 transition-colors duration-200 cursor-pointer text-left"
+                  data-prompt={example}
+                >
+                  {example.length > 55 ? example.slice(0, 55) + "..." : example}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <!-- Conversation indicator -->
+          <div id="conversation-bar" class="hidden flex items-center justify-between mb-3">
+            <div class="chip text-xs">
+              <span class="w-1.5 h-1.5 rounded-full bg-cyan animate-pulse"></span>
+              <span id="refining-label">{p.conversation.refiningLabel}</span>
+            </div>
+            <button id="new-analysis-btn" class="text-xs text-text-muted hover:text-off-white border border-ink/[0.08] rounded-none px-3 py-1.5 transition-colors duration-200 cursor-pointer">
+              {p.conversation.newAnalysisButton}
+            </button>
+          </div>
+
+          <button
+            id="generate-btn"
+            class="btn-glow w-full mt-auto"
+            data-generating-label={p.inputSection.generatingButton}
+          >
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" /></svg>
+            <span id="generate-btn-text">{p.inputSection.generateButton}</span>
+          </button>
+          <p class="text-xs text-text-muted mt-3 text-center">Press <kbd class="px-1.5 py-0.5 bg-navy/60 border border-ink/[0.08] rounded text-[10px]">Ctrl</kbd> + <kbd class="px-1.5 py-0.5 bg-navy/60 border border-ink/[0.08] rounded text-[10px]">Enter</kbd></p>
+        </div>
+
+        <!-- Results Panel -->
+        <div class="card-elevated p-6 lg:p-8 flex flex-col min-h-[500px]">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="label text-text-muted">{sectionLabel}</span>
+            <span
+              id="risk-badge"
+              class="hidden font-mono text-xs px-3 py-1.5 border"
+              data-label-prohibited={p.riskLabels.prohibited}
+              data-label-high={p.riskLabels.high}
+              data-label-limited={p.riskLabels.limited}
+              data-label-minimal={p.riskLabels.minimal}
+              data-label-unclear={p.riskLabels.unclear}
+            ></span>
+            <div class="flex-1"></div>
+            <button id="clear-btn" class="hidden text-xs text-text-muted hover:text-off-white border border-ink/[0.08] rounded-none px-3 py-1.5 transition-colors duration-200 cursor-pointer">
+              Clear
+            </button>
+          </div>
+
+          <div id="results-container" class="flex-1 relative rounded-none overflow-hidden border border-ink/[0.06]">
+            <div id="empty-state" class="absolute inset-0 flex items-center justify-center bg-navy/95">
+              <div class="text-center px-6">
+                <svg class="w-12 h-12 text-text-muted/30 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" /></svg>
+                <p class="text-sm text-text-muted">{p.previewSection.emptyState}</p>
+              </div>
+            </div>
+            <div id="results-output" class="hidden w-full h-full bg-navy/95 text-text-secondary text-sm p-6 overflow-auto prose-invert max-h-[600px]"></div>
+          </div>
+
+          <p class="text-xs text-text-muted mt-4">{p.disclaimer}</p>
+
+          <!-- Loading indicator -->
+          <div id="loading-indicator" class="hidden absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div class="flex items-center gap-3 bg-surface/90 backdrop-blur-sm border border-ink/[0.08] rounded-none px-5 py-3">
+              <div class="w-4 h-4 border-2 border-purple border-t-transparent rounded-full animate-spin"></div>
+              <span class="text-sm text-text-secondary">{p.inputSection.generatingButton}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Powered by AWS Bedrock badge -->
+      <div class="flex justify-center items-center gap-3 mt-6 reveal">
+        <div class="chip text-xs">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L3 7v10l9 5 9-5V7l-9-5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M12 22V12M3 7l9 5 9-5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+          </svg>
+          Powered by AWS Bedrock
+        </div>
+        <a href={localePath("/how-it-works#ai-act-check", locale)} class="text-xs text-text-muted hover:text-purple transition-colors duration-200">How it works &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <CtaBlock
+    headline={p.cta.headline}
+    description={p.cta.description}
+    button={p.cta.button}
+    href={localePath("/contact", locale)}
+  />
+</Layout>
+
+<script>
+  const API_URL = import.meta.env.PUBLIC_AI_ACT_CHECK_URL;
+  const CHAR_LIMIT = 2000;
+
+  const promptEl = document.getElementById('aiact-prompt') as HTMLTextAreaElement;
+  const charCountEl = document.getElementById('char-count')!;
+  const remainingEl = document.getElementById('remaining-requests')!;
+  const generateBtn = document.getElementById('generate-btn') as HTMLButtonElement;
+  const generateBtnText = document.getElementById('generate-btn-text')!;
+  const resultsOutput = document.getElementById('results-output')!;
+  const clearBtn = document.getElementById('clear-btn')!;
+  const emptyState = document.getElementById('empty-state')!;
+  const loadingIndicator = document.getElementById('loading-indicator')!;
+  const exampleChips = document.querySelectorAll('.example-chip');
+  const conversationBar = document.getElementById('conversation-bar')!;
+  const newAnalysisBtn = document.getElementById('new-analysis-btn')!;
+  const riskBadge = document.getElementById('risk-badge')!;
+
+  const idleLabel = generateBtnText.textContent ?? 'Classify';
+  const generatingLabel = generateBtn.dataset.generatingLabel ?? 'Classifying...';
+
+  const RISK_STYLES: Record<string, string> = {
+    prohibited: 'bg-red-500/10 border-red-500/40 text-red-400',
+    high: 'bg-orange-500/10 border-orange-500/40 text-orange-400',
+    limited: 'bg-yellow-500/10 border-yellow-500/40 text-yellow-400',
+    minimal: 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400',
+    unclear: 'bg-ink/5 border-ink/20 text-text-muted',
+  };
+  const ALL_RISK_CLASSES = Object.values(RISK_STYLES).flatMap((s) => s.split(' '));
+
+  let fullResponse = '';
+  let isGenerating = false;
+  let conversationHistory: Array<{role: string, content: string}> = [];
+
+  promptEl.addEventListener('input', () => {
+    charCountEl.textContent = `${promptEl.value.length} / ${CHAR_LIMIT}`;
+  });
+
+  exampleChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      promptEl.value = (chip as HTMLElement).dataset.prompt ?? '';
+      charCountEl.textContent = `${promptEl.value.length} / ${CHAR_LIMIT}`;
+      promptEl.focus();
+    });
+  });
+
+  // Simple markdown to HTML
+  function renderMarkdown(text: string): string {
+    let html = text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+
+    html = html.replace(/^### (.+)$/gm, '<h4 class="text-off-white font-semibold text-base mt-6 mb-2">$1</h4>');
+    html = html.replace(/^## (.+)$/gm, '<h3 class="text-off-white font-bold text-lg mt-8 mb-3 flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-purple"></span>$1</h3>');
+    html = html.replace(/\*\*(.+?)\*\*/g, '<strong class="text-off-white">$1</strong>');
+    html = html.replace(/`([^`]+)`/g, '<code class="bg-surface px-1.5 py-0.5 rounded text-cyan text-xs">$1</code>');
+    html = html.replace(/^- (.+)$/gm, '<li class="ml-4 mb-1 text-text-secondary list-disc">$1</li>');
+    html = html.replace(/((?:<li[^>]*>.*<\/li>\n?)+)/g, '<ul class="my-2">$1</ul>');
+    html = html.replace(/^(?!<[hul]|<pre|<li)(.+)$/gm, '<p class="text-text-secondary leading-relaxed mb-2">$1</p>');
+
+    return html;
+  }
+
+  function setRiskBadge(risk: string) {
+    const label = riskBadge.dataset[`label${risk.charAt(0).toUpperCase()}${risk.slice(1)}`];
+    if (!label) return;
+    riskBadge.classList.remove('hidden', ...ALL_RISK_CLASSES);
+    riskBadge.classList.add(...(RISK_STYLES[risk] ?? RISK_STYLES.unclear).split(' '));
+    riskBadge.textContent = label;
+  }
+
+  function hideRiskBadge() {
+    riskBadge.classList.add('hidden');
+    riskBadge.textContent = '';
+  }
+
+  // Strip the ---RISK:x--- marker from display text; update badge when found
+  function processResponse(text: string): string {
+    const match = text.match(/---RISK:(prohibited|high|limited|minimal|unclear)---/);
+    if (match) setRiskBadge(match[1]);
+    return text.replace(/---RISK:(prohibited|high|limited|minimal|unclear)---\n?/, '').trim();
+  }
+
+  function updateConversationUI() {
+    if (conversationHistory.length > 0) {
+      conversationBar.classList.remove('hidden');
+    } else {
+      conversationBar.classList.add('hidden');
+    }
+  }
+
+  function resetAll() {
+    conversationHistory = [];
+    fullResponse = '';
+    resultsOutput.innerHTML = '';
+    resultsOutput.classList.add('hidden');
+    emptyState.classList.remove('hidden');
+    clearBtn.classList.add('hidden');
+    hideRiskBadge();
+    updateConversationUI();
+  }
+
+  newAnalysisBtn.addEventListener('click', () => {
+    resetAll();
+    promptEl.value = '';
+    charCountEl.textContent = `0 / ${CHAR_LIMIT}`;
+    promptEl.focus();
+  });
+
+  clearBtn.addEventListener('click', resetAll);
+
+  promptEl.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+      e.preventDefault();
+      if (!isGenerating) generate();
+    }
+  });
+
+  async function generate() {
+    const prompt = promptEl.value.trim();
+    if (!prompt || isGenerating || !API_URL) return;
+
+    const isFirstMessage = conversationHistory.length === 0;
+    const userContent = isFirstMessage
+      ? `Classify this AI use case under the EU AI Act and outline the obligations:\n\n${prompt}`
+      : prompt;
+
+    conversationHistory.push({ role: 'user', content: userContent });
+
+    isGenerating = true;
+    fullResponse = '';
+    generateBtn.disabled = true;
+    generateBtnText.textContent = generatingLabel;
+    generateBtn.classList.add('opacity-70');
+    loadingIndicator.classList.remove('hidden');
+    emptyState.classList.add('hidden');
+    clearBtn.classList.add('hidden');
+    hideRiskBadge();
+    resultsOutput.innerHTML = '';
+
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt, messages: conversationHistory }),
+      });
+
+      const remaining = res.headers.get('X-Remaining-Requests');
+      if (remaining !== null) {
+        remainingEl.textContent = `${remaining} / 10`;
+      }
+
+      if (!res.ok) {
+        const err = await res.text();
+        let message = 'Request failed. Please try again.';
+        try { const parsed = JSON.parse(err); message = parsed.error || message; } catch {}
+        conversationHistory.pop();
+        throw new Error(message);
+      }
+
+      loadingIndicator.classList.add('hidden');
+      resultsOutput.classList.remove('hidden');
+
+      const reader = res.body?.getReader();
+      if (!reader) throw new Error('Streaming not supported');
+
+      const decoder = new TextDecoder();
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        fullResponse += decoder.decode(value, { stream: true });
+        resultsOutput.innerHTML = renderMarkdown(processResponse(fullResponse));
+        resultsOutput.scrollTop = resultsOutput.scrollHeight;
+      }
+
+      conversationHistory.push({ role: 'assistant', content: fullResponse });
+      updateConversationUI();
+
+      clearBtn.classList.remove('hidden');
+      promptEl.value = '';
+      charCountEl.textContent = `0 / ${CHAR_LIMIT}`;
+    } catch (err) {
+      loadingIndicator.classList.add('hidden');
+      resultsOutput.classList.remove('hidden');
+      const message = err instanceof Error ? err.message : 'An error occurred';
+      resultsOutput.innerHTML = `<p class="text-sm text-red-400 p-2">${message.replace(/</g, '&lt;')}</p>`;
+      updateConversationUI();
+    } finally {
+      isGenerating = false;
+      generateBtn.disabled = false;
+      generateBtnText.textContent = idleLabel;
+      generateBtn.classList.remove('opacity-70');
+      loadingIndicator.classList.add('hidden');
+    }
+  }
+
+  generateBtn.addEventListener('click', generate);
+</script>

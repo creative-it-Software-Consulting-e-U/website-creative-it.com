@@ -1,6 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import Breadcrumbs from "../Breadcrumbs.astro";
+import TitleBlock from "../TitleBlock.astro";
 import { t, type Locale } from "../../config/site";
 const locale = (Astro.currentLocale || 'en') as Locale;
 const config = t(locale);
@@ -130,9 +131,8 @@ const inputClasses = "w-full px-4 py-3 bg-paper border border-rule rounded-sm te
   <!-- FAQ Section -->
   <section class="pb-20 lg:pb-28">
     <div class="max-w-4xl mx-auto px-6 lg:px-8">
-      <div class="flex items-baseline gap-4 mb-4">
-        <span class="font-mono text-xs uppercase tracking-[0.08em] text-graphite">{p.faqSection.chip}</span>
-        <div class="flex-1 h-px bg-rule"></div>
+      <div class="mb-10 lg:mb-12">
+        <TitleBlock no="01" title={p.faqSection.chip} locale={locale} />
       </div>
       <h2 class="heading-lg text-4xl lg:text-5xl text-ink mb-12">{p.faqSection.headline}</h2>
 

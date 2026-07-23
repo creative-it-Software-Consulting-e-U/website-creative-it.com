@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import Breadcrumbs from "../Breadcrumbs.astro";
 import CtaBlock from "../CtaBlock.astro";
+import TitleBlock from "../TitleBlock.astro";
 import { t, type Locale } from "../../config/site";
 import { localePath } from "../../utils/i18n";
 const locale = (Astro.currentLocale || 'en') as Locale;
@@ -51,9 +52,8 @@ const why = config.about.whyChooseUs;
   <!-- Full Story — reading column -->
   <section id="full-story" class="py-20 lg:py-28">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
-      <div class="flex items-baseline gap-4 mb-14 lg:mb-20">
-        <span class="font-mono text-xs uppercase tracking-[0.08em] text-graphite">01 — {p.storySection.chip}</span>
-        <div class="flex-1 h-px bg-rule"></div>
+      <div class="mb-14 lg:mb-20">
+        <TitleBlock no="01" title={p.storySection.chip} locale={locale} />
       </div>
 
       <div class="max-w-[68ch] mx-auto">
@@ -70,9 +70,8 @@ const why = config.about.whyChooseUs;
   <!-- Values -->
   <section class="py-20 lg:py-28">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
-      <div class="flex items-baseline gap-4 mb-14 lg:mb-20">
-        <span class="font-mono text-xs uppercase tracking-[0.08em] text-graphite">02 — {p.valuesSection.chip}</span>
-        <div class="flex-1 h-px bg-rule"></div>
+      <div class="mb-14 lg:mb-20">
+        <TitleBlock no="02" title={p.valuesSection.chip} locale={locale} />
       </div>
 
       <h2 class="heading-lg text-4xl lg:text-5xl text-ink mb-14">
@@ -94,9 +93,8 @@ const why = config.about.whyChooseUs;
   <!-- Why work with me -->
   <section class="py-20 lg:py-28">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
-      <div class="flex items-baseline gap-4 mb-14 lg:mb-20">
-        <span class="font-mono text-xs uppercase tracking-[0.08em] text-graphite">03 — {p.whySection.chip}</span>
-        <div class="flex-1 h-px bg-rule"></div>
+      <div class="mb-14 lg:mb-20">
+        <TitleBlock no="03" title={p.whySection.chip} locale={locale} />
       </div>
 
       <div class="grid lg:grid-cols-2 gap-12 lg:gap-20">

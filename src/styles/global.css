@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
-/* Self-hosted fonts (Fontsource) — replaces the former Google Fonts CDN load */
-@import "@fontsource-variable/newsreader";
-@import "@fontsource-variable/newsreader/wght-italic.css";
+/* Self-hosted fonts (Fontsource) */
+@import "@fontsource/barlow-condensed/500.css";
+@import "@fontsource/barlow-condensed/600.css";
 @import "@fontsource/ibm-plex-sans/400.css";
 @import "@fontsource/ibm-plex-sans/500.css";
 @import "@fontsource/ibm-plex-sans/600.css";
@@ -10,16 +10,17 @@
 @import "@fontsource/ibm-plex-mono/500.css";
 
 @theme {
-  /* Editorial palette — "Klartext" */
+  /* Drafting-table palette — "Reißbrett" */
   --color-paper: #F7F4EF;
   --color-ink: #1C1B1A;
   --color-graphite: #5F5C55;
   --color-rule: #DAD5CB;
   --color-rubric: #B5371A;
+  /* Construction-line blue — grid, guides, secondary accents */
+  --color-draft: #3A66A0;
 
-  /* Legacy token names remapped onto the editorial palette so existing
-     utility classes in the page markup keep resolving. Pages migrate to
-     the semantic names above in later redesign phases. */
+  /* Legacy token names remapped onto the drafting palette so existing
+     utility classes in the page markup keep resolving. */
   --color-navy: #F7F4EF;
   --color-navy-light: #EDE8DF;
   --color-navy-mid: #DAD5CB;
@@ -34,8 +35,11 @@
   --color-text-muted: #6F6B5F;
   --color-border: rgba(28, 27, 26, 0.12);
 
-  /* Fonts */
-  --font-serif: 'Newsreader Variable', 'Newsreader', Georgia, 'Times New Roman', serif;
+  /* Fonts — display face is a DIN-flavored condensed grotesque.
+     --font-serif is kept as an alias so existing font-serif usages
+     (wordmark etc.) resolve to the display face. */
+  --font-display: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --font-serif: 'Barlow Condensed', 'Arial Narrow', sans-serif;
   --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 }
@@ -52,6 +56,14 @@ html {
 body {
   font-family: var(--font-sans);
   background-color: var(--color-paper);
+  /* Millimeter grid — fine minor lines every 8px, major lines every 40px,
+     both in construction blue at low opacity. */
+  background-image:
+    linear-gradient(to right, rgba(58, 102, 160, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(58, 102, 160, 0.05) 1px, transparent 1px),
+    linear-gradient(to right, rgba(58, 102, 160, 0.09) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(58, 102, 160, 0.09) 1px, transparent 1px);
+  background-size: 8px 8px, 8px 8px, 40px 40px, 40px 40px;
   color: var(--color-ink);
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
@@ -60,26 +72,31 @@ body {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* Typography — headlines are set in the serif, weight 500 (not shouted) */
+/* Typography — headlines are DIN-style condensed caps, like the lettering
+   on an engineering drawing. */
 .heading-xl {
-  font-family: var(--font-serif);
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  line-height: 1.05;
+  font-family: var(--font-display);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.015em;
+  /* Leading leaves room for cap-height diaeresis (Ü/Ö/Ä) */
+  line-height: 1.04;
 }
 
 .heading-lg {
-  font-family: var(--font-serif);
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  line-height: 1.1;
+  font-family: var(--font-display);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.015em;
+  line-height: 1.06;
 }
 
 .heading-md {
-  font-family: var(--font-serif);
-  font-weight: 500;
-  letter-spacing: -0.005em;
-  line-height: 1.2;
+  font-family: var(--font-display);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.05;
 }
 
 .label {
@@ -91,33 +108,33 @@ body {
   color: var(--color-graphite);
 }
 
-/* Accent word in headlines — formerly a gradient, now serif italic in rubric.
-   Class names kept so the {before, gradient, after} headline schema and all
-   page templates continue to work unchanged. */
+/* Accent word in headlines — redline markup: the word an engineer would
+   flag in red on a drawing review. Class names kept so the
+   {before, gradient, after} headline schema keeps working. */
 .gradient-text {
-  font-style: italic;
   color: var(--color-rubric);
 }
 
 .gradient-text-cyan {
-  font-style: italic;
-  color: var(--color-ink);
+  color: var(--color-draft);
 }
 
-/* Button Styles — solid ink, sharp corners, no glow, no lift */
+/* Button Styles — stamped rectangles, set in mono like plot labels */
 .btn-primary,
 .btn-glow {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.875rem 2rem;
+  padding: 0.9375rem 1.875rem;
   background: var(--color-ink);
   color: var(--color-paper);
-  font-family: var(--font-sans);
+  font-family: var(--font-mono);
   font-weight: 500;
-  font-size: 0.9375rem;
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   border: 1px solid var(--color-ink);
-  border-radius: 2px;
+  border-radius: 0;
   transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
@@ -128,18 +145,52 @@ body {
 }
 
 .btn-secondary {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.875rem 2rem;
-  background: transparent;
+  padding: 0.9375rem 1.875rem;
+  background: var(--color-paper);
   color: var(--color-ink);
-  font-family: var(--font-sans);
+  font-family: var(--font-mono);
   font-weight: 500;
-  font-size: 0.9375rem;
+  font-size: 0.8125rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   border: 1px solid var(--color-ink);
-  border-radius: 2px;
+  border-radius: 0;
   transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+/* Registration-mark corners appear on hover */
+.btn-secondary::before,
+.btn-secondary::after {
+  content: "";
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border: 0 solid var(--color-rubric);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.btn-secondary::before {
+  top: -5px;
+  left: -5px;
+  border-top-width: 1.5px;
+  border-left-width: 1.5px;
+}
+
+.btn-secondary::after {
+  bottom: -5px;
+  right: -5px;
+  border-bottom-width: 1.5px;
+  border-right-width: 1.5px;
+}
+
+.btn-secondary:hover::before,
+.btn-secondary:hover::after {
+  opacity: 1;
 }
 
 .btn-secondary:hover {
@@ -162,6 +213,7 @@ body {
 }
 
 .bg-ink .btn-secondary {
+  background: transparent;
   color: var(--color-paper);
   border-color: rgba(247, 244, 239, 0.45);
 }
@@ -172,7 +224,7 @@ body {
   border-color: var(--color-paper);
 }
 
-/* Card Styles — ruled boxes instead of floating glass panels */
+/* Card Styles — detail frames lifted off the grid paper */
 .card {
   background: transparent;
   border: 0;
@@ -187,17 +239,17 @@ body {
 
 .card-elevated {
   background: var(--color-paper);
-  border: 1px solid var(--color-rule);
+  border: 1px solid rgba(28, 27, 26, 0.35);
   border-radius: 0;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .card-elevated:hover {
-  border-color: var(--color-graphite);
+  border-color: var(--color-ink);
+  box-shadow: 4px 4px 0 rgba(28, 27, 26, 0.08);
 }
 
-/* Animations — a single subtle entrance fade is allowed (hero only);
-   everything else (scroll reveals, glows, pulses) has been removed. */
+/* Animations — a single subtle entrance fade is allowed (hero only). */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -237,7 +289,7 @@ body {
   background: var(--color-rule);
 }
 
-/* Chip — formerly a pill badge, now a mono running head */
+/* Chip — mono running head */
 .chip {
   display: inline-flex;
   align-items: center;
@@ -254,9 +306,9 @@ body {
   color: var(--color-graphite);
 }
 
-/* Selection */
+/* Selection — highlighter blue, like marking up a plot */
 ::selection {
-  background: #F4D9D1;
+  background: #D9E3F0;
   color: var(--color-ink);
 }
 
@@ -277,11 +329,12 @@ body {
 }
 
 .prose h2 {
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   color: var(--color-ink);
-  font-weight: 500;
+  font-weight: 600;
   font-size: 1.75rem;
-  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
   margin-top: 2.5rem;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
@@ -289,20 +342,23 @@ body {
 }
 
 .prose h3 {
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   color: var(--color-ink);
-  font-weight: 500;
+  font-weight: 600;
   font-size: 1.375rem;
-  letter-spacing: -0.005em;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
   margin-top: 2rem;
   margin-bottom: 0.75rem;
 }
 
 .prose h4 {
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   color: var(--color-ink);
-  font-weight: 500;
+  font-weight: 600;
   font-size: 1.125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
   margin-top: 1.5rem;
   margin-bottom: 0.5rem;
 }
@@ -333,7 +389,7 @@ body {
 }
 
 .prose blockquote {
-  border-left: 2px solid var(--color-ink);
+  border-left: 2px solid var(--color-rubric);
   padding-left: 1.25rem;
   margin: 1.5rem 0;
   color: var(--color-graphite);
@@ -370,7 +426,7 @@ body {
 .prose pre {
   background: var(--color-ink) !important;
   border: 0;
-  border-radius: 2px;
+  border-radius: 0;
   padding: 1.25rem;
   margin: 1.5rem 0;
   overflow-x: auto;
@@ -385,7 +441,7 @@ body {
 }
 
 .prose img {
-  border-radius: 2px;
+  border-radius: 0;
   border: 1px solid var(--color-rule);
   margin: 1.5rem 0;
   max-width: 100%;

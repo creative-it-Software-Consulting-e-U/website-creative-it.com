@@ -1,0 +1,112 @@
+---
+// Hand-drawn-style engineering schematic of the serverless reference
+// architecture — the hero's visual counterpart to the headline.
+// Ink linework, blue construction lines, red reviewer's annotations.
+import type { Locale } from "../config/site";
+
+interface Props {
+  locale?: Locale;
+}
+
+const locale = (Astro.props.locale || 'en') as Locale;
+const caption = locale === 'de' ? 'ABB. 01 — REFERENZ-ARCHITEKTUR' : 'FIG. 01 — REFERENCE ARCHITECTURE';
+const notToScale = locale === 'de' ? 'NICHT MASSSTÄBLICH' : 'NOT TO SCALE';
+const ariaLabel = locale === 'de'
+  ? 'Schema einer Serverless-AWS-Architektur: Client, API Gateway, Lambda, Bedrock Agent und DynamoDB'
+  : 'Schematic of a serverless AWS architecture: client, API Gateway, Lambda, Bedrock Agent, and DynamoDB';
+---
+
+<svg
+  viewBox="0 0 520 440"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  role="img"
+  aria-label={ariaLabel}
+  class="w-full h-auto select-none"
+>
+  <defs>
+    <marker id="arr-ink" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0.5 L7.5,4 L0,7.5 Z" fill="#1C1B1A" />
+    </marker>
+  </defs>
+
+  <!-- Construction lines (blue, dashed) -->
+  <g stroke="#3A66A0" stroke-width="0.75" stroke-dasharray="4 4" opacity="0.5">
+    <line x1="8" y1="56" x2="512" y2="56" />
+    <line x1="8" y1="100" x2="512" y2="100" />
+    <line x1="230" y1="8" x2="230" y2="432" />
+    <line x1="360" y1="100" x2="360" y2="432" />
+  </g>
+
+  <!-- Drawing frame -->
+  <rect x="8" y="8" width="504" height="424" stroke="#1C1B1A" stroke-width="1" />
+
+  <!-- Corner crosshairs -->
+  <g stroke="#1C1B1A" stroke-width="0.75">
+    <line x1="2" y1="8" x2="14" y2="8" /><line x1="8" y1="2" x2="8" y2="14" />
+    <line x1="506" y1="8" x2="518" y2="8" /><line x1="512" y1="2" x2="512" y2="14" />
+    <line x1="2" y1="432" x2="14" y2="432" /><line x1="8" y1="426" x2="8" y2="438" />
+    <line x1="506" y1="432" x2="518" y2="432" /><line x1="512" y1="426" x2="512" y2="438" />
+  </g>
+
+  <!-- Captions -->
+  <g font-family="IBM Plex Mono, ui-monospace, monospace" font-size="9" letter-spacing="0.8">
+    <text x="20" y="30" fill="#5F5C55">{caption}</text>
+    <text x="500" y="30" fill="#5F5C55" text-anchor="end">{notToScale}</text>
+  </g>
+
+  <!-- Boxes -->
+  <g stroke="#1C1B1A" stroke-width="1.25" fill="#F7F4EF">
+    <rect x="40" y="56" width="110" height="44" />
+    <rect x="230" y="56" width="130" height="44" />
+    <rect x="230" y="180" width="130" height="44" />
+    <rect x="396" y="180" width="96" height="44" />
+    <rect x="230" y="310" width="130" height="44" />
+    <!-- DynamoDB "cylinder" second line -->
+    <line x1="230" y1="318" x2="360" y2="318" stroke-width="0.75" fill="none" />
+  </g>
+
+  <!-- Box labels -->
+  <g font-family="IBM Plex Mono, ui-monospace, monospace" font-size="10" fill="#1C1B1A" text-anchor="middle" letter-spacing="0.6">
+    <text x="95" y="82">CLIENT</text>
+    <text x="295" y="82">API GATEWAY</text>
+    <text x="295" y="206">LAMBDA</text>
+    <text x="444" y="198" font-size="9">BEDROCK</text>
+    <text x="444" y="211" font-size="9">AGENT</text>
+    <text x="295" y="340">DYNAMODB</text>
+  </g>
+
+  <!-- Flow arrows -->
+  <g stroke="#1C1B1A" stroke-width="1.25" marker-end="url(#arr-ink)">
+    <line x1="150" y1="78" x2="226" y2="78" />
+    <line x1="295" y1="100" x2="295" y2="176" />
+    <line x1="360" y1="191" x2="392" y2="191" />
+    <line x1="396" y1="213" x2="364" y2="213" />
+    <line x1="295" y1="224" x2="295" y2="306" />
+  </g>
+
+  <!-- Flow labels -->
+  <g font-family="IBM Plex Mono, ui-monospace, monospace" font-size="8" fill="#5F5C55" letter-spacing="0.5">
+    <text x="188" y="70" text-anchor="middle">HTTPS</text>
+    <text x="303" y="142">EVENT</text>
+    <text x="303" y="270">STATE</text>
+  </g>
+
+  <!-- Red reviewer's annotation: agent loop, EU-hosted -->
+  <g stroke="#B5371A" fill="none">
+    <ellipse cx="440" cy="202" rx="66" ry="42" stroke-width="1" stroke-dasharray="3 3" transform="rotate(-4 440 202)" />
+    <path d="M 452 158 C 462 140, 470 130, 478 122" stroke-width="1" />
+  </g>
+  <g font-family="IBM Plex Mono, ui-monospace, monospace" font-size="9" fill="#B5371A" letter-spacing="0.6" text-anchor="end">
+    <text x="500" y="106">EU-HOSTED,</text>
+    <text x="500" y="118">GDPR ✓</text>
+  </g>
+
+  <!-- Dimension line: 100% serverless -->
+  <g stroke="#1C1B1A" stroke-width="0.75">
+    <line x1="230" y1="380" x2="230" y2="394" />
+    <line x1="360" y1="380" x2="360" y2="394" />
+    <line x1="230" y1="387" x2="360" y2="387" marker-start="url(#arr-ink)" marker-end="url(#arr-ink)" />
+  </g>
+  <text x="295" y="380" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="8" fill="#5F5C55" text-anchor="middle" letter-spacing="0.5">100% SERVERLESS</text>
+</svg>

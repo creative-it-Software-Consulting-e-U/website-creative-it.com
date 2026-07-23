@@ -210,7 +210,7 @@ const shared = {
         {
           title: "8. Web Fonts",
           paragraphs: [
-            "This website uses the web fonts Newsreader, IBM Plex Sans, and IBM Plex Mono for consistent font display. All fonts are self-hosted and delivered directly from this website's server. No connection to third-party font services (such as Google Fonts) is established, and no data is transmitted to font providers.",
+            "This website uses the web fonts Barlow Condensed, IBM Plex Sans, and IBM Plex Mono for consistent font display. All fonts are self-hosted and delivered directly from this website's server. No connection to third-party font services (such as Google Fonts) is established, and no data is transmitted to font providers.",
           ],
         },
         {
@@ -313,7 +313,7 @@ const shared = {
         {
           title: "8. Webfonts",
           paragraphs: [
-            "Diese Website verwendet die Schriftarten Newsreader, IBM Plex Sans und IBM Plex Mono zur einheitlichen Darstellung. Alle Schriftarten werden lokal gehostet und direkt vom Server dieser Website ausgeliefert. Es wird keine Verbindung zu Schriftdiensten Dritter (etwa Google Fonts) aufgebaut und es werden keine Daten an Schriftanbieter übermittelt.",
+            "Diese Website verwendet die Schriftarten Barlow Condensed, IBM Plex Sans und IBM Plex Mono zur einheitlichen Darstellung. Alle Schriftarten werden lokal gehostet und direkt vom Server dieser Website ausgeliefert. Es wird keine Verbindung zu Schriftdiensten Dritter (etwa Google Fonts) aufgebaut und es werden keine Daten an Schriftanbieter übermittelt.",
           ],
         },
         {

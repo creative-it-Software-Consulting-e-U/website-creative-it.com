@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import Breadcrumbs from "../Breadcrumbs.astro";
 import CtaBlock from "../CtaBlock.astro";
+import TitleBlock from "../TitleBlock.astro";
 import { t, type Locale } from "../../config/site";
 import { localePath } from "../../utils/i18n";
 const locale = (Astro.currentLocale || 'en') as Locale;
@@ -101,9 +102,8 @@ const serviceAnchor = (title: string) =>
   <!-- Process Section -->
   <section class="py-20 lg:py-28">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
-      <div class="flex items-baseline gap-4 mb-4">
-        <span class="font-mono text-xs uppercase tracking-[0.08em] text-graphite">{p.processSection.chip}</span>
-        <div class="flex-1 h-px bg-rule"></div>
+      <div class="mb-10 lg:mb-12">
+        <TitleBlock no="01" title={p.processSection.chip} locale={locale} />
       </div>
 
       <div class="grid lg:grid-cols-12 gap-6 mb-14 lg:mb-20">

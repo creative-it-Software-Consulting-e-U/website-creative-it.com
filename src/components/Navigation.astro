@@ -22,7 +22,7 @@ const isActive = (item: { href: string; children?: { href: string }[] }) =>
   item.children?.some(child => currentPath === child.href);
 ---
 
-<header class="fixed top-0 left-0 right-0 z-50 bg-paper border-b border-rule" id="nav-header">
+<header class="fixed top-0 left-0 right-0 z-50 bg-paper border-b-2 border-ink" id="nav-header">
   <nav class="max-w-7xl mx-auto px-6 lg:px-8">
     <div class="flex justify-between items-center h-16 lg:h-20">
       <!-- Logo -->
@@ -138,7 +138,7 @@ const isActive = (item: { href: string; children?: { href: string }[] }) =>
                 <button
                   class:list={[
                     "mobile-dropdown-toggle heading-lg text-4xl sm:text-5xl transition-colors duration-300 inline-flex items-center gap-2",
-                    isActive(item) ? "text-rubric italic" : "text-ink",
+                    isActive(item) ? "text-rubric" : "text-ink",
                   ]}
                   data-dropdown={`mobile-dropdown-${index}`}
                   aria-expanded="false"
@@ -175,7 +175,7 @@ const isActive = (item: { href: string; children?: { href: string }[] }) =>
                 href={item.href}
                 class:list={[
                   "heading-lg text-4xl sm:text-5xl transition-colors duration-300",
-                  currentPath === item.href ? "text-rubric italic" : "text-ink",
+                  currentPath === item.href ? "text-rubric" : "text-ink",
                 ]}
               >
                 {item.name}

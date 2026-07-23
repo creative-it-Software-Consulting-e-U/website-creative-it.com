@@ -1,6 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { siteConfig } from "../../config/site";
+import ProtectedText from "../../components/ProtectedText.astro";
 const p = siteConfig.privacy.en;
 ---
 
@@ -33,7 +34,7 @@ const p = siteConfig.privacy.en;
             <h2 class="heading-md text-xl text-off-white mb-4">{section.title}</h2>
             <div class="space-y-3">
               {section.paragraphs.map((paragraph) => (
-                <p class="text-text-secondary text-sm leading-relaxed">{paragraph}</p>
+                <p class="text-text-secondary text-sm leading-relaxed"><ProtectedText text={paragraph} /></p>
               ))}
             </div>
           </div>

@@ -50,8 +50,8 @@ const shared = {
             { label: "Company", value: "creative-it Software Consulting e.U." },
             { label: "Owner", value: "Günther Wieser" },
             { label: "Address", value: "Am Gassl 25, A-3482 Gösing am Wagram, Austria" },
-            { label: "Phone", value: "+43 660 4943737" },
-            { label: "Email", value: "info@creative-it.com" },
+            { label: "Phone", value: "{{phone}}" },
+            { label: "Email", value: "{{email}}" },
             { label: "Website", value: "https://www.creative-it.com" },
           ],
         },
@@ -107,8 +107,8 @@ const shared = {
             { label: "Unternehmen", value: "creative-it Software Consulting e.U." },
             { label: "Inhaber", value: "Günther Wieser" },
             { label: "Adresse", value: "Am Gassl 25, A-3482 Gösing am Wagram, Österreich" },
-            { label: "Telefon", value: "+43 660 4943737" },
-            { label: "E-Mail", value: "info@creative-it.com" },
+            { label: "Telefon", value: "{{phone}}" },
+            { label: "E-Mail", value: "{{email}}" },
             { label: "Website", value: "https://www.creative-it.com" },
           ],
         },
@@ -164,7 +164,7 @@ const shared = {
         {
           title: "1. Controller",
           paragraphs: [
-            "creative-it Software Consulting e.U., Günther Wieser, Am Gassl 25, A-3482 Gösing am Wagram, Austria. Email: info@creative-it.com, Phone: +43 660 4943737.",
+            "creative-it Software Consulting e.U., Günther Wieser, Am Gassl 25, A-3482 Gösing am Wagram, Austria. Email: {{email}}, Phone: {{phone}}.",
           ],
         },
         {
@@ -236,7 +236,7 @@ const shared = {
           title: "12. Your Rights",
           paragraphs: [
             "Under the GDPR, you have the following rights: Right of access (Art. 15), Right to rectification (Art. 16), Right to erasure (Art. 17), Right to restriction of processing (Art. 18), Right to data portability (Art. 20), Right to object (Art. 21), and Right to withdraw consent (Art. 7(3)).",
-            "To exercise your rights, contact us at info@creative-it.com.",
+            "To exercise your rights, contact us at {{email}}.",
           ],
         },
         {
@@ -267,7 +267,7 @@ const shared = {
         {
           title: "1. Verantwortlicher",
           paragraphs: [
-            "creative-it Software Consulting e.U., Günther Wieser, Am Gassl 25, A-3482 Gösing am Wagram, Österreich. E-Mail: info@creative-it.com, Telefon: +43 660 4943737.",
+            "creative-it Software Consulting e.U., Günther Wieser, Am Gassl 25, A-3482 Gösing am Wagram, Österreich. E-Mail: {{email}}, Telefon: {{phone}}.",
           ],
         },
         {
@@ -339,7 +339,7 @@ const shared = {
           title: "12. Ihre Rechte",
           paragraphs: [
             "Sie haben gemäß DSGVO folgende Rechte: Auskunftsrecht (Art. 15), Recht auf Berichtigung (Art. 16), Recht auf Löschung (Art. 17), Recht auf Einschränkung der Verarbeitung (Art. 18), Recht auf Datenübertragbarkeit (Art. 20), Widerspruchsrecht (Art. 21) sowie Recht auf Widerruf einer Einwilligung (Art. 7 Abs. 3).",
-            "Zur Ausübung Ihrer Rechte kontaktieren Sie uns unter info@creative-it.com.",
+            "Zur Ausübung Ihrer Rechte kontaktieren Sie uns unter {{email}}.",
           ],
         },
         {

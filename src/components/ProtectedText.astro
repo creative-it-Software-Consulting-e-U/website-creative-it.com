@@ -1,0 +1,28 @@
+---
+// Renders text containing {{email}} / {{phone}} tokens as obfuscated spans
+// that contact-protect.ts decodes client-side (same data-ct mechanism as
+// Footer and ContactPage). Keeps contact data out of the HTML source.
+import { siteConfig } from "../config/site";
+
+interface Props {
+  text: string;
+}
+const { text } = Astro.props;
+
+const emailEncoded = btoa(siteConfig.contact.email);
+const phoneEncoded = btoa(siteConfig.contact.phone.replace(/-/g, " "));
+
+const parts = text.split(/(\{\{email\}\}|\{\{phone\}\})/);
+---
+
+{
+  parts.map((part) =>
+    part === "{{email}}" ? (
+      <span data-ct={emailEncoded}>…</span>
+    ) : part === "{{phone}}" ? (
+      <span data-ct={phoneEncoded}>…</span>
+    ) : (
+      part
+    )
+  )
+}

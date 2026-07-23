@@ -1,11 +1,13 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import CtaBlock from "../CtaBlock.astro";
+import TitleBlock from "../TitleBlock.astro";
 import { t, type Locale } from "../../config/site";
 import { localePath } from "../../utils/i18n";
 const locale = (Astro.currentLocale || 'en') as Locale;
 const config = t(locale);
 const p = config.pages.aiPlayground;
+const generatorLabel = locale === 'de' ? 'Komponenten-Generator' : 'Component Generator';
 ---
 
 <Layout title={p.meta.title} description={p.meta.description}>
@@ -34,13 +36,16 @@ const p = config.pages.aiPlayground;
   <!-- Playground -->
   <section class="pb-24 lg:pb-32 relative">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="mb-10 lg:mb-12 reveal">
+        <TitleBlock no="01" title={generatorLabel} locale={locale} />
+      </div>
       <div class="grid lg:grid-cols-2 gap-6 reveal">
         <!-- Input Panel -->
         <div class="card-elevated p-6 lg:p-8 flex flex-col">
           <label for="ai-prompt" class="label text-text-muted mb-3">{p.inputSection.promptLabel}</label>
           <textarea
             id="ai-prompt"
-            class="w-full h-40 bg-navy/60 border border-ink/[0.08] rounded-xl px-4 py-3 text-off-white placeholder-text-muted resize-none focus:outline-none focus:border-indigo focus:shadow-[0_0_0_3px_rgba(28,27,26,0.12)] transition-all duration-200"
+            class="w-full h-40 bg-navy/60 border border-ink/[0.08] rounded-none px-4 py-3 text-off-white placeholder-text-muted resize-none focus:outline-none focus:border-indigo focus:shadow-[0_0_0_3px_rgba(28,27,26,0.12)] transition-all duration-200"
             placeholder={p.inputSection.promptPlaceholder}
             maxlength={p.inputSection.charLimit}
           ></textarea>
@@ -55,7 +60,7 @@ const p = config.pages.aiPlayground;
             <div class="flex flex-wrap gap-2">
               {p.examples.map((example) => (
                 <button
-                  class="example-chip text-xs bg-purple/10 border border-purple/20 text-purple rounded-full px-3 py-1.5 hover:bg-purple/20 hover:border-purple/30 transition-colors duration-200 cursor-pointer text-left"
+                  class="example-chip font-mono text-xs bg-purple/10 border border-purple/20 text-purple px-3 py-1.5 hover:bg-purple/20 hover:border-purple/30 transition-colors duration-200 cursor-pointer text-left"
                   data-prompt={example}
                 >
                   {example.length > 55 ? example.slice(0, 55) + "..." : example}
@@ -70,7 +75,7 @@ const p = config.pages.aiPlayground;
               <span class="w-1.5 h-1.5 rounded-full bg-cyan animate-pulse"></span>
               <span id="refining-label">{p.conversation.refiningLabel} &middot; 2 messages</span>
             </div>
-            <button id="new-component-btn" class="text-xs text-text-muted hover:text-off-white border border-ink/[0.08] rounded-lg px-3 py-1.5 transition-colors duration-200 cursor-pointer">
+            <button id="new-component-btn" class="text-xs text-text-muted hover:text-off-white border border-ink/[0.08] rounded-none px-3 py-1.5 transition-colors duration-200 cursor-pointer">
               {p.conversation.newComponentButton}
             </button>
           </div>
@@ -89,39 +94,39 @@ const p = config.pages.aiPlayground;
         <div class="card-elevated p-6 lg:p-8 flex flex-col min-h-[500px]">
           <!-- Tabs -->
           <div class="flex items-center gap-1 mb-4">
-            <button id="tab-preview" class="tab-btn text-sm font-medium px-4 py-2 rounded-lg bg-purple/10 text-purple border border-purple/20 transition-colors duration-200 cursor-pointer">
+            <button id="tab-preview" class="tab-btn text-sm font-medium px-4 py-2 rounded-none bg-purple/10 text-purple border border-purple/20 transition-colors duration-200 cursor-pointer">
               {p.previewSection.previewTab}
             </button>
-            <button id="tab-code" class="tab-btn text-sm font-medium px-4 py-2 rounded-lg text-text-muted hover:text-off-white transition-colors duration-200 cursor-pointer">
+            <button id="tab-code" class="tab-btn text-sm font-medium px-4 py-2 rounded-none text-text-muted hover:text-off-white transition-colors duration-200 cursor-pointer">
               {p.previewSection.codeTab}
             </button>
             <div class="flex-1"></div>
-            <button id="copy-btn" class="hidden text-xs text-text-muted hover:text-cyan border border-ink/[0.08] rounded-lg px-3 py-1.5 transition-colors duration-200 cursor-pointer">
+            <button id="copy-btn" class="hidden text-xs text-text-muted hover:text-cyan border border-ink/[0.08] rounded-none px-3 py-1.5 transition-colors duration-200 cursor-pointer">
               {p.previewSection.copyButton}
             </button>
-            <button id="clear-btn" class="hidden text-xs text-text-muted hover:text-off-white border border-ink/[0.08] rounded-lg px-3 py-1.5 transition-colors duration-200 cursor-pointer">
+            <button id="clear-btn" class="hidden text-xs text-text-muted hover:text-off-white border border-ink/[0.08] rounded-none px-3 py-1.5 transition-colors duration-200 cursor-pointer">
               {p.previewSection.clearButton}
             </button>
           </div>
 
           <!-- Viewport toggles -->
           <div id="viewport-bar" class="hidden flex items-center justify-center gap-1 mb-3">
-            <button data-viewport="desktop" class="viewport-btn active text-xs font-medium px-3 py-1.5 rounded-lg bg-purple/10 text-purple border border-purple/20 transition-colors duration-200 cursor-pointer flex items-center gap-1.5" title={p.previewSection.desktopLabel}>
+            <button data-viewport="desktop" class="viewport-btn active text-xs font-medium px-3 py-1.5 rounded-none bg-purple/10 text-purple border border-purple/20 transition-colors duration-200 cursor-pointer flex items-center gap-1.5" title={p.previewSection.desktopLabel}>
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" stroke-width="1.5"/><path d="M8 21h8M12 17v4" stroke-width="1.5" stroke-linecap="round"/></svg>
               <span class="hidden sm:inline">{p.previewSection.desktopLabel}</span>
             </button>
-            <button data-viewport="tablet" class="viewport-btn text-xs font-medium px-3 py-1.5 rounded-lg text-text-muted hover:text-off-white transition-colors duration-200 cursor-pointer flex items-center gap-1.5" title={p.previewSection.tabletLabel}>
+            <button data-viewport="tablet" class="viewport-btn text-xs font-medium px-3 py-1.5 rounded-none text-text-muted hover:text-off-white transition-colors duration-200 cursor-pointer flex items-center gap-1.5" title={p.previewSection.tabletLabel}>
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2" stroke-width="1.5"/><path d="M12 18h.01" stroke-width="2" stroke-linecap="round"/></svg>
               <span class="hidden sm:inline">{p.previewSection.tabletLabel}</span>
             </button>
-            <button data-viewport="mobile" class="viewport-btn text-xs font-medium px-3 py-1.5 rounded-lg text-text-muted hover:text-off-white transition-colors duration-200 cursor-pointer flex items-center gap-1.5" title={p.previewSection.mobileLabel}>
+            <button data-viewport="mobile" class="viewport-btn text-xs font-medium px-3 py-1.5 rounded-none text-text-muted hover:text-off-white transition-colors duration-200 cursor-pointer flex items-center gap-1.5" title={p.previewSection.mobileLabel}>
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" stroke-width="1.5"/><path d="M12 18h.01" stroke-width="2" stroke-linecap="round"/></svg>
               <span class="hidden sm:inline">{p.previewSection.mobileLabel}</span>
             </button>
           </div>
 
           <!-- Preview iframe -->
-          <div id="preview-container" class="flex-1 relative rounded-xl overflow-hidden border border-ink/[0.06] bg-white">
+          <div id="preview-container" class="flex-1 relative rounded-none overflow-hidden border border-ink/[0.06] bg-white">
             <div id="empty-state" class="absolute inset-0 flex items-center justify-center bg-navy/95">
               <div class="text-center">
                 <svg class="w-12 h-12 text-text-muted/30 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
@@ -140,13 +145,13 @@ const p = config.pages.aiPlayground;
           </div>
 
           <!-- Code view -->
-          <div id="code-container" class="hidden flex-1 relative rounded-xl overflow-hidden border border-ink/[0.06]">
+          <div id="code-container" class="hidden flex-1 relative rounded-none overflow-hidden border border-ink/[0.06]">
             <pre id="code-display" class="w-full h-full bg-navy/95 text-text-secondary text-sm p-4 overflow-auto font-mono whitespace-pre-wrap"></pre>
           </div>
 
           <!-- Loading indicator -->
           <div id="loading-indicator" class="hidden absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div class="flex items-center gap-3 bg-surface/90 backdrop-blur-sm border border-ink/[0.08] rounded-xl px-5 py-3">
+            <div class="flex items-center gap-3 bg-surface/90 backdrop-blur-sm border border-ink/[0.08] rounded-none px-5 py-3">
               <div class="w-4 h-4 border-2 border-purple border-t-transparent rounded-full animate-spin"></div>
               <span class="text-sm text-text-secondary">Generating...</span>
             </div>

@@ -1,6 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import CtaBlock from "../CtaBlock.astro";
+import TitleBlock from "../TitleBlock.astro";
 import { t, type Locale } from "../../config/site";
 import { localePath } from "../../utils/i18n";
 const locale = (Astro.currentLocale || 'en') as Locale;
@@ -41,7 +42,7 @@ const p = config.pages.howItWorks;
             class="group card p-5 hover:border-purple/30 transition-all duration-300"
             style={`transition-delay: ${index * 50}ms`}
           >
-            <div class="w-9 h-9 rounded-lg bg-ink/5 border border-purple/20 flex items-center justify-center mb-3 group-hover:border-purple/40 transition-colors duration-300">
+            <div class="w-9 h-9 rounded-none bg-ink/5 border border-purple/20 flex items-center justify-center mb-3 group-hover:border-purple/40 transition-colors duration-300">
               {feature.icon === "lightning" && (
                 <svg class="w-4 h-4 text-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
               )}
@@ -74,7 +75,7 @@ const p = config.pages.howItWorks;
           class="group card p-5 hover:border-purple/30 transition-all duration-300"
           style={`transition-delay: ${p.features.length * 50}ms`}
         >
-          <div class="w-9 h-9 rounded-lg bg-ink/5 border border-cyan/20 flex items-center justify-center mb-3 group-hover:border-cyan/40 transition-colors duration-300">
+          <div class="w-9 h-9 rounded-none bg-ink/5 border border-cyan/20 flex items-center justify-center mb-3 group-hover:border-cyan/40 transition-colors duration-300">
             <svg class="w-4 h-4 text-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" /></svg>
           </div>
           <h3 class="heading-md text-sm text-off-white mb-1 group-hover:text-cyan transition-colors duration-300">Architecture</h3>
@@ -96,12 +97,11 @@ const p = config.pages.howItWorks;
       )}
 
       <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="mb-10 lg:mb-12 reveal">
+          <TitleBlock no={String(index + 1).padStart(2, '0')} title={feature.title} locale={locale} />
+        </div>
         <!-- Header -->
         <div class="max-w-3xl mb-12 reveal">
-          <div class="chip mb-4">
-            <span class="w-1.5 h-1.5 rounded-full bg-purple animate-pulse"></span>
-            <span>{feature.title}</span>
-          </div>
           <h2 class="heading-lg text-3xl lg:text-4xl text-off-white mb-4">{feature.subtitle}</h2>
           <p class="text-text-secondary text-lg leading-relaxed mb-4">{feature.whatItDoes}</p>
           {feature.link && (
@@ -128,7 +128,7 @@ const p = config.pages.howItWorks;
             {feature.techFlow.map((step, stepIndex) => (
               <div class="group card p-5 reveal" style={`transition-delay: ${200 + stepIndex * 50}ms`}>
                 <div class="flex items-start gap-4">
-                  <div class="flex-shrink-0 w-8 h-8 rounded-lg bg-ink/5 border border-purple/20 flex items-center justify-center">
+                  <div class="flex-shrink-0 w-8 h-8 rounded-none bg-ink/5 border border-purple/20 flex items-center justify-center">
                     <span class="heading-md text-purple text-xs">{String(stepIndex + 1).padStart(2, '0')}</span>
                   </div>
                   <p class="text-text-secondary text-sm leading-relaxed">{step}</p>
@@ -159,11 +159,10 @@ const p = config.pages.howItWorks;
     <div class="absolute inset-0 "></div>
 
     <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="mb-10 lg:mb-12 reveal">
+        <TitleBlock no={String(p.features.length + 1).padStart(2, '0')} title={p.architectureSection.chip} locale={locale} />
+      </div>
       <div class="max-w-2xl mb-16 reveal">
-        <div class="chip mb-4">
-          <span class="w-1.5 h-1.5 rounded-full bg-purple animate-pulse"></span>
-          <span>{p.architectureSection.chip}</span>
-        </div>
         <h2 class="heading-lg text-4xl lg:text-5xl text-off-white mb-6">
           {p.architectureSection.headline.before}<span class="gradient-text">{p.architectureSection.headline.gradient}</span>{p.architectureSection.headline.after}
         </h2>

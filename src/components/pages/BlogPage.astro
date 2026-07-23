@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import Breadcrumbs from "../Breadcrumbs.astro";
 import CtaBlock from "../CtaBlock.astro";
+import TitleBlock from "../TitleBlock.astro";
 import { t, type Locale } from "../../config/site";
 import { localePath } from "../../utils/i18n";
 import { getCollection } from "astro:content";
@@ -18,7 +19,7 @@ const posts = (await getCollection("blog")).sort(
 const [lead, ...rest] = posts;
 
 function formatDate(date: Date): string {
-  return date.toLocaleDateString("en-US", {
+  return date.toLocaleDateString(locale === 'de' ? 'de-AT' : 'en-US', {
     year: "numeric",
     month: "long",
     day: "numeric",
@@ -29,6 +30,8 @@ function formatDate(date: Date): string {
 function postUrl(post: { id: string }): string {
   return `/blog/${post.id}/`;
 }
+
+const indexLabel = locale === 'de' ? 'Artikelverzeichnis' : 'Article Index';
 
 // JSON-LD Blog schema
 const blogSchema = {
@@ -85,6 +88,9 @@ const blogSchema = {
   <!-- Articles — feuilleton -->
   <section class="pb-20 lg:pb-28">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="mb-10 lg:mb-12">
+        <TitleBlock no="01" title={indexLabel} locale={locale} />
+      </div>
       {posts.length === 0 ? (
         <p class="text-graphite text-lg">No articles found. Check back soon!</p>
       ) : (
@@ -93,6 +99,7 @@ const blogSchema = {
           <a href={postUrl(lead)} class="group grid lg:grid-cols-12 gap-x-8 gap-y-6 py-12 lg:py-16 border-t border-rule">
             <div class="lg:col-span-7">
               <div class="flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-xs uppercase tracking-[0.06em] text-graphite mb-5">
+                <span class="text-rubric">Pos. 01</span>
                 <time datetime={lead.data.publishedAt.toISOString().slice(0, 10)}>{formatDate(lead.data.publishedAt)}</time>
                 {lead.data.readTimeInMinutes > 0 && <span>{lead.data.readTimeInMinutes} min</span>}
                 <span>Günther Wieser</span>
@@ -123,9 +130,10 @@ const blogSchema = {
           </a>
 
           <!-- Remaining articles as ruled list -->
-          {rest.map((post) => (
+          {rest.map((post, index) => (
             <a href={postUrl(post)} class="group grid lg:grid-cols-12 gap-x-8 gap-y-2 py-8 lg:py-10 border-t border-rule last:border-b">
               <div class="lg:col-span-3 flex flex-wrap lg:flex-col gap-x-4 gap-y-1 font-mono text-xs uppercase tracking-[0.06em] text-graphite">
+                <span class="text-rubric">Pos. {String(index + 2).padStart(2, '0')}</span>
                 <time datetime={post.data.publishedAt.toISOString().slice(0, 10)}>{formatDate(post.data.publishedAt)}</time>
                 {post.data.readTimeInMinutes > 0 && <span>{post.data.readTimeInMinutes} min</span>}
               </div>

@@ -1,11 +1,13 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import CtaBlock from "../CtaBlock.astro";
+import TitleBlock from "../TitleBlock.astro";
 import { t, type Locale } from "../../config/site";
 import { localePath } from "../../utils/i18n";
 const locale = (Astro.currentLocale || 'en') as Locale;
 const config = t(locale);
 const p = config.pages.techAdvisor;
+const advisorLabel = locale === 'de' ? 'Architektur-Analyse' : 'Architecture Analysis';
 ---
 
 <Layout title={p.meta.title} description={p.meta.description}>
@@ -34,13 +36,16 @@ const p = config.pages.techAdvisor;
   <!-- Advisor -->
   <section class="pb-24 lg:pb-32 relative">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="mb-10 lg:mb-12 reveal">
+        <TitleBlock no="01" title={advisorLabel} locale={locale} />
+      </div>
       <div class="grid lg:grid-cols-2 gap-6 reveal">
         <!-- Input Panel -->
         <div class="card-elevated p-6 lg:p-8 flex flex-col">
           <label for="advisor-prompt" class="label text-text-muted mb-3">{p.inputSection.promptLabel}</label>
           <textarea
             id="advisor-prompt"
-            class="w-full h-40 bg-navy/60 border border-ink/[0.08] rounded-xl px-4 py-3 text-off-white placeholder-text-muted resize-none focus:outline-none focus:border-indigo focus:shadow-[0_0_0_3px_rgba(28,27,26,0.12)] transition-all duration-200"
+            class="w-full h-40 bg-navy/60 border border-ink/[0.08] rounded-none px-4 py-3 text-off-white placeholder-text-muted resize-none focus:outline-none focus:border-indigo focus:shadow-[0_0_0_3px_rgba(28,27,26,0.12)] transition-all duration-200"
             placeholder={p.inputSection.promptPlaceholder}
             maxlength={p.inputSection.charLimit}
           ></textarea>
@@ -55,7 +60,7 @@ const p = config.pages.techAdvisor;
             <div class="flex flex-wrap gap-2">
               {p.examples.map((example) => (
                 <button
-                  class="example-chip text-xs bg-purple/10 border border-purple/20 text-purple rounded-full px-3 py-1.5 hover:bg-purple/20 hover:border-purple/30 transition-colors duration-200 cursor-pointer text-left"
+                  class="example-chip font-mono text-xs bg-purple/10 border border-purple/20 text-purple px-3 py-1.5 hover:bg-purple/20 hover:border-purple/30 transition-colors duration-200 cursor-pointer text-left"
                   data-prompt={example}
                 >
                   {example.length > 55 ? example.slice(0, 55) + "..." : example}
@@ -70,7 +75,7 @@ const p = config.pages.techAdvisor;
               <span class="w-1.5 h-1.5 rounded-full bg-cyan animate-pulse"></span>
               <span id="refining-label">{p.conversation.refiningLabel} &middot; 2 messages</span>
             </div>
-            <button id="new-analysis-btn" class="text-xs text-text-muted hover:text-off-white border border-ink/[0.08] rounded-lg px-3 py-1.5 transition-colors duration-200 cursor-pointer">
+            <button id="new-analysis-btn" class="text-xs text-text-muted hover:text-off-white border border-ink/[0.08] rounded-none px-3 py-1.5 transition-colors duration-200 cursor-pointer">
               {p.conversation.newAnalysisButton}
             </button>
           </div>
@@ -89,20 +94,20 @@ const p = config.pages.techAdvisor;
         <div class="card-elevated p-6 lg:p-8 flex flex-col min-h-[500px]">
           <!-- Tabs -->
           <div class="flex items-center gap-1 mb-4">
-            <button id="tab-results" class="tab-btn text-sm font-medium px-4 py-2 rounded-lg bg-purple/10 text-purple border border-purple/20 transition-colors duration-200 cursor-pointer">
+            <button id="tab-results" class="tab-btn text-sm font-medium px-4 py-2 rounded-none bg-purple/10 text-purple border border-purple/20 transition-colors duration-200 cursor-pointer">
               {p.previewSection.resultsTab}
             </button>
-            <button id="tab-diagram" class="tab-btn text-sm font-medium px-4 py-2 rounded-lg text-text-muted hover:text-off-white transition-colors duration-200 cursor-pointer">
+            <button id="tab-diagram" class="tab-btn text-sm font-medium px-4 py-2 rounded-none text-text-muted hover:text-off-white transition-colors duration-200 cursor-pointer">
               {p.previewSection.diagramTab}
             </button>
             <div class="flex-1"></div>
-            <button id="clear-btn" class="hidden text-xs text-text-muted hover:text-off-white border border-ink/[0.08] rounded-lg px-3 py-1.5 transition-colors duration-200 cursor-pointer">
+            <button id="clear-btn" class="hidden text-xs text-text-muted hover:text-off-white border border-ink/[0.08] rounded-none px-3 py-1.5 transition-colors duration-200 cursor-pointer">
               Clear
             </button>
           </div>
 
           <!-- Results view -->
-          <div id="results-container" class="flex-1 relative rounded-xl overflow-hidden border border-ink/[0.06]">
+          <div id="results-container" class="flex-1 relative rounded-none overflow-hidden border border-ink/[0.06]">
             <div id="empty-state" class="absolute inset-0 flex items-center justify-center bg-navy/95">
               <div class="text-center px-6">
                 <svg class="w-12 h-12 text-text-muted/30 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
@@ -113,7 +118,7 @@ const p = config.pages.techAdvisor;
           </div>
 
           <!-- Diagram view -->
-          <div id="diagram-container" class="hidden flex-1 relative rounded-xl overflow-hidden border border-ink/[0.06]">
+          <div id="diagram-container" class="hidden flex-1 relative rounded-none overflow-hidden border border-ink/[0.06]">
             <div id="diagram-empty" class="absolute inset-0 flex items-center justify-center bg-navy/95">
               <p class="text-sm text-text-muted">Architecture diagram will appear after analysis</p>
             </div>
@@ -122,7 +127,7 @@ const p = config.pages.techAdvisor;
 
           <!-- Loading indicator -->
           <div id="loading-indicator" class="hidden absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div class="flex items-center gap-3 bg-surface/90 backdrop-blur-sm border border-ink/[0.08] rounded-xl px-5 py-3">
+            <div class="flex items-center gap-3 bg-surface/90 backdrop-blur-sm border border-ink/[0.08] rounded-none px-5 py-3">
               <div class="w-4 h-4 border-2 border-purple border-t-transparent rounded-full animate-spin"></div>
               <span class="text-sm text-text-secondary">Analyzing...</span>
             </div>
@@ -236,7 +241,7 @@ const p = config.pages.techAdvisor;
     html = html.replace(/\*\*(.+?)\*\*/g, '<strong class="text-off-white">$1</strong>');
 
     // Code blocks
-    html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre class="bg-surface border border-ink/[0.06] rounded-lg p-4 my-3 overflow-x-auto text-xs"><code>$2</code></pre>');
+    html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre class="bg-surface border border-ink/[0.06] rounded-none p-4 my-3 overflow-x-auto text-xs"><code>$2</code></pre>');
 
     // Inline code
     html = html.replace(/`([^`]+)`/g, '<code class="bg-surface px-1.5 py-0.5 rounded text-cyan text-xs">$1</code>');
@@ -267,20 +272,21 @@ const p = config.pages.techAdvisor;
         script.onload = () => {
           (window as any).mermaid.initialize({
             startOnLoad: false,
-            theme: 'dark',
+            theme: 'neutral',
             themeVariables: {
-              primaryColor: '#A163F1',
-              primaryTextColor: '#F5F5F7',
-              primaryBorderColor: '#6363F1',
-              lineColor: '#6363F1',
-              secondaryColor: '#0F1132',
-              tertiaryColor: '#030520',
-              background: '#030520',
-              mainBkg: '#0F1132',
-              nodeBorder: '#A163F1',
-              clusterBkg: '#0F1132',
-              titleColor: '#F5F5F7',
-              edgeLabelBackground: '#0F1132',
+              fontFamily: "'IBM Plex Mono', ui-monospace, monospace",
+              primaryColor: '#F7F4EF',
+              primaryTextColor: '#1C1B1A',
+              primaryBorderColor: '#1C1B1A',
+              lineColor: '#3A66A0',
+              secondaryColor: '#F1ECE4',
+              tertiaryColor: '#F7F4EF',
+              background: '#F7F4EF',
+              mainBkg: '#F7F4EF',
+              nodeBorder: '#1C1B1A',
+              clusterBkg: '#F1ECE4',
+              titleColor: '#1C1B1A',
+              edgeLabelBackground: '#F7F4EF',
             },
           });
           mermaidLoaded = true;

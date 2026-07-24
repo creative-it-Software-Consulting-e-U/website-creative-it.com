@@ -15,6 +15,8 @@ const ENV_CONFIGS: Record<string, EnvConfig> = {
       "https://creative-it.com",
       "https://www.creative-it.com",
     ],
+    webAclArn:
+      "arn:aws:wafv2:us-east-1:348854311973:global/webacl/CreatedByCloudFront-c7f3b2b8/e075f347-1ec1-4b88-a47d-dd66c00fd4ac",
   },
   gw: {
     envName: "gw",

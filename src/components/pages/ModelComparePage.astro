@@ -200,7 +200,8 @@ const sectionLabel = locale === 'de' ? 'Modell-Vergleich' : 'Model Comparison';
     return col;
   }
 
-  function formatCost(costUsd: number): string {
+  function formatCost(costUsd: number | null | undefined): string {
+    if (typeof costUsd !== 'number') return '–';
     return `$${costUsd < 0.001 ? costUsd.toFixed(5) : costUsd.toFixed(4)}`;
   }
 
@@ -234,7 +235,7 @@ const sectionLabel = locale === 'de' ? 'Modell-Vergleich' : 'Model Comparison';
       col.querySelector('.col-metrics')!.classList.remove('hidden');
       col.querySelector('.col-latency')!.textContent = `${((evt.latencyMs ?? 0) / 1000).toFixed(2)}s`;
       col.querySelector('.col-tokens')!.textContent = `${evt.inputTokens ?? 0} / ${evt.outputTokens ?? 0}`;
-      col.querySelector('.col-cost')!.textContent = formatCost(evt.costUsd ?? 0);
+      col.querySelector('.col-cost')!.textContent = formatCost(evt.costUsd);
     }
   }
 

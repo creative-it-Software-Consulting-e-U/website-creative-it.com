@@ -773,10 +773,15 @@ export class ContactApiStack extends cdk.Stack {
       },
     });
 
-    // Invokes several models (Anthropic + Amazon) via the Converse API
+    // Invokes several models (Anthropic + Amazon) via the Converse API and
+    // discovers the newest available inference profiles at runtime
     modelCompareHandler.addToRolePolicy(
       new iam.PolicyStatement({
-        actions: ["bedrock:InvokeModel", "bedrock:GetInferenceProfile"],
+        actions: [
+          "bedrock:InvokeModel",
+          "bedrock:GetInferenceProfile",
+          "bedrock:ListInferenceProfiles",
+        ],
         resources: ["*"],
       })
     );

@@ -2,11 +2,16 @@ import {
   BedrockRuntimeClient,
   ConverseCommand,
 } from "@aws-sdk/client-bedrock-runtime";
+import {
+  BedrockClient,
+  ListInferenceProfilesCommand,
+} from "@aws-sdk/client-bedrock";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { createHash } from "crypto";
 
 const bedrock = new BedrockRuntimeClient({});
+const bedrockControl = new BedrockClient({});
 const ddb = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 
 const TABLE_NAME = process.env.TABLE_NAME!;
@@ -18,9 +23,87 @@ const RATE_LIMIT = 10;
 const MAX_PROMPT_LENGTH = 1000;
 const MAX_TOKENS = 512;
 
-// EU cross-region inference profiles with approximate on-demand list prices
-// (USD per 1K tokens). Prices are shown to visitors as approximations only.
-const MODELS = [
+interface CompareModel {
+  id: string;
+  label: string;
+  vendor: string;
+  pricePerKIn: number | null;
+  pricePerKOut: number | null;
+}
+
+// The tool compares one model per family; the newest EU inference profile of
+// each family is discovered at runtime so new generations are picked up
+// without a code change. Only eu.* profiles are considered (EU data
+// residency, matching the privacy policy).
+const FAMILIES = [
+  {
+    key: "sonnet",
+    vendor: "Anthropic",
+    pattern: /^eu\.anthropic\.claude-sonnet-(\d[\d-]*)/,
+  },
+  {
+    key: "haiku",
+    vendor: "Anthropic",
+    pattern: /^eu\.anthropic\.claude-haiku-(\d[\d-]*)/,
+  },
+  {
+    key: "nova-lite",
+    vendor: "Amazon",
+    pattern: /^eu\.amazon\.nova(?:-(\d+))?-lite-/,
+  },
+];
+
+// Approximate on-demand list prices (USD per 1K tokens, eu-central-1).
+// Newer Anthropic models are billed via AWS Marketplace and are not in the
+// AWS Price List API, so this table cannot be fetched automatically. A model
+// version without an entry still runs — its cost is reported as null.
+const PRICES: Record<string, { in: number; out: number }> = {
+  "sonnet:4": { in: 0.003, out: 0.015 },
+  "sonnet:4.5": { in: 0.003, out: 0.015 },
+  "haiku:4.5": { in: 0.001, out: 0.005 },
+  "nova-lite:1": { in: 0.000078, out: 0.000312 },
+  "nova-lite:2": { in: 0.000429, out: 0.003597 },
+};
+
+function priceFor(key: string): { in: number; out: number } | null {
+  if (key === "sonnet:5") {
+    // Bedrock launch promo $2/$10 per M tokens until 2026-08-31, then $3/$15
+    return Date.now() < Date.parse("2026-09-01T00:00:00Z")
+      ? { in: 0.002, out: 0.01 }
+      : { in: 0.003, out: 0.015 };
+  }
+  return PRICES[key] ?? null;
+}
+
+// Version segments are the leading 1–2 digit groups of the id remainder;
+// an 8-digit date or "v1:0" suffix ends the version
+// ("4-5-20251001-v1:0" → [4, 5], "5" → [5]).
+function parseVersion(raw: string | undefined): number[] {
+  const parts: number[] = [];
+  for (const seg of (raw ?? "").split("-")) {
+    if (/^\d{1,2}$/.test(seg)) parts.push(Number(seg));
+    else break;
+  }
+  return parts.length ? parts : [1];
+}
+
+function compareVersions(a: number[], b: number[]): number {
+  for (let i = 0; i < Math.max(a.length, b.length); i++) {
+    const diff = (a[i] ?? 0) - (b[i] ?? 0);
+    if (diff !== 0) return diff;
+  }
+  return 0;
+}
+
+function buildLabel(familyKey: string, version: number[]): string {
+  const v = version.join(".");
+  if (familyKey === "sonnet") return `Claude Sonnet ${v}`;
+  if (familyKey === "haiku") return `Claude Haiku ${v}`;
+  return version[0] > 1 ? `Amazon Nova ${version[0]} Lite` : "Amazon Nova Lite";
+}
+
+// Used when profile discovery fails and no cached result exists
+const FALLBACK_MODELS: CompareModel[] = [
   {
     id: "eu.anthropic.claude-sonnet-4-20250514-v1:0",
     label: "Claude Sonnet 4",
@@ -43,6 +126,64 @@ const MODELS = [
     pricePerKOut: 0.000312,
   },
 ];
+
+const MODEL_CACHE_TTL_MS = 6 * 60 * 60 * 1000;
+let cachedModels: CompareModel[] | null = null;
+let cachedAt = 0;
+
+async function resolveModels(): Promise<CompareModel[]> {
+  if (cachedModels && Date.now() - cachedAt < MODEL_CACHE_TTL_MS) {
+    return cachedModels;
+  }
+
+  try {
+    const profileIds: string[] = [];
+    let nextToken: string | undefined;
+    do {
+      const response = await bedrockControl.send(
+        new ListInferenceProfilesCommand({
+          maxResults: 100,
+          nextToken,
+          typeEquals: "SYSTEM_DEFINED",
+        })
+      );
+      for (const p of response.inferenceProfileSummaries ?? []) {
+        if (p.inferenceProfileId && p.status === "ACTIVE") {
+          profileIds.push(p.inferenceProfileId);
+        }
+      }
+      nextToken = response.nextToken;
+    } while (nextToken);
+
+    const models = FAMILIES.map((family, index) => {
+      let best: { id: string; version: number[] } | null = null;
+      for (const id of profileIds) {
+        const match = family.pattern.exec(id);
+        if (!match) continue;
+        const version = parseVersion(match[1]);
+        if (!best || compareVersions(version, best.version) > 0) {
+          best = { id, version };
+        }
+      }
+      if (!best) return FALLBACK_MODELS[index];
+      const price = priceFor(`${family.key}:${best.version.join(".")}`);
+      return {
+        id: best.id,
+        label: buildLabel(family.key, best.version),
+        vendor: family.vendor,
+        pricePerKIn: price?.in ?? null,
+        pricePerKOut: price?.out ?? null,
+      };
+    });
+
+    cachedModels = models;
+    cachedAt = Date.now();
+    return models;
+  } catch (err) {
+    console.error("ListInferenceProfiles failed:", err);
+    return cachedModels ?? FALLBACK_MODELS;
+  }
+}
 
 function hashIp(ip: string): string {
   return createHash("sha256").update(ip).digest("hex").slice(0, 16);
@@ -90,7 +231,7 @@ async function checkRateLimit(ip: string): Promise<{ allowed: boolean; remaining
 }
 
 async function runModel(
-  model: (typeof MODELS)[number],
+  model: CompareModel,
   prompt: string
 ): Promise<Record<string, unknown>> {
   const started = Date.now();
@@ -107,8 +248,10 @@ async function runModel(
     const inputTokens = response.usage?.inputTokens ?? 0;
     const outputTokens = response.usage?.outputTokens ?? 0;
     const costUsd =
-      (inputTokens / 1000) * model.pricePerKIn +
-      (outputTokens / 1000) * model.pricePerKOut;
+      model.pricePerKIn !== null && model.pricePerKOut !== null
+        ? (inputTokens / 1000) * model.pricePerKIn +
+          (outputTokens / 1000) * model.pricePerKOut
+        : null;
     const text = (response.output?.message?.content ?? [])
       .map((block) => block.text ?? "")
       .join("");
@@ -245,17 +388,19 @@ export const handler = awslambda.streamifyResponse(
       headers: baseHeaders,
     });
 
+    const models = await resolveModels();
+
     responseStream.write(
       JSON.stringify({
         type: "start",
-        models: MODELS.map((m) => ({ model: m.id, label: m.label, vendor: m.vendor })),
+        models: models.map((m) => ({ model: m.id, label: m.label, vendor: m.vendor })),
       }) + "\n"
     );
 
     // All models run in parallel; each result is written as one NDJSON line
     // as soon as that model finishes.
     await Promise.all(
-      MODELS.map((model) =>
+      models.map((model) =>
         runModel(model, prompt.trim()).then((result) => {
           responseStream.write(JSON.stringify(result) + "\n");
         })

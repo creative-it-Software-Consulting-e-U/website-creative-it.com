@@ -1335,7 +1335,7 @@ const content = {
             icon: "columns",
             link: "/model-compare",
             whatItDoes:
-              "Sends the same prompt to three models on Amazon Bedrock — Claude Sonnet 4, Claude 3 Haiku, and Amazon Nova Lite — and shows their answers side by side with latency, token usage, and approximate cost per call.",
+              "Sends the same prompt to three models on Amazon Bedrock — Claude Sonnet 4, Claude Haiku 4.5, and Amazon Nova Lite — and shows their answers side by side with latency, token usage, and approximate cost per call.",
             howItWorks:
               "The Lambda uses Bedrock's Converse API, which normalizes requests across model vendors, and invokes all models in parallel. Each result is written to the response as a newline-delimited JSON event the moment that model finishes, so the fastest model appears first in the UI.",
             techFlow: [
@@ -2466,7 +2466,7 @@ const content = {
             icon: "columns",
             link: "/model-compare",
             whatItDoes:
-              "Schickt denselben Prompt an drei Modelle auf Amazon Bedrock — Claude Sonnet 4, Claude 3 Haiku und Amazon Nova Lite — und zeigt die Antworten nebeneinander mit Latenz, Token-Verbrauch und ungefähren Kosten pro Aufruf.",
+              "Schickt denselben Prompt an drei Modelle auf Amazon Bedrock — Claude Sonnet 4, Claude Haiku 4.5 und Amazon Nova Lite — und zeigt die Antworten nebeneinander mit Latenz, Token-Verbrauch und ungefähren Kosten pro Aufruf.",
             howItWorks:
               "Die Lambda nutzt Bedrocks Converse API, die Requests über Modellanbieter hinweg normalisiert, und ruft alle Modelle parallel auf. Jedes Ergebnis wird in dem Moment als zeilengetrenntes JSON-Event in die Antwort geschrieben, in dem das Modell fertig ist — das schnellste Modell erscheint also zuerst in der UI.",
             techFlow: [

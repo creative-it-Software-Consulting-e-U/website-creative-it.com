@@ -29,11 +29,11 @@ const MODELS = [
     pricePerKOut: 0.015,
   },
   {
-    id: "eu.anthropic.claude-3-haiku-20240307-v1:0",
-    label: "Claude 3 Haiku",
+    id: "eu.anthropic.claude-haiku-4-5-20251001-v1:0",
+    label: "Claude Haiku 4.5",
     vendor: "Anthropic",
-    pricePerKIn: 0.00025,
-    pricePerKOut: 0.00125,
+    pricePerKIn: 0.001,
+    pricePerKOut: 0.005,
   },
   {
     id: "eu.amazon.nova-lite-v1:0",

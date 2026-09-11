@@ -59,7 +59,7 @@ const shared = {
           title: "Company Registration",
           content: null,
           items: [
-            { label: "Company Register Number", value: "FN 535024 w" },
+            { label: "Company Register Number", value: "FN 473229 a" },
             { label: "Commercial Court", value: "Landesgericht St. Pölten" },
             { label: "Legal Form", value: "Einzelunternehmen (sole proprietorship)" },
             { label: "Business Purpose", value: "IT services (IT-Dienstleistungen)" },
@@ -75,7 +75,7 @@ const shared = {
           title: "VAT",
           content: null,
           items: [
-            { label: "VAT ID (UID)", value: "ATU76261648" },
+            { label: "VAT ID (UID)", value: "ATU61645777" },
           ],
         },
         {
@@ -116,7 +116,7 @@ const shared = {
           title: "Firmenbucheintragung",
           content: null,
           items: [
-            { label: "Firmenbuchnummer", value: "FN 535024 w" },
+            { label: "Firmenbuchnummer", value: "FN 473229 a" },
             { label: "Firmenbuchgericht", value: "Landesgericht St. Pölten" },
             { label: "Rechtsform", value: "Einzelunternehmen" },
             { label: "Unternehmensgegenstand", value: "IT-Dienstleistungen" },
@@ -132,7 +132,7 @@ const shared = {
           title: "Umsatzsteuer",
           content: null,
           items: [
-            { label: "UID-Nummer", value: "ATU76261648" },
+            { label: "UID-Nummer", value: "ATU61645777" },
           ],
         },
         {
